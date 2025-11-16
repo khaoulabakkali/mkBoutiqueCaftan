@@ -1,17 +1,93 @@
-// Styles pour les éléments actifs du menu
+// Couleurs violettes/mauves de la page de login
+$violet-primary: #667eea;
+$violet-secondary: #764ba2;
+$violet-light: #f093fb;
+
+// Style pour l'en-tête du menu avec dégradé violet/mauve
+ion-toolbar.menu-header {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  --color: white;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+  
+  ion-title {
+    color: white;
+    font-weight: 600;
+  }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+// Styles pour la liste du menu
+ion-menu {
+  ion-list {
+    --padding-start: 0;
+    --padding-end: 0;
+    padding: 0;
+  }
+  
+  // Séparateurs pleine largeur
+  ion-item {
+    --border-width: 0;
+    --inner-border-width: 0;
+    position: relative;
+    margin: 0;
+    
+    // Ligne de séparation pleine largeur (passe sous les icônes)
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.08);
+      width: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+    
+    // Pas de séparateur pour le dernier élément
+    &:last-child {
+      &::after {
+        display: none;
+      }
+    }
+  }
+}
+
+// Styles pour les éléments actifs du menu (mauve/violet)
 ion-item.menu-item-active {
-  --background: rgba(var(--ion-color-primary-rgb), 0.1);
-  --color: var(--ion-color-primary);
-  border-left: 4px solid var(--ion-color-primary);
+  --background: rgba(102, 126, 234, 0.15);
+  --color: #764ba2;
+  border-left: 4px solid #764ba2;
   font-weight: 600;
+  background: linear-gradient(90deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+  
+  // Surcharger la couleur par défaut pour éviter le bleu
+  --color-activated: #764ba2;
+  --color-focused: #764ba2;
+  --color-hover: #764ba2;
   
   ion-icon {
-    color: var(--ion-color-primary);
+    color: #764ba2 !important;
+    transition: color 0.3s ease;
   }
   
   ion-label {
-    color: var(--ion-color-primary);
+    color: #764ba2 !important;
     font-weight: 600;
+    transition: color 0.3s ease;
+  }
+  
+  // Ligne de séparation en mauve pour l'élément actif
+  &::after {
+    background: rgba(118, 75, 162, 0.2);
   }
 }
 
@@ -23,7 +99,8 @@ ion-item {
   transition: all 0.3s ease;
   
   &:hover {
-    --background: rgba(var(--ion-color-primary-rgb), 0.05);
+    --background: rgba(102, 126, 234, 0.05);
+    background: rgba(102, 126, 234, 0.05);
   }
   
   ion-icon {
