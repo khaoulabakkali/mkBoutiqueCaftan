@@ -3,6 +3,7 @@ import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonC
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { home, grid, settings, logOut, people } from 'ionicons/icons';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,11 @@ import { home, grid, settings, logOut, people } from 'ionicons/icons';
   ],
 })
 export class AppComponent {
-  constructor() {
+  constructor(private authService: AuthService) {
     addIcons({ home, grid, settings, logOut, people });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
