@@ -54,7 +54,7 @@ export class LoginPage implements OnInit {
     addIcons({ lockClosed, mail, person });
     
     this.loginForm = this.formBuilder.group({
-      email: ['test@test.com', [Validators.required, Validators.email]],
+      login: ['admin@mkboutique.com', [Validators.required]],
       password: ['123456', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -70,36 +70,18 @@ export class LoginPage implements OnInit {
     if (this.loginForm.valid) {
       this.isLoading = true;
       
-      const login = this.loginForm.value.email;
-      const password = this.loginForm.value.password;
+      // Simuler une authentification
+      setTimeout(() => {
 
-      this.authService.login(login, password).subscribe({
-        next: (response) => {
-          this.isLoading = false;
-          // Récupérer l'URL de retour ou rediriger vers les tabs
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
-          this.router.navigate([returnUrl]);
-        },
-        error: async (error) => {
-          this.isLoading = false;
-          console.error('Erreur de connexion:', error);
-          
-          let errorMessage = 'Erreur de connexion. Vérifiez vos identifiants.';
-          if (error.error && error.error.message) {
-            errorMessage = error.error.message;
-          } else if (error.message) {
-            errorMessage = error.message;
-          }
-          
-          const toast = await this.toastController.create({
-            message: errorMessage,
-            duration: 3000,
-            color: 'danger',
-            position: 'bottom'
-          });
-          await toast.present();
-        }
-      });
+        // Utiliser le service d'authentification pour se connecter
+        this.authService.login(this.loginForm.value.login, this.loginForm.value.password);
+        
+        this.isLoading = false;
+        
+        // Récupérer l'URL de retour ou rediriger vers les tabs
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
+        this.router.navigate([returnUrl]);
+      }, 1500);
     } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs
       Object.keys(this.loginForm.controls).forEach(key => {
@@ -108,8 +90,8 @@ export class LoginPage implements OnInit {
     }
   }
 
-  get email() {
-    return this.loginForm.get('email');
+  get login() {
+    return this.loginForm.get('login');
   }
 
   get password() {

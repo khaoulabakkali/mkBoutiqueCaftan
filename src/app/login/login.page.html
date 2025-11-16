@@ -6,25 +6,24 @@
           <ion-icon name="lock-closed" class="logo-icon"></ion-icon>
         </div>
         <ion-card-title class="login-title">Bienvenue</ion-card-title>
-        <p class="login-subtitle">Connectez-vous à votre compte professionnel</p>
+        <p class="login-subtitle">Veuillez saisir vos identifiants de gestion</p>
       </ion-card-header>
 
       <ion-card-content>
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-          <!-- Email Input -->
-          <ion-item class="form-item" [class.item-has-error]="email?.invalid && email?.touched">
-            <ion-icon name="mail" slot="start" class="input-icon"></ion-icon>
-            <ion-label position="stacked">Email</ion-label>
+          <!-- Login Input -->
+          <ion-item class="form-item" [class.item-has-error]="login?.invalid && login?.touched">
+            <ion-icon name="person" slot="start" class="input-icon"></ion-icon>
+            <ion-label position="stacked">Login</ion-label>
             <ion-input
-              type="email"
-              formControlName="email"
-              placeholder="votre@email.com"
+              type="text"
+              formControlName="login"
+              placeholder="Votre login"
               [clearOnEdit]="true">
             </ion-input>
           </ion-item>
-          <div class="error-message" *ngIf="email?.invalid && email?.touched">
-            <span *ngIf="email?.errors?.['required']">L'email est requis</span>
-            <span *ngIf="email?.errors?.['email']">Format d'email invalide</span>
+          <div class="error-message" *ngIf="login?.invalid && login?.touched">
+            <span *ngIf="login?.errors?.['required']">Le login est requis</span>
           </div>
 
           <!-- Password Input -->
