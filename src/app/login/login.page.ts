@@ -1,8 +1,5 @@
 import { Component } from '@angular/core';
 import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
   IonContent, 
   IonItem, 
   IonLabel, 
@@ -26,9 +23,6 @@ import { lockClosed, mail, person } from 'ionicons/icons';
   styleUrls: ['login.page.scss'],
   standalone: true,
   imports: [
-    IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
     IonItem,
     IonLabel,
@@ -55,8 +49,8 @@ export class LoginPage {
     addIcons({ lockClosed, mail, person });
     
     this.loginForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      email: ['test@test.com', [Validators.required, Validators.email]],
+      password: ['123456', [Validators.required, Validators.minLength(6)]]
     });
   }
 

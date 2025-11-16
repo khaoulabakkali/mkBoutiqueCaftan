@@ -1,0 +1,30 @@
+form {
+  padding: 1rem;
+}
+
+ion-item {
+  --padding-start: 0;
+  --padding-end: 0;
+  margin-bottom: 1rem;
+
+  &.item-has-error {
+    --border-color: var(--ion-color-danger);
+  }
+}
+
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 0.875rem;
+  margin: -0.75rem 0 0.5rem 1rem;
+  padding: 0;
+}
+
+.form-actions {
+  margin-top: 2rem;
+  padding: 0 1rem;
+
+  ion-button {
+    margin-bottom: 1rem;
+  }
+}
+

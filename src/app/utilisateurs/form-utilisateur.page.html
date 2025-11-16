@@ -1,0 +1,109 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Utilisateur</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvel' }} Utilisateur</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()">
+    <!-- Nom complet -->
+    <ion-item [class.item-has-error]="nom_complet?.invalid && nom_complet?.touched">
+      <ion-label position="stacked">Nom complet *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="nom_complet"
+        placeholder="Nom et prénom">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="nom_complet?.invalid && nom_complet?.touched">
+      <span *ngIf="nom_complet?.errors?.['required']">Le nom complet est requis</span>
+      <span *ngIf="nom_complet?.errors?.['minlength']">Le nom doit contenir au moins 3 caractères</span>
+    </div>
+
+    <!-- Login (Email) -->
+    <ion-item [class.item-has-error]="login?.invalid && login?.touched">
+      <ion-label position="stacked">Email (Login) *</ion-label>
+      <ion-input
+        type="email"
+        formControlName="login"
+        placeholder="email@exemple.com">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="login?.invalid && login?.touched">
+      <span *ngIf="login?.errors?.['required']">L'email est requis</span>
+      <span *ngIf="login?.errors?.['email']">Format d'email invalide</span>
+    </div>
+
+    <!-- Mot de passe -->
+    <ion-item [class.item-has-error]="mot_de_passe?.invalid && mot_de_passe?.touched">
+      <ion-label position="stacked">
+        Mot de passe {{ isEditMode ? '(laisser vide pour ne pas changer)' : '*' }}
+      </ion-label>
+      <ion-input
+        type="password"
+        formControlName="mot_de_passe"
+        placeholder="••••••••">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="mot_de_passe?.invalid && mot_de_passe?.touched">
+      <span *ngIf="mot_de_passe?.errors?.['required']">Le mot de passe est requis</span>
+      <span *ngIf="mot_de_passe?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+    </div>
+
+    <!-- Rôle -->
+    <ion-item [class.item-has-error]="role?.invalid && role?.touched">
+      <ion-label position="stacked">Rôle *</ion-label>
+      <ion-select formControlName="role" placeholder="Sélectionner un rôle">
+        <ion-select-option *ngFor="let roleOption of roles" [value]="roleOption">
+          {{ getRoleLabel(roleOption) }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <div class="error-message" *ngIf="role?.invalid && role?.touched">
+      <span>Le rôle est requis</span>
+    </div>
+
+    <!-- Téléphone -->
+    <ion-item>
+      <ion-label position="stacked">Téléphone</ion-label>
+      <ion-input
+        type="tel"
+        formControlName="telephone"
+        placeholder="+212 6 12 34 56 78">
+      </ion-input>
+    </ion-item>
+
+    <!-- Actif -->
+    <ion-item>
+      <ion-label>Compte actif</ion-label>
+      <ion-checkbox formControlName="actif" slot="end"></ion-checkbox>
+    </ion-item>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <ion-button
+        expand="block"
+        type="submit"
+        [disabled]="utilisateurForm.invalid">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+      </ion-button>
+      <ion-button
+        expand="block"
+        fill="outline"
+        type="button"
+        (click)="onCancel()">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+

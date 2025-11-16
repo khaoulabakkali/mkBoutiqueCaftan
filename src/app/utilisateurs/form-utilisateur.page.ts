@@ -1,0 +1,213 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonMenuButton,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonButton,
+  IonSelect,
+  IonSelectOption,
+  IonCheckbox,
+  IonIcon,
+  ToastController,
+  LoadingController
+} from '@ionic/angular/standalone';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { addIcons } from 'ionicons';
+import { save, arrowBack } from 'ionicons/icons';
+import { UtilisateurService } from '../services/utilisateur.service';
+import { Utilisateur, Role } from '../models/utilisateur.model';
+
+@Component({
+  selector: 'app-form-utilisateur',
+  templateUrl: 'form-utilisateur.page.html',
+  styleUrls: ['form-utilisateur.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonMenuButton,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonSelect,
+    IonSelectOption,
+    IonCheckbox,
+    IonIcon,
+    ReactiveFormsModule,
+    CommonModule
+  ],
+})
+export class FormUtilisateurPage implements OnInit {
+  utilisateurForm: FormGroup;
+  isEditMode = false;
+  utilisateurId?: number;
+  roles = Object.values(Role);
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private utilisateurService: UtilisateurService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private toastController: ToastController,
+    private loadingController: LoadingController
+  ) {
+    addIcons({ save, arrowBack });
+    
+    this.utilisateurForm = this.formBuilder.group({
+      nom_complet: ['', [Validators.required, Validators.minLength(3)]],
+      login: ['', [Validators.required, Validators.email]],
+      mot_de_passe: ['', []],
+      role: [Role.STAFF, [Validators.required]],
+      telephone: ['', []],
+      actif: [true, [Validators.required]]
+    });
+  }
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id && id !== 'new') {
+      this.isEditMode = true;
+      this.utilisateurId = +id;
+      this.loadUtilisateur(this.utilisateurId);
+    } else {
+      // Mode création - le mot de passe est requis
+      this.utilisateurForm.get('mot_de_passe')?.setValidators([Validators.required, Validators.minLength(6)]);
+      this.utilisateurForm.get('mot_de_passe')?.updateValueAndValidity();
+    }
+  }
+
+  loadUtilisateur(id: number) {
+    const loading = this.loadingController.create({
+      message: 'Chargement...'
+    });
+    loading.then(l => l.present());
+
+    this.utilisateurService.getUtilisateurById(id).subscribe({
+      next: (utilisateur) => {
+        this.utilisateurForm.patchValue({
+          nom_complet: utilisateur.nom_complet,
+          login: utilisateur.login,
+          role: utilisateur.role,
+          telephone: utilisateur.telephone || '',
+          actif: utilisateur.actif
+        });
+        // En mode édition, le mot de passe n'est pas requis
+        this.utilisateurForm.get('mot_de_passe')?.clearValidators();
+        this.utilisateurForm.get('mot_de_passe')?.updateValueAndValidity();
+        loading.then(l => l.dismiss());
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement:', error);
+        loading.then(l => l.dismiss());
+        this.presentToast('Erreur lors du chargement', 'danger');
+      }
+    });
+  }
+
+  async onSubmit() {
+    if (this.utilisateurForm.valid) {
+      const loading = await this.loadingController.create({
+        message: this.isEditMode ? 'Mise à jour...' : 'Création...'
+      });
+      await loading.present();
+
+      const formValue = this.utilisateurForm.value;
+      const utilisateur: Utilisateur = {
+        nom_complet: formValue.nom_complet,
+        login: formValue.login,
+        mot_de_passe: formValue.mot_de_passe,
+        role: formValue.role,
+        telephone: formValue.telephone || undefined,
+        actif: formValue.actif
+      };
+
+      if (this.isEditMode && this.utilisateurId) {
+        // Mise à jour
+        this.utilisateurService.updateUtilisateur(this.utilisateurId, utilisateur).subscribe({
+          next: () => {
+            loading.dismiss();
+            this.presentToast('Utilisateur mis à jour avec succès', 'success');
+            this.router.navigate(['/utilisateurs']);
+          },
+          error: (error) => {
+            loading.dismiss();
+            this.presentToast('Erreur lors de la mise à jour', 'danger');
+          }
+        });
+      } else {
+        // Création
+        this.utilisateurService.createUtilisateur(utilisateur).subscribe({
+          next: () => {
+            loading.dismiss();
+            this.presentToast('Utilisateur créé avec succès', 'success');
+            this.router.navigate(['/utilisateurs']);
+          },
+          error: (error) => {
+            loading.dismiss();
+            this.presentToast('Erreur lors de la création', 'danger');
+          }
+        });
+      }
+    } else {
+      // Marquer tous les champs comme touchés
+      Object.keys(this.utilisateurForm.controls).forEach(key => {
+        this.utilisateurForm.get(key)?.markAsTouched();
+      });
+      this.presentToast('Veuillez remplir tous les champs requis', 'warning');
+    }
+  }
+
+  async presentToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 2000,
+      color,
+      position: 'bottom'
+    });
+    await toast.present();
+  }
+
+  get nom_complet() {
+    return this.utilisateurForm.get('nom_complet');
+  }
+
+  get login() {
+    return this.utilisateurForm.get('login');
+  }
+
+  get mot_de_passe() {
+    return this.utilisateurForm.get('mot_de_passe');
+  }
+
+  get role() {
+    return this.utilisateurForm.get('role');
+  }
+
+  getRoleLabel(role: string): string {
+    switch (role) {
+      case 'ADMIN':
+        return 'Administrateur';
+      case 'MANAGER':
+        return 'Manager';
+      case 'STAFF':
+        return 'Staff';
+      default:
+        return role;
+    }
+  }
+
+  onCancel() {
+    this.router.navigate(['/utilisateurs']);
+  }
+}
+
