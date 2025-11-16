@@ -9,7 +9,8 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent
+  IonCardContent,
+  ToastController
 } from '@ionic/angular/standalone';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -47,7 +48,8 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastController: ToastController
   ) {
     addIcons({ lockClosed, mail, person });
     
@@ -70,14 +72,9 @@ export class LoginPage implements OnInit {
       
       // Simuler une authentification
       setTimeout(() => {
-        // Générer un token simulé
-        const token = 'mock_token_' + Date.now();
-        const userData = {
-          login: this.loginForm.value.login
-        };
-        
+
         // Utiliser le service d'authentification pour se connecter
-        this.authService.login(token, userData);
+        this.authService.login(this.loginForm.value.login, this.loginForm.value.password);
         
         this.isLoading = false;
         

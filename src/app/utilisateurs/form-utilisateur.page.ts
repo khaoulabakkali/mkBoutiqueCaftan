@@ -109,7 +109,8 @@ export class FormUtilisateurPage implements OnInit {
       error: (error) => {
         console.error('Erreur lors du chargement:', error);
         loading.then(l => l.dismiss());
-        this.presentToast('Erreur lors du chargement', 'danger');
+        const errorMessage = error?.message || 'Erreur lors du chargement';
+        this.presentToast(errorMessage, 'danger');
       }
     });
   }
@@ -141,7 +142,8 @@ export class FormUtilisateurPage implements OnInit {
           },
           error: (error) => {
             loading.dismiss();
-            this.presentToast('Erreur lors de la mise à jour', 'danger');
+            const errorMessage = error?.message || 'Erreur lors de la mise à jour';
+            this.presentToast(errorMessage, 'danger');
           }
         });
       } else {
@@ -154,7 +156,8 @@ export class FormUtilisateurPage implements OnInit {
           },
           error: (error) => {
             loading.dismiss();
-            this.presentToast('Erreur lors de la création', 'danger');
+            const errorMessage = error?.message || 'Erreur lors de la création';
+            this.presentToast(errorMessage, 'danger');
           }
         });
       }

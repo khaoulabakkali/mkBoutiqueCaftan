@@ -1,6 +1,19 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
+export interface LoginResponse {
+  token: string;
+  user: {
+    id_utilisateur: number;
+    nom_complet: string;
+    login: string;
+    role: string;
+  };
+}
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +24,12 @@ export class AuthService {
 
   private readonly AUTH_TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
+  private apiUrl = environment.apiUrl || 'http://localhost:5000/api';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
   /**
    * Vérifie si l'utilisateur est authentifié en vérifiant le token dans le localStorage
@@ -30,9 +47,38 @@ export class AuthService {
   }
 
   /**
-   * Connecte l'utilisateur et stocke les informations d'authentification
+   * Connecte l'utilisateur via l'API
    */
-  login(token: string, userData?: any): void {
+  login(login: string, password: string): Observable<LoginResponse> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.post<LoginResponse>(
+      `${this.apiUrl}/auth/login`,
+      { login, mot_de_passe: password },
+      httpOptions
+    ).pipe(
+      map((response: LoginResponse) => {
+        // Stocker le token et les données utilisateur
+        localStorage.setItem(this.AUTH_TOKEN_KEY, response.token);
+        localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+        this.isAuthenticatedSubject.next(true);
+        return response;
+      }),
+      catchError((error) => {
+        console.error('Erreur de connexion:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  /**
+   * Méthode de compatibilité pour login avec token (si nécessaire)
+   */
+  loginWithToken(token: string, userData?: any): void {
     localStorage.setItem(this.AUTH_TOKEN_KEY, token);
     if (userData) {
       localStorage.setItem(this.USER_KEY, JSON.stringify(userData));
