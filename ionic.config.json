@@ -1,0 +1,7 @@
+{
+  "name": "mkBoutiqueCaftan",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
