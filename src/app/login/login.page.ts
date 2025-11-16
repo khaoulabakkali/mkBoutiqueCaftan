@@ -52,7 +52,7 @@ export class LoginPage implements OnInit {
     addIcons({ lockClosed, mail, person });
     
     this.loginForm = this.formBuilder.group({
-      email: ['test@test.com', [Validators.required, Validators.email]],
+      login: ['admin@mkboutique.com', [Validators.required]],
       password: ['123456', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -73,8 +73,7 @@ export class LoginPage implements OnInit {
         // Générer un token simulé
         const token = 'mock_token_' + Date.now();
         const userData = {
-          email: this.loginForm.value.email,
-          login: this.loginForm.value.email
+          login: this.loginForm.value.login
         };
         
         // Utiliser le service d'authentification pour se connecter
@@ -94,8 +93,8 @@ export class LoginPage implements OnInit {
     }
   }
 
-  get email() {
-    return this.loginForm.get('email');
+  get login() {
+    return this.loginForm.get('login');
   }
 
   get password() {

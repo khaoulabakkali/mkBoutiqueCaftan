@@ -1,0 +1,39 @@
+// Styles pour les éléments actifs du menu
+ion-item.menu-item-active {
+  --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  --color: var(--ion-color-primary);
+  border-left: 4px solid var(--ion-color-primary);
+  font-weight: 600;
+  
+  ion-icon {
+    color: var(--ion-color-primary);
+  }
+  
+  ion-label {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+  }
+}
+
+// Style par défaut pour les éléments du menu
+ion-item {
+  --background: transparent;
+  --color: var(--ion-color-dark);
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    --background: rgba(var(--ion-color-primary-rgb), 0.05);
+  }
+  
+  ion-icon {
+    color: var(--ion-color-medium);
+    transition: color 0.3s ease;
+  }
+  
+  ion-label {
+    color: var(--ion-color-dark);
+    transition: color 0.3s ease;
+  }
+}
+
