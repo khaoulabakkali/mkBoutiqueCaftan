@@ -9,7 +9,8 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
-  IonCardContent
+  IonCardContent,
+  ToastController
 } from '@ionic/angular/standalone';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -47,7 +48,8 @@ export class LoginPage implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastController: ToastController
   ) {
     addIcons({ lockClosed, mail, person });
     
@@ -68,24 +70,36 @@ export class LoginPage implements OnInit {
     if (this.loginForm.valid) {
       this.isLoading = true;
       
-      // Simuler une authentification
-      setTimeout(() => {
-        // Générer un token simulé
-        const token = 'mock_token_' + Date.now();
-        const userData = {
-          email: this.loginForm.value.email,
-          login: this.loginForm.value.email
-        };
-        
-        // Utiliser le service d'authentification pour se connecter
-        this.authService.login(token, userData);
-        
-        this.isLoading = false;
-        
-        // Récupérer l'URL de retour ou rediriger vers les tabs
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
-        this.router.navigate([returnUrl]);
-      }, 1500);
+      const login = this.loginForm.value.email;
+      const password = this.loginForm.value.password;
+
+      this.authService.login(login, password).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          // Récupérer l'URL de retour ou rediriger vers les tabs
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
+          this.router.navigate([returnUrl]);
+        },
+        error: async (error) => {
+          this.isLoading = false;
+          console.error('Erreur de connexion:', error);
+          
+          let errorMessage = 'Erreur de connexion. Vérifiez vos identifiants.';
+          if (error.error && error.error.message) {
+            errorMessage = error.error.message;
+          } else if (error.message) {
+            errorMessage = error.message;
+          }
+          
+          const toast = await this.toastController.create({
+            message: errorMessage,
+            duration: 3000,
+            color: 'danger',
+            position: 'bottom'
+          });
+          await toast.present();
+        }
+      });
     } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs
       Object.keys(this.loginForm.controls).forEach(key => {

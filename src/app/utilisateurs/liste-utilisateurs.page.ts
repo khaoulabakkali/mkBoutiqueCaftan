@@ -83,7 +83,8 @@ export class ListeUtilisateursPage implements OnInit {
       error: (error) => {
         console.error('Erreur lors du chargement:', error);
         loading.dismiss();
-        this.presentToast('Erreur lors du chargement des utilisateurs', 'danger');
+        const errorMessage = error?.message || 'Erreur lors du chargement des utilisateurs';
+        this.presentToast(errorMessage, 'danger');
       }
     });
   }
@@ -165,7 +166,8 @@ export class ListeUtilisateursPage implements OnInit {
               },
               error: (error) => {
                 loading.dismiss();
-                this.presentToast('Erreur lors de la suppression', 'danger');
+                const errorMessage = error?.message || 'Erreur lors de la suppression';
+                this.presentToast(errorMessage, 'danger');
               }
             });
           }
@@ -194,7 +196,8 @@ export class ListeUtilisateursPage implements OnInit {
       },
       error: (error) => {
         loading.dismiss();
-        this.presentToast('Erreur lors de la modification', 'danger');
+        const errorMessage = error?.message || 'Erreur lors de la modification';
+        this.presentToast(errorMessage, 'danger');
       }
     });
   }
