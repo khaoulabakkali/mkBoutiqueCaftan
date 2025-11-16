@@ -1,0 +1,75 @@
+<ion-header [translucent]="true" class="login-header">
+  <ion-toolbar>
+    <ion-title>Connexion</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="login-content">
+  <div class="login-container">
+    <ion-card class="login-card">
+      <ion-card-header>
+        <div class="logo-container">
+          <ion-icon name="lock-closed" class="logo-icon"></ion-icon>
+        </div>
+        <ion-card-title class="login-title">Bienvenue</ion-card-title>
+        <p class="login-subtitle">Connectez-vous à votre compte professionnel</p>
+      </ion-card-header>
+
+      <ion-card-content>
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <!-- Email Input -->
+          <ion-item class="form-item" [class.item-has-error]="email?.invalid && email?.touched">
+            <ion-icon name="mail" slot="start" class="input-icon"></ion-icon>
+            <ion-label position="stacked">Email</ion-label>
+            <ion-input
+              type="email"
+              formControlName="email"
+              placeholder="votre@email.com"
+              [clearOnEdit]="true">
+            </ion-input>
+          </ion-item>
+          <div class="error-message" *ngIf="email?.invalid && email?.touched">
+            <span *ngIf="email?.errors?.['required']">L'email est requis</span>
+            <span *ngIf="email?.errors?.['email']">Format d'email invalide</span>
+          </div>
+
+          <!-- Password Input -->
+          <ion-item class="form-item" [class.item-has-error]="password?.invalid && password?.touched">
+            <ion-icon name="lock-closed" slot="start" class="input-icon"></ion-icon>
+            <ion-label position="stacked">Mot de passe</ion-label>
+            <ion-input
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+              [clearOnEdit]="true">
+            </ion-input>
+          </ion-item>
+          <div class="error-message" *ngIf="password?.invalid && password?.touched">
+            <span *ngIf="password?.errors?.['required']">Le mot de passe est requis</span>
+            <span *ngIf="password?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+          </div>
+
+          <!-- Forgot Password Link -->
+          <div class="forgot-password">
+          </div>
+
+          <!-- Submit Button -->
+          <ion-button
+            expand="block"
+            type="submit"
+            class="login-button"
+            [disabled]="loginForm.invalid || isLoading">
+            <span *ngIf="!isLoading">Se connecter</span>
+            <span *ngIf="isLoading">Connexion...</span>
+          </ion-button>
+        </form>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Vous n'avez pas de compte ? <a href="#" class="signup-link">Créer un compte</a></p>
+    </div>
+  </div>
+</ion-content>
+
