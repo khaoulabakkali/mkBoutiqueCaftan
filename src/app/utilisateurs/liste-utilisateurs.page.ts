@@ -123,7 +123,6 @@ export class ListeUtilisateursPage implements OnInit {
         loading.dismiss();
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
         loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des utilisateurs';
         this.presentToast(errorMessage, 'danger');

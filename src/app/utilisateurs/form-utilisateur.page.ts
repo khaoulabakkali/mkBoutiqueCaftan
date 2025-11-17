@@ -127,7 +127,6 @@ export class FormUtilisateurPage implements OnInit {
         loading.then(l => l.dismiss());
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
         loading.then(l => l.dismiss());
         const errorMessage = error?.message || 'Erreur lors du chargement';
         this.presentToast(errorMessage, 'danger');

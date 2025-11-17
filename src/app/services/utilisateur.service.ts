@@ -132,43 +132,47 @@ export class UtilisateurService {
    */
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: HttpErrorResponse): Observable<T> => {
-      console.error(`${operation} failed:`, error);
-      
-      let errorMessage = 'Une erreur est survenue';
-      
-      if (error.error instanceof ErrorEvent) {
-        // Erreur côté client
-        errorMessage = `Erreur: ${error.error.message}`;
-      } else {
-        // Erreur côté serveur
-        if (error.status === 401) {
-          errorMessage = 'Non autorisé. Veuillez vous reconnecter.';
-          // Optionnel: déconnecter l'utilisateur
-          // this.authService.logout();
-        } else if (error.status === 403) {
-          errorMessage = 'Accès interdit.';
-        } else if (error.status === 404) {
-          errorMessage = 'Ressource non trouvée.';
-        } else if (error.status === 500) {
-          errorMessage = 'Erreur serveur. Veuillez réessayer plus tard.';
-        } else if (error.error) {
-          // Essayer d'extraire le message d'erreur de différentes façons
-          if (error.error.message) {
-            errorMessage = error.error.message;
-          } else if (error.error.error) {
-            errorMessage = error.error.error;
-          } else if (typeof error.error === 'string') {
-            errorMessage = error.error;
-          } else if (error.error.errors && Array.isArray(error.error.errors)) {
-            // Gérer les erreurs de validation multiples
-            errorMessage = error.error.errors.map((e: any) => e.message || e).join(', ');
-          }
-        }
+      if (!environment.production) {
+        console.error(`${operation} failed:`, error);
       }
-
-      // Retourner une erreur observable avec le message
+      
+      const errorMessage = this.extractErrorMessage(error);
       return throwError(() => new Error(errorMessage));
     };
+  }
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    if (error.error instanceof ErrorEvent) {
+      return `Erreur: ${error.error.message}`;
+    }
+
+    const statusMessages: { [key: number]: string } = {
+      401: 'Non autorisé. Veuillez vous reconnecter.',
+      403: 'Accès interdit.',
+      404: 'Ressource non trouvée.',
+      500: 'Erreur serveur. Veuillez réessayer plus tard.'
+    };
+
+    if (error.status && statusMessages[error.status]) {
+      return statusMessages[error.status];
+    }
+
+    if (error.error) {
+      if (error.error.message) {
+        return error.error.message;
+      }
+      if (error.error.error) {
+        return error.error.error;
+      }
+      if (typeof error.error === 'string') {
+        return error.error;
+      }
+      if (Array.isArray(error.error.errors)) {
+        return error.error.errors.map((e: any) => e.message || e).join(', ');
+      }
+    }
+
+    return 'Une erreur est survenue';
   }
 }
 

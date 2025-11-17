@@ -54,7 +54,7 @@ export class LoginPage implements OnInit {
     addIcons({ lockClosed, mail, person });
     
     this.loginForm = this.formBuilder.group({
-      login: ['admin@mkboutique.com', [Validators.required]],
+      login: ['test@gmail.com', [Validators.required]],
       password: ['123456', [Validators.required, Validators.minLength(6)]]
     });
   }
@@ -62,7 +62,8 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     // Si l'utilisateur est déjà authentifié, rediriger vers la page d'accueil
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/tabs']);
+
+      this.router.navigate(['/utilisateurs']);
     }
   }
 
@@ -73,16 +74,23 @@ export class LoginPage implements OnInit {
       // Simuler un délai de connexion
       setTimeout(() => {
 
-        // Utiliser le service d'authentification pour se connecter
-        this.authService.login(this.loginForm.value.login, this.loginForm.value.password);
-        
-        this.isLoading = false;
-        
-        // Récupérer l'URL de retour ou rediriger vers les tabs
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
-        this.router.navigate([returnUrl]);
-      }, 1500);
-    } else {
+      const login = this.loginForm.value.login;
+      const password = this.loginForm.value.password;
+
+      this.authService.login(login, password).subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          // Récupérer l'URL de retour ou rediriger vers les tabs
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/utilisateurs';
+          this.router.navigate([returnUrl]);
+        },
+        error: async (error) => {
+          this.isLoading = false;
+          const errorMessage = error.message || 'Erreur de connexion. Vérifiez vos identifiants.';
+          await this.showErrorToast(errorMessage);
+        }
+      });
+    })  } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
@@ -106,6 +114,16 @@ export class LoginPage implements OnInit {
 
   get password() {
     return this.loginForm.get('password');
+  }
+
+  private async showErrorToast(message: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      color: 'danger',
+      position: 'bottom'
+    });
+    await toast.present();
   }
 }
 
