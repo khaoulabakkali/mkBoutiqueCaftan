@@ -27,6 +27,26 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'parametres',
+    loadComponent: () => import('./parametres/parametres.page').then((m) => m.ParametresPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/roles',
+    loadComponent: () => import('./parametres/roles/liste-roles.page').then((m) => m.ListeRolesPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/roles/new',
+    loadComponent: () => import('./parametres/roles/form-role.page').then((m) => m.FormRolePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/roles/edit/:id',
+    loadComponent: () => import('./parametres/roles/form-role.page').then((m) => m.FormRolePage),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: '/login',
     pathMatch: 'full',

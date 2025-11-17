@@ -111,6 +111,78 @@ ion-item {
   ion-label {
     color: var(--ion-color-dark);
     transition: color 0.3s ease;
+    
+    h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+      margin-bottom: 0.25rem;
+    }
+    
+    p {
+      font-size: 0.75rem;
+      color: var(--ion-color-medium);
+      margin: 0;
+      font-weight: 400;
+    }
+  }
+}
+
+// Styles spécifiques pour les labels avec sous-titre
+ion-item ion-label {
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 0.25rem;
+  }
+  
+  p {
+    font-size: 0.75rem;
+    color: var(--ion-color-medium);
+    margin: 0;
+    font-weight: 400;
+  }
+}
+
+ion-item.menu-item-active ion-label {
+  h3 {
+    color: #764ba2 !important;
+  }
+  
+  p {
+    color: rgba(118, 75, 162, 0.8) !important;
+  }
+}
+
+// Styles pour le sous-menu
+.submenu-item {
+  --padding-start: 3rem;
+  --min-height: 50px;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.02);
+  
+  ion-icon {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+  }
+  
+  &:hover {
+    --background: rgba(102, 126, 234, 0.05);
+  }
+  
+  &.menu-item-active {
+    --background: rgba(102, 126, 234, 0.1);
+    border-left: 3px solid #764ba2;
+    font-weight: 600;
+    
+    ion-icon {
+      color: #764ba2 !important;
+    }
+    
+    ion-label {
+      color: #764ba2 !important;
+    }
   }
 }
 

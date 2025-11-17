@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon, IonMenuToggle } from '@ionic/angular/standalone';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { home, grid, settings, logOut, people } from 'ionicons/icons';
+import { home, grid, settings, logOut, people, chevronDown, chevronUp, shieldCheckmark } from 'ionicons/icons';
 import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs/operators';
 
@@ -24,17 +25,19 @@ import { filter } from 'rxjs/operators';
     IonIcon, 
     IonMenuToggle,
     RouterLink,
-    RouterLinkActive
+    RouterLinkActive,
+    CommonModule
   ],
 })
 export class AppComponent {
   currentUrl: string = '';
+  parametresExpanded: boolean = false;
 
   constructor(
     private authService: AuthService,
     private router: Router
   ) {
-    addIcons({ home, grid, settings, logOut, people });
+    addIcons({ home, grid, settings, logOut, people, chevronDown, chevronUp, shieldCheckmark });
     
     // Initialiser l'URL actuelle
     this.currentUrl = this.router.url;
@@ -44,7 +47,18 @@ export class AppComponent {
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         this.currentUrl = event.url;
+        // Garder le menu paramètres ouvert si on est sur une route paramètres
+        this.parametresExpanded = this.currentUrl.startsWith('/parametres');
       });
+    
+    // Initialiser l'état du menu paramètres
+    this.parametresExpanded = this.currentUrl.startsWith('/parametres');
+  }
+  
+  toggleParametres(event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.parametresExpanded = !this.parametresExpanded;
   }
 
   logout() {
@@ -58,6 +72,9 @@ export class AppComponent {
     }
     if (route === '/utilisateurs') {
       return this.currentUrl.startsWith('/utilisateurs');
+    }
+    if (route === '/parametres') {
+      return this.currentUrl.startsWith('/parametres');
     }
     return this.currentUrl === route;
   }

@@ -1,0 +1,86 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouveau' }} Rôle</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouveau' }} Rôle</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+    <!-- Code rôle -->
+    <ion-item [class.item-has-error]="code_role?.invalid && code_role?.touched">
+      <ion-label position="stacked">Code du rôle *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="code_role"
+        placeholder="ADMIN, STAFF, MANAGER..."
+        [readonly]="isEditMode">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="code_role?.invalid && code_role?.touched">
+      <span *ngIf="code_role?.errors?.['required']">Le code est requis</span>
+      <span *ngIf="code_role?.errors?.['minlength']">Le code doit contenir au moins 2 caractères</span>
+      <span *ngIf="code_role?.errors?.['maxlength']">Le code ne doit pas dépasser 50 caractères</span>
+    </div>
+
+    <!-- Libellé rôle -->
+    <ion-item [class.item-has-error]="libelle_role?.invalid && libelle_role?.touched">
+      <ion-label position="stacked">Libellé du rôle *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="libelle_role"
+        placeholder="Administrateur, Staff, Manager...">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="libelle_role?.invalid && libelle_role?.touched">
+      <span *ngIf="libelle_role?.errors?.['required']">Le libellé est requis</span>
+      <span *ngIf="libelle_role?.errors?.['minlength']">Le libellé doit contenir au moins 2 caractères</span>
+      <span *ngIf="libelle_role?.errors?.['maxlength']">Le libellé ne doit pas dépasser 100 caractères</span>
+    </div>
+
+    <!-- Description -->
+    <ion-item [class.item-has-error]="description?.invalid && description?.touched">
+      <ion-label position="stacked">Description</ion-label>
+      <ion-textarea
+        formControlName="description"
+        placeholder="Description du rôle (optionnel)"
+        rows="3">
+      </ion-textarea>
+    </ion-item>
+    <div class="error-message" *ngIf="description?.invalid && description?.touched">
+      <span *ngIf="description?.errors?.['maxlength']">La description ne doit pas dépasser 500 caractères</span>
+    </div>
+
+    <!-- Actif -->
+    <ion-item>
+      <ion-label>Rôle actif</ion-label>
+      <ion-checkbox formControlName="actif" slot="end"></ion-checkbox>
+    </ion-item>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <ion-button
+        type="button"
+        fill="outline"
+        expand="block"
+        (click)="router.navigate(['/parametres/roles'])">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="roleForm.invalid">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+

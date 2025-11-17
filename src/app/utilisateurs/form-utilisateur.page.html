@@ -61,8 +61,8 @@
     <ion-item [class.item-has-error]="role?.invalid && role?.touched">
       <ion-label position="stacked">Rôle *</ion-label>
       <ion-select formControlName="role" placeholder="Sélectionner un rôle">
-        <ion-select-option *ngFor="let roleOption of roles" [value]="roleOption">
-          {{ getRoleLabel(roleOption) }}
+        <ion-select-option *ngFor="let roleOption of roles" [value]="roleOption.code_role">
+          {{ roleOption.libelle_role }}
         </ion-select-option>
       </ion-select>
     </ion-item>

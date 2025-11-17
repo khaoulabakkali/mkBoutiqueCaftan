@@ -62,7 +62,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     // Si l'utilisateur est déjà authentifié, rediriger vers la page d'accueil
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/tabs/tab1']);
+      this.router.navigate(['/tabs']);
     }
   }
 
@@ -70,24 +70,57 @@ export class LoginPage implements OnInit {
     if (this.loginForm.valid) {
       this.isLoading = true;
       
-      // Simuler une authentification
+      // Simuler un délai de connexion
       setTimeout(() => {
-
-        // Utiliser le service d'authentification pour se connecter
-        this.authService.login(this.loginForm.value.login, this.loginForm.value.password);
+        const login = this.loginForm.value.login;
+        const password = this.loginForm.value.password;
         
-        this.isLoading = false;
-        
-        // Récupérer l'URL de retour ou rediriger vers les tabs
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
-        this.router.navigate([returnUrl]);
-      }, 1500);
+        // Authentification locale (sans appel API)
+        // Vous pouvez ajouter une validation simple ici si nécessaire
+        if (login && password) {
+          // Générer un token simple (ou utiliser un token fixe pour le développement)
+          const token = 'local_auth_token_' + Date.now();
+          
+          // Créer les données utilisateur
+          const userData = {
+            id_utilisateur: 1,
+            nom_complet: login.split('@')[0] || 'Utilisateur',
+            login: login,
+            role: 'admin'
+          };
+          
+          // Utiliser la méthode loginWithToken pour authentifier localement
+          this.authService.loginWithToken(token, userData);
+          
+          this.isLoading = false;
+          
+          // Afficher un message de succès
+          this.showToast('Connexion réussie !', 'success');
+          
+          // Récupérer l'URL de retour ou rediriger vers les tabs (page d'accueil)
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs';
+          this.router.navigate([returnUrl]);
+        } else {
+          this.isLoading = false;
+          this.showToast('Veuillez remplir tous les champs', 'danger');
+        }
+      }, 500); // Petit délai pour simuler une connexion
     } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  async showToast(message: string, color: 'success' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      color: color,
+      position: 'top'
+    });
+    await toast.present();
   }
 
   get login() {

@@ -22,7 +22,9 @@ import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { save, arrowBack } from 'ionicons/icons';
 import { UtilisateurService } from '../services/utilisateur.service';
-import { Utilisateur, Role } from '../models/utilisateur.model';
+import { Utilisateur } from '../models/utilisateur.model';
+import { RoleService } from '../services/role.service';
+import { Role as RoleModel } from '../models/role.model';
 
 @Component({
   selector: 'app-form-utilisateur',
@@ -51,11 +53,12 @@ export class FormUtilisateurPage implements OnInit {
   utilisateurForm: FormGroup;
   isEditMode = false;
   utilisateurId?: number;
-  roles = Object.values(Role);
+  roles: RoleModel[] = [];
 
   constructor(
     private formBuilder: FormBuilder,
     private utilisateurService: UtilisateurService,
+    private roleService: RoleService,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
@@ -67,13 +70,15 @@ export class FormUtilisateurPage implements OnInit {
       nom_complet: ['', [Validators.required, Validators.minLength(3)]],
       login: ['', [Validators.required, Validators.email]],
       mot_de_passe: ['', []],
-      role: [Role.STAFF, [Validators.required]],
+      role: ['', [Validators.required]],
       telephone: ['', []],
       actif: [true, [Validators.required]]
     });
   }
 
   ngOnInit() {
+    this.loadRoles();
+    
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
       this.isEditMode = true;
@@ -84,6 +89,21 @@ export class FormUtilisateurPage implements OnInit {
       this.utilisateurForm.get('mot_de_passe')?.setValidators([Validators.required, Validators.minLength(6)]);
       this.utilisateurForm.get('mot_de_passe')?.updateValueAndValidity();
     }
+  }
+
+  loadRoles() {
+    this.roleService.getActiveRoles().subscribe({
+      next: (roles) => {
+        this.roles = roles;
+        // Si aucun rôle n'est sélectionné et qu'il y a des rôles, sélectionner le premier
+        if (!this.utilisateurForm.get('role')?.value && roles.length > 0) {
+          this.utilisateurForm.patchValue({ role: roles[0].code_role });
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des rôles:', error);
+      }
+    });
   }
 
   loadUtilisateur(id: number) {
@@ -127,7 +147,7 @@ export class FormUtilisateurPage implements OnInit {
         nom_complet: formValue.nom_complet,
         login: formValue.login,
         mot_de_passe: formValue.mot_de_passe,
-        role: formValue.role,
+        role: formValue.role as any, // Le rôle est maintenant le code_role (string)
         telephone: formValue.telephone || undefined,
         actif: formValue.actif
       };
@@ -196,17 +216,9 @@ export class FormUtilisateurPage implements OnInit {
     return this.utilisateurForm.get('role');
   }
 
-  getRoleLabel(role: string): string {
-    switch (role) {
-      case 'ADMIN':
-        return 'Administrateur';
-      case 'MANAGER':
-        return 'Manager';
-      case 'STAFF':
-        return 'Staff';
-      default:
-        return role;
-    }
+  getRoleLabel(codeRole: string): string {
+    const role = this.roles.find(r => r.code_role === codeRole);
+    return role ? role.libelle_role : codeRole;
   }
 
   onCancel() {

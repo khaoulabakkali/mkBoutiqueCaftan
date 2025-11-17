@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of, delay } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Utilisateur } from '../models/utilisateur.model';
+import { Utilisateur, Role } from '../models/utilisateur.model';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -11,119 +11,193 @@ import { AuthService } from './auth.service';
 })
 export class UtilisateurService {
   private apiUrl = environment.apiUrl || 'http://localhost:5000/api';
+  private readonly STORAGE_KEY = 'local_utilisateurs';
 
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) {}
-
-  /**
-   * Récupère les options HTTP avec le token d'authentification
-   */
-  private getHttpOptions(): { headers: HttpHeaders } {
-    const token = this.authService.getToken();
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-
-    if (token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
-
-    return { headers };
+  ) {
+    // Initialiser le stockage local avec des données de démonstration si vide
+    this.initializeLocalStorage();
   }
 
   /**
-   * Récupérer tous les utilisateurs
+   * Initialise le stockage local avec des données de démonstration
+   */
+  private initializeLocalStorage(): void {
+    const existing = localStorage.getItem(this.STORAGE_KEY);
+    if (!existing) {
+      const defaultUsers: Utilisateur[] = [
+        {
+          id_utilisateur: 1,
+          nom_complet: 'Admin Principal',
+          login: 'admin@mkboutique.com',
+          role: Role.ADMIN,
+          telephone: '+212 6 12 34 56 78',
+          actif: true,
+          date_creation_compte: new Date().toISOString()
+        },
+        {
+          id_utilisateur: 2,
+          nom_complet: 'Manager Boutique',
+          login: 'manager@mkboutique.com',
+          role: Role.MANAGER,
+          telephone: '+212 6 23 45 67 89',
+          actif: true,
+          date_creation_compte: new Date().toISOString()
+        },
+        {
+          id_utilisateur: 3,
+          nom_complet: 'Staff Vente',
+          login: 'staff@mkboutique.com',
+          role: Role.STAFF,
+          telephone: '+212 6 34 56 78 90',
+          actif: true,
+          date_creation_compte: new Date().toISOString()
+        }
+      ];
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(defaultUsers));
+    }
+  }
+
+  /**
+   * Récupère tous les utilisateurs du stockage local
+   */
+  private getLocalUtilisateurs(): Utilisateur[] {
+    const data = localStorage.getItem(this.STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  }
+
+  /**
+   * Sauvegarde les utilisateurs dans le stockage local
+   */
+  private saveLocalUtilisateurs(utilisateurs: Utilisateur[]): void {
+    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(utilisateurs));
+  }
+
+  /**
+   * Génère un nouvel ID pour un utilisateur
+   */
+  private getNextId(): number {
+    const utilisateurs = this.getLocalUtilisateurs();
+    if (utilisateurs.length === 0) return 1;
+    return Math.max(...utilisateurs.map(u => u.id_utilisateur || 0)) + 1;
+  }
+
+  /**
+   * Récupérer tous les utilisateurs (local)
    */
   getAllUtilisateurs(): Observable<Utilisateur[]> {
-    return this.http.get<Utilisateur[]>(
-      `${this.apiUrl}/utilisateurs`,
-      this.getHttpOptions()
-    ).pipe(
-      catchError(this.handleError<Utilisateur[]>('getAllUtilisateurs', []))
-    );
+    const utilisateurs = this.getLocalUtilisateurs();
+    // Simuler un délai réseau
+    return of(utilisateurs).pipe(delay(300));
   }
 
   /**
-   * Récupérer un utilisateur par ID
+   * Récupérer un utilisateur par ID (local)
    */
   getUtilisateurById(id: number): Observable<Utilisateur> {
-    return this.http.get<Utilisateur>(
-      `${this.apiUrl}/utilisateurs/${id}`,
-      this.getHttpOptions()
-    ).pipe(
-      catchError(this.handleError<Utilisateur>('getUtilisateurById'))
-    );
+    const utilisateurs = this.getLocalUtilisateurs();
+    const utilisateur = utilisateurs.find(u => u.id_utilisateur === id);
+    
+    if (!utilisateur) {
+      return throwError(() => new Error(`Utilisateur avec l'ID ${id} non trouvé`));
+    }
+    
+    // Retourner une copie pour éviter les modifications directes
+    return of({ ...utilisateur }).pipe(delay(200));
   }
 
   /**
-   * Créer un nouvel utilisateur
+   * Créer un nouvel utilisateur (local)
    */
   createUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
-    // Préparer les données pour l'API (exclure mot_de_passe_hash si présent)
-    const { mot_de_passe_hash, ...userData } = utilisateur;
-    const payload = {
-      ...userData,
-      mot_de_passe: utilisateur.mot_de_passe // Le backend devrait hasher le mot de passe
+    const utilisateurs = this.getLocalUtilisateurs();
+    
+    // Vérifier si le login existe déjà
+    if (utilisateurs.some(u => u.login === utilisateur.login)) {
+      return throwError(() => new Error('Un utilisateur avec ce login existe déjà'));
+    }
+    
+    // Créer le nouvel utilisateur
+    const newUtilisateur: Utilisateur = {
+      ...utilisateur,
+      id_utilisateur: this.getNextId(),
+      date_creation_compte: new Date().toISOString(),
+      mot_de_passe: undefined, // Ne pas stocker le mot de passe en clair
+      mot_de_passe_hash: undefined
     };
-
-    return this.http.post<Utilisateur>(
-      `${this.apiUrl}/utilisateurs`,
-      payload,
-      this.getHttpOptions()
-    ).pipe(
-      catchError(this.handleError<Utilisateur>('createUtilisateur'))
-    );
+    
+    utilisateurs.push(newUtilisateur);
+    this.saveLocalUtilisateurs(utilisateurs);
+    
+    return of({ ...newUtilisateur }).pipe(delay(300));
   }
 
   /**
-   * Mettre à jour un utilisateur
+   * Mettre à jour un utilisateur (local)
    */
   updateUtilisateur(id: number, utilisateur: Utilisateur): Observable<Utilisateur> {
-    // Préparer les données pour l'API
-    const { mot_de_passe_hash, id_utilisateur, ...userData } = utilisateur;
-    const payload: any = { ...userData };
+    const utilisateurs = this.getLocalUtilisateurs();
+    const index = utilisateurs.findIndex(u => u.id_utilisateur === id);
     
-    // Inclure le mot de passe seulement s'il est fourni
-    if (utilisateur.mot_de_passe) {
-      payload.mot_de_passe = utilisateur.mot_de_passe;
+    if (index === -1) {
+      return throwError(() => new Error(`Utilisateur avec l'ID ${id} non trouvé`));
     }
-
-    return this.http.put<Utilisateur>(
-      `${this.apiUrl}/utilisateurs/${id}`,
-      payload,
-      this.getHttpOptions()
-    ).pipe(
-      catchError(this.handleError<Utilisateur>('updateUtilisateur'))
-    );
+    
+    // Vérifier si le login existe déjà pour un autre utilisateur
+    const existingUser = utilisateurs.find(u => u.login === utilisateur.login && u.id_utilisateur !== id);
+    if (existingUser) {
+      return throwError(() => new Error('Un utilisateur avec ce login existe déjà'));
+    }
+    
+    // Mettre à jour l'utilisateur
+    const updatedUtilisateur: Utilisateur = {
+      ...utilisateurs[index],
+      ...utilisateur,
+      id_utilisateur: id, // S'assurer que l'ID ne change pas
+      mot_de_passe: undefined, // Ne pas stocker le mot de passe en clair
+      mot_de_passe_hash: undefined
+    };
+    
+    utilisateurs[index] = updatedUtilisateur;
+    this.saveLocalUtilisateurs(utilisateurs);
+    
+    return of({ ...updatedUtilisateur }).pipe(delay(300));
   }
 
   /**
-   * Supprimer un utilisateur
+   * Supprimer un utilisateur (local)
    */
   deleteUtilisateur(id: number): Observable<boolean> {
-    return this.http.delete<{ success: boolean }>(
-      `${this.apiUrl}/utilisateurs/${id}`,
-      this.getHttpOptions()
-    ).pipe(
-      map(() => true),
-      catchError(this.handleError<boolean>('deleteUtilisateur', false))
-    );
+    const utilisateurs = this.getLocalUtilisateurs();
+    const index = utilisateurs.findIndex(u => u.id_utilisateur === id);
+    
+    if (index === -1) {
+      return throwError(() => new Error(`Utilisateur avec l'ID ${id} non trouvé`));
+    }
+    
+    utilisateurs.splice(index, 1);
+    this.saveLocalUtilisateurs(utilisateurs);
+    
+    return of(true).pipe(delay(300));
   }
 
   /**
-   * Désactiver/Activer un utilisateur
+   * Désactiver/Activer un utilisateur (local)
    */
   toggleActif(id: number, actif: boolean): Observable<boolean> {
-    return this.http.patch<{ success: boolean }>(
-      `${this.apiUrl}/utilisateurs/${id}/actif`,
-      { actif },
-      this.getHttpOptions()
-    ).pipe(
-      map(() => true),
-      catchError(this.handleError<boolean>('toggleActif', false))
-    );
+    const utilisateurs = this.getLocalUtilisateurs();
+    const utilisateur = utilisateurs.find(u => u.id_utilisateur === id);
+    
+    if (!utilisateur) {
+      return throwError(() => new Error(`Utilisateur avec l'ID ${id} non trouvé`));
+    }
+    
+    utilisateur.actif = actif;
+    this.saveLocalUtilisateurs(utilisateurs);
+    
+    return of(true).pipe(delay(200));
   }
 
   /**
