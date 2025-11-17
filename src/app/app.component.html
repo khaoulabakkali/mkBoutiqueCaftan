@@ -28,6 +28,32 @@
             <ion-icon name="people" slot="start"></ion-icon>
             <ion-label>Utilisateurs</ion-label>
           </ion-item>
+          <ion-item 
+            button 
+            (click)="toggleParametres($event)"
+            [class.menu-item-active]="isRouteActive('/parametres')"
+            [detail]="false">
+            <ion-icon name="settings" slot="start"></ion-icon>
+            <ion-label>Paramètres</ion-label>
+            <ion-icon 
+              [name]="parametresExpanded ? 'chevron-up' : 'chevron-down'" 
+              slot="end">
+            </ion-icon>
+          </ion-item>
+          
+          <!-- Sous-menu Paramètres -->
+          <ng-container *ngIf="parametresExpanded">
+            <ion-item 
+              button 
+              routerLink="/parametres/roles" 
+              routerDirection="root"
+              [class.menu-item-active]="isRouteActive('/parametres/roles')"
+              routerLinkActive="menu-item-active"
+              class="submenu-item">
+              <ion-icon name="shield-checkmark" slot="start"></ion-icon>
+              <ion-label>Rôles</ion-label>
+            </ion-item>
+          </ng-container>
           <ion-item button (click)="logout()">
             <ion-icon name="log-out" slot="start"></ion-icon>
             <ion-label>Déconnexion</ion-label>

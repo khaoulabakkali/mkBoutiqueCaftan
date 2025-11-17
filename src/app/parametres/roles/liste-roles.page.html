@@ -1,0 +1,76 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gestion des Rôles</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addNewRole()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Rôles</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher un rôle..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Liste des rôles -->
+  <ion-list *ngIf="rolesFiltres.length > 0">
+    <ion-item *ngFor="let role of rolesFiltres" [button]="true">
+      <ion-label>
+        <h2>
+          <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" 
+                    [color]="role.actif ? 'success' : 'danger'"
+                    style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+          {{ role.libelle_role }}
+        </h2>
+        <div class="badges-container">
+          <ion-badge [color]="role.actif ? 'success' : 'danger'">
+            <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+            {{ role.actif ? 'Actif' : 'Inactif' }}
+          </ion-badge>
+        </div>
+      </ion-label>
+      <div slot="end" class="actions-container">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="editRole(role)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          color="danger"
+          (click)="deleteRole(role)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          [color]="role.actif ? 'warning' : 'success'"
+          (click)="toggleActif(role)">
+          <ion-icon [name]="role.actif ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="rolesFiltres.length === 0" class="empty-state">
+    <ion-icon name="shield-outline"></ion-icon>
+    <p>Aucun rôle trouvé</p>
+  </div>
+</ion-content>
+

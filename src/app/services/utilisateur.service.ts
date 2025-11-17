@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, throwError, of, delay } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Utilisateur } from '../models/utilisateur.model';
+import { Utilisateur, Role } from '../models/utilisateur.model';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 })
 export class UtilisateurService {
   private apiUrl = environment.apiUrl || 'http://localhost:5000/api';
+  private readonly STORAGE_KEY = 'local_utilisateurs';
 
   constructor(
     private http: HttpClient,

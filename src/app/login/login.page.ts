@@ -62,7 +62,7 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     // Si l'utilisateur est déjà authentifié, rediriger vers la page d'accueil
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/tabs/tab1']);
+      this.router.navigate(['/tabs']);
     }
   }
 
@@ -70,7 +70,7 @@ export class LoginPage implements OnInit {
     if (this.loginForm.valid) {
       this.isLoading = true;
       
-      // Simuler une authentification
+      // Simuler un délai de connexion
       setTimeout(() => {
 
         // Utiliser le service d'authentification pour se connecter
@@ -88,6 +88,16 @@ export class LoginPage implements OnInit {
         this.loginForm.get(key)?.markAsTouched();
       });
     }
+  }
+
+  async showToast(message: string, color: 'success' | 'danger' = 'success') {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      color: color,
+      position: 'top'
+    });
+    await toast.present();
   }
 
   get login() {

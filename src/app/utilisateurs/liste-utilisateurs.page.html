@@ -29,14 +29,19 @@
   <ion-list *ngIf="utilisateursFiltres.length > 0">
     <ion-item *ngFor="let utilisateur of utilisateursFiltres" [button]="true">
       <ion-label>
-        <h2>{{ utilisateur.nom_complet }}</h2>
-        <p>{{ utilisateur.login }}</p>
-        <p *ngIf="utilisateur.telephone">{{ utilisateur.telephone }}</p>
+        <h2>
+          <ion-icon [name]="utilisateur.actif ? 'checkmark-circle' : 'close-circle'" 
+                    [color]="utilisateur.actif ? 'success' : 'danger'"
+                    style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+          {{ utilisateur.nom_complet }}
+        </h2>
         <div class="badges-container">
           <ion-badge [color]="getRoleColor(utilisateur.role)">
+            <ion-icon [name]="getRoleIcon(utilisateur.role)" style="margin-right: 4px;"></ion-icon>
             {{ getRoleLabel(utilisateur.role) }}
           </ion-badge>
           <ion-badge [color]="utilisateur.actif ? 'success' : 'danger'">
+            <ion-icon [name]="utilisateur.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
             {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
           </ion-badge>
         </div>

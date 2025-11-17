@@ -29,22 +29,17 @@ import {
   eyeOff, 
   eye, 
   search, 
-  peopleOutline,
-  shieldCheckmark,
-  briefcase,
-  person,
+  shieldOutline,
   checkmarkCircle,
   closeCircle
 } from 'ionicons/icons';
-import { UtilisateurService } from '../services/utilisateur.service';
-import { Utilisateur } from '../models/utilisateur.model';
-import { RoleService } from '../services/role.service';
-import { Role as RoleModel } from '../models/role.model';
+import { RoleService } from '../../services/role.service';
+import { Role } from '../../models/role.model';
 
 @Component({
-  selector: 'app-liste-utilisateurs',
-  templateUrl: 'liste-utilisateurs.page.html',
-  styleUrls: ['liste-utilisateurs.page.scss'],
+  selector: 'app-liste-roles',
+  templateUrl: 'liste-roles.page.html',
+  styleUrls: ['liste-roles.page.scss'],
   standalone: true,
   imports: [
     IonHeader,
@@ -64,14 +59,12 @@ import { Role as RoleModel } from '../models/role.model';
     FormsModule
   ],
 })
-export class ListeUtilisateursPage implements OnInit {
-  utilisateurs: Utilisateur[] = [];
-  utilisateursFiltres: Utilisateur[] = [];
+export class ListeRolesPage implements OnInit {
+  roles: Role[] = [];
+  rolesFiltres: Role[] = [];
   searchTerm: string = '';
-  roles: RoleModel[] = [];
 
   constructor(
-    private utilisateurService: UtilisateurService,
     private roleService: RoleService,
     private router: Router,
     private alertController: AlertController,
@@ -85,10 +78,7 @@ export class ListeUtilisateursPage implements OnInit {
       eyeOff, 
       eye, 
       search, 
-      peopleOutline,
-      shieldCheckmark,
-      briefcase,
-      person,
+      shieldOutline,
       checkmarkCircle,
       closeCircle
     });
@@ -96,36 +86,24 @@ export class ListeUtilisateursPage implements OnInit {
 
   ngOnInit() {
     this.loadRoles();
-    this.loadUtilisateurs();
   }
 
-  loadRoles() {
-    this.roleService.getAllRoles().subscribe({
-      next: (roles) => {
-        this.roles = roles;
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des rôles:', error);
-      }
-    });
-  }
-
-  async loadUtilisateurs() {
+  async loadRoles() {
     const loading = await this.loadingController.create({
       message: 'Chargement...'
     });
     await loading.present();
 
-    this.utilisateurService.getAllUtilisateurs().subscribe({
+    this.roleService.getAllRoles().subscribe({
       next: (data) => {
-        this.utilisateurs = data;
-        this.utilisateursFiltres = data;
+        this.roles = data;
+        this.rolesFiltres = data;
         loading.dismiss();
       },
       error: (error) => {
         console.error('Erreur lors du chargement:', error);
         loading.dismiss();
-        const errorMessage = error?.message || 'Erreur lors du chargement des utilisateurs';
+        const errorMessage = error?.message || 'Erreur lors du chargement des rôles';
         this.presentToast(errorMessage, 'danger');
       }
     });
@@ -133,64 +111,32 @@ export class ListeUtilisateursPage implements OnInit {
 
   onSearchChange(event: any) {
     this.searchTerm = event.detail.value || '';
-    this.filterUtilisateurs();
+    this.filterRoles();
   }
 
-  filterUtilisateurs() {
+  filterRoles() {
     if (!this.searchTerm.trim()) {
-      this.utilisateursFiltres = this.utilisateurs;
+      this.rolesFiltres = this.roles;
       return;
     }
 
     const term = this.searchTerm.toLowerCase();
-    this.utilisateursFiltres = this.utilisateurs.filter(
-      (user) =>
-        user.nom_complet.toLowerCase().includes(term) ||
-        user.login.toLowerCase().includes(term) ||
-        user.telephone?.toLowerCase().includes(term) ||
-        user.role.toLowerCase().includes(term)
+    this.rolesFiltres = this.roles.filter(
+      (role) =>
+        role.code_role.toLowerCase().includes(term) ||
+        role.libelle_role.toLowerCase().includes(term) ||
+        role.description?.toLowerCase().includes(term)
     );
   }
 
-  getRoleColor(role: string): string {
-    switch (role) {
-      case 'ADMIN':
-        return 'danger';
-      case 'MANAGER':
-        return 'warning';
-      case 'STAFF':
-        return 'success';
-      default:
-        return 'medium';
-    }
+  async editRole(role: Role) {
+    this.router.navigate(['/parametres/roles/edit', role.id_role]);
   }
 
-  getRoleLabel(codeRole: string): string {
-    const role = this.roles.find(r => r.code_role === codeRole);
-    return role ? role.libelle_role : codeRole;
-  }
-
-  getRoleIcon(role: string): string {
-    switch (role) {
-      case 'ADMIN':
-        return 'shield-checkmark';
-      case 'MANAGER':
-        return 'briefcase';
-      case 'STAFF':
-        return 'person';
-      default:
-        return 'person';
-    }
-  }
-
-  async editUtilisateur(utilisateur: Utilisateur) {
-    this.router.navigate(['/utilisateurs/edit', utilisateur.id_utilisateur]);
-  }
-
-  async deleteUtilisateur(utilisateur: Utilisateur) {
+  async deleteRole(role: Role) {
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${utilisateur.nom_complet}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer le rôle "${role.libelle_role}" ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -205,11 +151,14 @@ export class ListeUtilisateursPage implements OnInit {
             });
             await loading.present();
 
-            this.utilisateurService.deleteUtilisateur(utilisateur.id_utilisateur!).subscribe({
+            this.roleService.deleteRole(role.id_role!).subscribe({
               next: () => {
                 loading.dismiss();
-                this.presentToast('Utilisateur supprimé avec succès', 'success');
-                this.loadUtilisateurs();
+                this.presentToast('Rôle supprimé avec succès', 'success');
+                // Retirer le rôle de la liste localement pour une mise à jour immédiate
+                this.roles = this.roles.filter(r => r.id_role !== role.id_role);
+                // Réappliquer le filtre si nécessaire
+                this.filterRoles();
               },
               error: (error) => {
                 loading.dismiss();
@@ -225,19 +174,19 @@ export class ListeUtilisateursPage implements OnInit {
     await alert.present();
   }
 
-  async toggleActif(utilisateur: Utilisateur) {
-    const newActif = !utilisateur.actif;
+  async toggleActif(role: Role) {
+    const newActif = !role.actif;
     const loading = await this.loadingController.create({
       message: newActif ? 'Activation...' : 'Désactivation...'
     });
     await loading.present();
 
-    this.utilisateurService.toggleActif(utilisateur.id_utilisateur!, newActif).subscribe({
+    this.roleService.toggleActif(role.id_role!, newActif).subscribe({
       next: () => {
-        utilisateur.actif = newActif;
+        role.actif = newActif;
         loading.dismiss();
         this.presentToast(
-          `Utilisateur ${newActif ? 'activé' : 'désactivé'} avec succès`,
+          `Rôle ${newActif ? 'activé' : 'désactivé'} avec succès`,
           'success'
         );
       },
@@ -259,8 +208,8 @@ export class ListeUtilisateursPage implements OnInit {
     await toast.present();
   }
 
-  addNewUtilisateur() {
-    this.router.navigate(['/utilisateurs/new']);
+  addNewRole() {
+    this.router.navigate(['/parametres/roles/new']);
   }
 }
 
