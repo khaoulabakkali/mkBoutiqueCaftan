@@ -29,8 +29,11 @@ export interface Utilisateur {
   /** VARCHAR(100) - Nom complet de l'utilisateur */
   nom_complet: string;
   
-  /** VARCHAR(50) - Identifiant de connexion (email ou username) */
+  /** VARCHAR(50) - Identifiant de connexion (username) */
   login: string;
+  
+  /** VARCHAR(100) - Adresse email de l'utilisateur */
+  email?: string;
   
   /** VARCHAR(255) - Hash du mot de passe (stocké en base) */
   mot_de_passe_hash?: string;

@@ -68,7 +68,8 @@ export class FormUtilisateurPage implements OnInit {
     
     this.utilisateurForm = this.formBuilder.group({
       nom_complet: ['', [Validators.required, Validators.minLength(3)]],
-      login: ['', [Validators.required, Validators.email]],
+      login: ['', [Validators.required, Validators.minLength(3)]],
+      email: ['', [Validators.required, Validators.email]],
       mot_de_passe: ['', []],
       role: ['', [Validators.required]],
       telephone: ['', []],
@@ -117,6 +118,7 @@ export class FormUtilisateurPage implements OnInit {
         this.utilisateurForm.patchValue({
           nom_complet: utilisateur.nom_complet,
           login: utilisateur.login,
+          email: utilisateur.email || utilisateur.login, // Fallback sur login si email n'existe pas
           role: utilisateur.role,
           telephone: utilisateur.telephone || '',
           actif: utilisateur.actif
@@ -145,6 +147,7 @@ export class FormUtilisateurPage implements OnInit {
       const utilisateur: Utilisateur = {
         nom_complet: formValue.nom_complet,
         login: formValue.login,
+        email: formValue.email || undefined,
         mot_de_passe: formValue.mot_de_passe,
         role: formValue.role as any, // Le rôle est maintenant le code_role (string)
         telephone: formValue.telephone || undefined,
@@ -205,6 +208,10 @@ export class FormUtilisateurPage implements OnInit {
 
   get login() {
     return this.utilisateurForm.get('login');
+  }
+
+  get email() {
+    return this.utilisateurForm.get('email');
   }
 
   get mot_de_passe() {

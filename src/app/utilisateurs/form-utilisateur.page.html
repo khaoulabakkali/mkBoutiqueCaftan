@@ -27,18 +27,32 @@
       <span *ngIf="nom_complet?.errors?.['minlength']">Le nom doit contenir au moins 3 caractères</span>
     </div>
 
-    <!-- Login (Email) -->
+    <!-- Identifiant (Login) -->
     <ion-item [class.item-has-error]="login?.invalid && login?.touched">
-      <ion-label position="stacked">Email (Login) *</ion-label>
+      <ion-label position="stacked">Identifiant *</ion-label>
       <ion-input
-        type="email"
+        type="text"
         formControlName="login"
-        placeholder="email@exemple.com">
+        placeholder="username">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="login?.invalid && login?.touched">
-      <span *ngIf="login?.errors?.['required']">L'email est requis</span>
-      <span *ngIf="login?.errors?.['email']">Format d'email invalide</span>
+      <span *ngIf="login?.errors?.['required']">L'identifiant est requis</span>
+      <span *ngIf="login?.errors?.['minlength']">L'identifiant doit contenir au moins 3 caractères</span>
+    </div>
+
+    <!-- Email -->
+    <ion-item [class.item-has-error]="email?.invalid && email?.touched">
+      <ion-label position="stacked">Email *</ion-label>
+      <ion-input
+        type="email"
+        formControlName="email"
+        placeholder="email@exemple.com">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="email?.invalid && email?.touched">
+      <span *ngIf="email?.errors?.['required']">L'email est requis</span>
+      <span *ngIf="email?.errors?.['email']">Format d'email invalide</span>
     </div>
 
     <!-- Mot de passe -->
