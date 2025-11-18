@@ -22,6 +22,31 @@ export enum Role {
  * - actif: BOOLEAN
  * - date_creation_compte: DATETIME
  */
+
+export interface CreateUserRequest {
+  
+  /** VARCHAR(100) - Nom complet de l'utilisateur */
+  nomComplet: string;
+  
+  /** VARCHAR(50) - Identifiant de connexion (username) */
+  login: string;
+  
+  /** VARCHAR(100) - Adresse email de l'utilisateur */
+  email?: string;
+
+  /** Champ temporaire pour le formulaire uniquement (non stocké en base) */
+  password?: string;
+  
+  /** VARCHAR(50) - Code du rôle (ex: ADMIN, STAFF, MANAGER) - Référence à la table roles */
+  idRole: number;
+  
+  /** VARCHAR(20) - Numéro de téléphone (optionnel) */
+  telephone?: string;
+  
+  /** BOOLEAN - Statut actif/inactif de l'utilisateur */
+  actif: boolean;
+  
+}
 export interface Utilisateur {
   /** INTEGER - Clé primaire, auto-increment */
   idUtilisateur?: number;
@@ -39,7 +64,7 @@ export interface Utilisateur {
   mot_de_passe_hash?: string;
   
   /** Champ temporaire pour le formulaire uniquement (non stocké en base) */
-  mot_de_passe?: string;
+  password?: string;
   
   /** VARCHAR(50) - Code du rôle (ex: ADMIN, STAFF, MANAGER) - Référence à la table roles */
   role: Role | string;

@@ -63,11 +63,15 @@ export class UtilisateurService {
    */
   createUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
     // Préparer les données pour l'API (exclure mot_de_passe_hash si présent)
-    const { mot_de_passe_hash, ...userData } = utilisateur;
-    const payload = {
-      ...userData,
-      mot_de_passe: utilisateur.mot_de_passe // Le backend devrait hasher le mot de passe
+    const { mot_de_passe_hash, password, ...userData } = utilisateur;
+    const payload: any = {
+      ...userData
     };
+    
+    // Inclure le mot de passe seulement s'il est fourni
+    if (password) {
+      payload.mot_de_passe = password; // Le backend devrait hasher le mot de passe
+    }
 
     return this.http.post<Utilisateur>(
       `${this.apiUrl}/users`,
@@ -83,12 +87,12 @@ export class UtilisateurService {
    */
   updateUtilisateur(id: number, utilisateur: Utilisateur): Observable<Utilisateur> {
     // Préparer les données pour l'API
-    const { mot_de_passe_hash, idUtilisateur, ...userData } = utilisateur;
+    const { mot_de_passe_hash, idUtilisateur, password, ...userData } = utilisateur;
     const payload: any = { ...userData };
     
     // Inclure le mot de passe seulement s'il est fourni
-    if (utilisateur.mot_de_passe) {
-      payload.mot_de_passe = utilisateur.mot_de_passe;
+    if (password) {
+      payload.mot_de_passe = password; // Le backend devrait hasher le mot de passe
     }
 
     return this.http.put<Utilisateur>(

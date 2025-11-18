@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { save, arrowBack } from 'ionicons/icons';
 import { UtilisateurService } from '../services/utilisateur.service';
-import { Utilisateur } from '../models/utilisateur.model';
+import { Utilisateur, CreateUserRequest } from '../models/utilisateur.model';
 import { RoleService } from '../services/role.service';
 import { Role as RoleModel } from '../models/role.model';
 
@@ -70,7 +70,7 @@ export class FormUtilisateurPage implements OnInit {
       nomComplet: ['', [Validators.required, Validators.minLength(3)]],
       login: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      mot_de_passe: ['', []],
+      password: ['', []],
       role: ['', [Validators.required]],
       telephone: ['', []],
       actif: [true, [Validators.required]]
@@ -87,8 +87,8 @@ export class FormUtilisateurPage implements OnInit {
       this.loadUtilisateur(this.utilisateurId);
     } else {
       // Mode création - le mot de passe est requis
-      this.utilisateurForm.get('mot_de_passe')?.setValidators([Validators.required, Validators.minLength(6)]);
-      this.utilisateurForm.get('mot_de_passe')?.updateValueAndValidity();
+      this.utilisateurForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
+      this.utilisateurForm.get('password')?.updateValueAndValidity();
     }
   }
 
@@ -124,8 +124,8 @@ export class FormUtilisateurPage implements OnInit {
           actif: utilisateur.actif
         });
         // En mode édition, le mot de passe n'est pas requis
-        this.utilisateurForm.get('mot_de_passe')?.clearValidators();
-        this.utilisateurForm.get('mot_de_passe')?.updateValueAndValidity();
+        this.utilisateurForm.get('password')?.clearValidators();
+        this.utilisateurForm.get('password')?.updateValueAndValidity();
         loading.then(l => l.dismiss());
       },
       error: (error) => {
@@ -144,12 +144,12 @@ export class FormUtilisateurPage implements OnInit {
       await loading.present();
 
       const formValue = this.utilisateurForm.value;
-      const utilisateur: Utilisateur = {
+      const utilisateur: CreateUserRequest = {
         nomComplet: formValue.nomComplet,
         login: formValue.login,
         email: formValue.email || undefined,
-        mot_de_passe: formValue.mot_de_passe,
-        role: formValue.role as any,
+        password: formValue.password,
+        idRole: formValue.role as any,
         telephone: formValue.telephone || undefined,
         actif: formValue.actif
       };
@@ -214,8 +214,8 @@ export class FormUtilisateurPage implements OnInit {
     return this.utilisateurForm.get('email');
   }
 
-  get mot_de_passe() {
-    return this.utilisateurForm.get('mot_de_passe');
+  get password() {
+    return this.utilisateurForm.get('password');
   }
 
   get role() {

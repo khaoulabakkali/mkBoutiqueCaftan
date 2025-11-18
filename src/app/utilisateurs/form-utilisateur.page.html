@@ -50,19 +50,19 @@
     </div>
 
     <!-- Mot de passe -->
-    <ion-item [class.item-has-error]="mot_de_passe?.invalid && mot_de_passe?.touched">
+    <ion-item [class.item-has-error]="password?.invalid && password?.touched">
       <ion-label position="stacked">
         Mot de passe {{ isEditMode ? '(laisser vide pour ne pas changer)' : '*' }}
       </ion-label>
       <ion-input
         type="password"
-        formControlName="mot_de_passe"
+        formControlName="password"
         placeholder="••••••••">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="mot_de_passe?.invalid && mot_de_passe?.touched">
-      <span *ngIf="mot_de_passe?.errors?.['required']">Le mot de passe est requis</span>
-      <span *ngIf="mot_de_passe?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+    <div class="error-message" *ngIf="password?.invalid && password?.touched">
+      <span *ngIf="password?.errors?.['required']">Le mot de passe est requis</span>
+      <span *ngIf="password?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
     </div>
 
     <!-- Rôle -->
