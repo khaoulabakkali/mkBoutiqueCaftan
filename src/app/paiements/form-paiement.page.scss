@@ -1,0 +1,18 @@
+.error-message {
+  color: var(--ion-color-danger);
+  font-size: 0.875rem;
+  padding: 0 1rem;
+  margin-top: 0.25rem;
+}
+
+.item-has-error {
+  --border-color: var(--ion-color-danger);
+}
+
+.form-actions {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+

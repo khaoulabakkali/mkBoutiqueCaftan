@@ -127,6 +127,21 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'paiements',
+    loadComponent: () => import('./paiements/liste-paiements.page').then((m) => m.ListePaiementsPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'paiements/new',
+    loadComponent: () => import('./paiements/form-paiement.page').then((m) => m.FormPaiementPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'paiements/edit/:id',
+    loadComponent: () => import('./paiements/form-paiement.page').then((m) => m.FormPaiementPage),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: '/login',
     pathMatch: 'full',
