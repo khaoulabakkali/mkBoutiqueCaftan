@@ -43,9 +43,15 @@ export class AuthService {
 
   /**
    * Vérifie si l'utilisateur est actuellement authentifié
+   * Vérifie toujours le localStorage pour garantir la persistance après rafraîchissement
    */
   isAuthenticated(): boolean {
-    return this.isAuthenticatedSubject.value;
+    const isAuth = this.checkAuthStatus();
+    // Synchroniser le BehaviorSubject avec l'état réel du localStorage
+    if (isAuth !== this.isAuthenticatedSubject.value) {
+      this.isAuthenticatedSubject.next(isAuth);
+    }
+    return isAuth;
   }
 
   /**
