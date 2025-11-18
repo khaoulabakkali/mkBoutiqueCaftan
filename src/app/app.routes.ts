@@ -117,6 +117,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'parametres/tailles/detail/:id',
+    loadComponent: () => import('./parametres/tailles/detail-taille.page').then((m) => m.DetailTaillePage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'parametres/categories',
     loadComponent: () => import('./parametres/categories/liste-categories.page').then((m) => m.ListeCategoriesPage),
     canActivate: [authGuard],

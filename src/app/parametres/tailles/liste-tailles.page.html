@@ -21,12 +21,12 @@
 
   <!-- Liste des tailles -->
   <ion-list *ngIf="taillesFiltres.length > 0">
-    <ion-item *ngFor="let taille of taillesFiltres" [button]="true">
+    <ion-item *ngFor="let taille of taillesFiltres" [button]="true" (click)="viewTaille(taille)">
       <ion-icon name="resize" slot="start" color="primary"></ion-icon>
       <ion-label>
         <h2>{{ taille.taille }}</h2>
       </ion-label>
-      <div slot="end" class="actions-container">
+      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
         <ion-button
           fill="clear"
           size="small"

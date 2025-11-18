@@ -141,8 +141,16 @@ export class ListeTaillesPage implements OnInit {
     );
   }
 
+  viewTaille(taille: Taille) {
+    if (taille.idTaille) {
+      this.router.navigate(['/parametres/tailles/detail', taille.idTaille]);
+    }
+  }
+
   async editTaille(taille: Taille) {
-    this.router.navigate(['/parametres/tailles/edit', taille.idTaille]);
+    if (taille.idTaille) {
+      this.router.navigate(['/parametres/tailles/edit', taille.idTaille]);
+    }
   }
 
   async deleteTaille(taille: Taille) {
