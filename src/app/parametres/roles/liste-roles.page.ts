@@ -64,6 +64,7 @@ export class ListeRolesPage implements OnInit {
   roles: Role[] = [];
   rolesFiltres: Role[] = [];
   searchTerm: string = '';
+  private isLoadingData = false;
 
   constructor(
     private roleService: RoleService,
@@ -89,23 +90,44 @@ export class ListeRolesPage implements OnInit {
     this.loadRoles();
   }
 
-  async loadRoles() {
-    const loading = await this.loadingController.create({
+  ionViewWillEnter() {
+    // Recharger les données chaque fois que la page est sur le point d'être affichée
+    // Cela garantit que les modifications effectuées ailleurs sont reflétées
+    // Ne pas afficher le loading si on revient juste de la modification
+    this.loadRoles(false);
+  }
+
+  async loadRoles(showLoading = true) {
+    if (this.isLoadingData) return;
+    
+    this.isLoadingData = true;
+    const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
-    });
-    await loading.present();
+    }) : null;
+    
+    if (loading) {
+      await loading.present();
+    }
 
     this.roleService.getAllRoles().subscribe({
       next: (data) => {
         this.roles = data;
         this.rolesFiltres = data;
-        loading.dismiss();
+        if (loading) {
+          loading.dismiss();
+        }
+        this.isLoadingData = false;
       },
       error: (error) => {
+        if (loading) {
+          loading.dismiss();
+        }
+        this.roles = [];
+        this.rolesFiltres = [];
+        this.isLoadingData = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }
-        loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des rôles';
         this.presentToast(errorMessage, 'danger');
       }
