@@ -1,0 +1,52 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Taille</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Taille</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="tailleForm" (ngSubmit)="onSubmit()">
+    <!-- Taille -->
+    <ion-item [class.item-has-error]="taille?.invalid && taille?.touched">
+      <ion-label position="stacked">Taille *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="taille"
+        placeholder="XS, S, M, L, XL, XXL..."
+        maxlength="20">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="taille?.invalid && taille?.touched">
+      <span *ngIf="taille?.errors?.['required']">La taille est requise</span>
+      <span *ngIf="taille?.errors?.['minlength']">La taille doit contenir au moins 1 caractère</span>
+      <span *ngIf="taille?.errors?.['maxlength']">La taille ne doit pas dépasser 20 caractères</span>
+    </div>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <ion-button
+        type="button"
+        fill="outline"
+        expand="block"
+        (click)="router.navigate(['/parametres/tailles'])">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="tailleForm.invalid">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+

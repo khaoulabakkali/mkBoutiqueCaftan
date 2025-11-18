@@ -1,0 +1,80 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Catégorie</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Catégorie</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()">
+    <!-- Nom catégorie -->
+    <ion-item [class.item-has-error]="nom_categorie?.invalid && nom_categorie?.touched">
+      <ion-label position="stacked">Nom de la catégorie *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="nom_categorie"
+        placeholder="Caftans, Tekchitas, Sacs..."
+        maxlength="50">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="nom_categorie?.invalid && nom_categorie?.touched">
+      <span *ngIf="nom_categorie?.errors?.['required']">Le nom est requis</span>
+      <span *ngIf="nom_categorie?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+      <span *ngIf="nom_categorie?.errors?.['maxlength']">Le nom ne doit pas dépasser 50 caractères</span>
+    </div>
+
+    <!-- Description -->
+    <ion-item [class.item-has-error]="description?.invalid && description?.touched">
+      <ion-label position="stacked">Description</ion-label>
+      <ion-textarea
+        formControlName="description"
+        placeholder="Description optionnelle de ce que contient la catégorie"
+        rows="3"
+        maxlength="500">
+      </ion-textarea>
+    </ion-item>
+    <div class="error-message" *ngIf="description?.invalid && description?.touched">
+      <span *ngIf="description?.errors?.['maxlength']">La description ne doit pas dépasser 500 caractères</span>
+    </div>
+
+    <!-- Ordre d'affichage -->
+    <ion-item [class.item-has-error]="ordre_affichage?.invalid && ordre_affichage?.touched">
+      <ion-label position="stacked">Ordre d'affichage</ion-label>
+      <ion-input
+        type="number"
+        formControlName="ordre_affichage"
+        placeholder="1, 2, 3..."
+        min="0">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="ordre_affichage?.invalid && ordre_affichage?.touched">
+      <span *ngIf="ordre_affichage?.errors?.['min']">L'ordre ne peut pas être négatif</span>
+    </div>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <ion-button
+        type="button"
+        fill="outline"
+        expand="block"
+        (click)="router.navigate(['/parametres/categories'])">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="categorieForm.invalid">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+

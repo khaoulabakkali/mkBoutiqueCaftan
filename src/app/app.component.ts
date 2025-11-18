@@ -3,7 +3,7 @@ import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonC
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { home, grid, settings, logOut, people, person, chevronDown, chevronUp, shieldCheckmark } from 'ionicons/icons';
+import { home, grid, settings, logOut, people, person, chevronDown, chevronUp, shieldCheckmark, resize } from 'ionicons/icons';
 import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs/operators';
 
@@ -37,7 +37,7 @@ export class AppComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    addIcons({ home, grid, settings, logOut, people, person, chevronDown, chevronUp, shieldCheckmark });
+    addIcons({ home, grid, settings, logOut, people, person, chevronDown, chevronUp, shieldCheckmark, resize });
     
     // Initialiser l'URL actuelle
     this.currentUrl = this.router.url;
