@@ -6,12 +6,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvel' }} Article</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
     <!-- Nom article -->
     <ion-item [class.item-has-error]="nom_article?.invalid && nom_article?.touched">

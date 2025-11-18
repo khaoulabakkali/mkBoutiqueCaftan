@@ -6,12 +6,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Réservation</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
     <!-- Client -->
     <ion-item [class.item-has-error]="id_client?.invalid && id_client?.touched" button (click)="openClientModal()">
