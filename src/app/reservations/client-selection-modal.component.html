@@ -1,0 +1,49 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Sélectionner un client</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    [ngModelOptions]="{standalone: true}"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher par nom, prénom ou téléphone..."
+    debounce="200">
+  </ion-searchbar>
+
+  <!-- Bouton Nouveau client -->
+  <div style="padding: 0.5rem 1rem;">
+    <ion-button expand="block" (click)="addNewClient()">
+      <ion-icon name="add" slot="start"></ion-icon>
+      Nouveau client
+    </ion-button>
+  </div>
+
+  <!-- Liste des clients -->
+  <ion-list *ngIf="clientsFiltres.length > 0">
+    <ion-item 
+      *ngFor="let client of clientsFiltres" 
+      button 
+      (click)="selectClient(client.id_client!)">
+      <ion-icon name="person" slot="start" color="primary"></ion-icon>
+      <ion-label>
+        <h2>{{ getClientName(client) }}</h2>
+        <p>{{ client.telephone }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="clientsFiltres.length === 0" class="empty-state">
+    <p>Aucun client trouvé</p>
+  </div>
+</ion-content>
+

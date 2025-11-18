@@ -47,6 +47,7 @@ export class FormClientPage implements OnInit {
   clientForm: FormGroup;
   isEditMode = false;
   clientId?: number;
+  returnTo?: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -74,6 +75,18 @@ export class FormClientPage implements OnInit {
       this.isEditMode = true;
       this.clientId = +id;
       this.loadClient();
+    }
+    
+    // Vérifier si on vient d'une autre page (ex: formulaire de réservation)
+    const returnTo = this.route.snapshot.queryParams['returnTo'];
+    if (returnTo) {
+      // Décoder le paramètre returnTo au cas où il serait encodé
+      try {
+        this.returnTo = decodeURIComponent(returnTo);
+      } catch (e) {
+        // Si le décodage échoue, utiliser la valeur telle quelle
+        this.returnTo = returnTo;
+      }
     }
   }
 
@@ -130,10 +143,20 @@ export class FormClientPage implements OnInit {
         });
       } else {
         this.clientService.createClient(clientData).subscribe({
-          next: () => {
+          next: (newClient) => {
             loading.dismiss();
             this.showToast('Client créé avec succès', 'success');
-            this.router.navigate(['/clients']);
+            // Si on vient d'une autre page, y retourner avec le nouvel ID client
+            if (this.returnTo) {
+              // S'assurer que returnTo commence par / et n'est pas encodé
+              const returnPath = this.returnTo.startsWith('/') ? this.returnTo : '/' + this.returnTo;
+              this.router.navigate([returnPath], { 
+                queryParams: { clientId: newClient.id_client },
+                replaceUrl: true
+              });
+            } else {
+              this.router.navigate(['/clients']);
+            }
           },
           error: (error) => {
             loading.dismiss();

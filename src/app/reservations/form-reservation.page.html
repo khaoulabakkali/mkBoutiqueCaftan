@@ -1,0 +1,141 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Réservation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Réservation</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
+    <!-- Client -->
+    <ion-item [class.item-has-error]="id_client?.invalid && id_client?.touched" button (click)="openClientModal()">
+      <ion-label position="stacked">Client *</ion-label>
+      <ion-input
+        [value]="getSelectedClientName()"
+        placeholder="Sélectionner un client"
+        readonly>
+      </ion-input>
+      <ion-icon name="chevron-down" slot="end"></ion-icon>
+    </ion-item>
+    <div class="error-message" *ngIf="id_client?.invalid && id_client?.touched">
+      <span *ngIf="id_client?.errors?.['required']">Le client est requis</span>
+    </div>
+
+    <!-- Date réservation -->
+    <ion-item [class.item-has-error]="date_reservation?.invalid && date_reservation?.touched">
+      <ion-label position="stacked">Date et heure de réservation *</ion-label>
+      <ion-input
+        type="datetime-local"
+        formControlName="date_reservation">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="date_reservation?.invalid && date_reservation?.touched">
+      <span *ngIf="date_reservation?.errors?.['required']">La date de réservation est requise</span>
+    </div>
+
+    <!-- Date début -->
+    <ion-item [class.item-has-error]="date_debut?.invalid && date_debut?.touched">
+      <ion-label position="stacked">Date de début (prise en charge) *</ion-label>
+      <ion-input
+        type="date"
+        formControlName="date_debut">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="date_debut?.invalid && date_debut?.touched">
+      <span *ngIf="date_debut?.errors?.['required']">La date de début est requise</span>
+    </div>
+
+    <!-- Date fin -->
+    <ion-item [class.item-has-error]="date_fin?.invalid && date_fin?.touched">
+      <ion-label position="stacked">Date de fin (retour) *</ion-label>
+      <ion-input
+        type="date"
+        formControlName="date_fin">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="date_fin?.invalid && date_fin?.touched">
+      <span *ngIf="date_fin?.errors?.['required']">La date de fin est requise</span>
+    </div>
+
+    <!-- Montant total -->
+    <ion-item [class.item-has-error]="montant_total?.invalid && montant_total?.touched">
+      <ion-label position="stacked">Montant total (MAD) *</ion-label>
+      <ion-input
+        type="number"
+        formControlName="montant_total"
+        placeholder="0.00"
+        step="0.01"
+        min="0">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="montant_total?.invalid && montant_total?.touched">
+      <span *ngIf="montant_total?.errors?.['required']">Le montant total est requis</span>
+      <span *ngIf="montant_total?.errors?.['min']">Le montant ne peut pas être négatif</span>
+    </div>
+
+    <!-- Remise appliquée -->
+    <ion-item [class.item-has-error]="remise_appliquee?.invalid && remise_appliquee?.touched">
+      <ion-label position="stacked">Remise appliquée (MAD) *</ion-label>
+      <ion-input
+        type="number"
+        formControlName="remise_appliquee"
+        placeholder="0.00"
+        step="0.01"
+        min="0">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="remise_appliquee?.invalid && remise_appliquee?.touched">
+      <span *ngIf="remise_appliquee?.errors?.['required']">La remise est requise (0 si aucune)</span>
+      <span *ngIf="remise_appliquee?.errors?.['min']">La remise ne peut pas être négative</span>
+    </div>
+
+    <!-- Statut réservation -->
+    <ion-item [class.item-has-error]="statut_reservation?.invalid && statut_reservation?.touched">
+      <ion-label position="stacked">Statut *</ion-label>
+      <ion-select formControlName="statut_reservation" placeholder="Sélectionner un statut">
+        <ion-select-option *ngFor="let statut of statuts" [value]="statut">
+          {{ statut }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <div class="error-message" *ngIf="statut_reservation?.invalid && statut_reservation?.touched">
+      <span *ngIf="statut_reservation?.errors?.['required']">Le statut est requis</span>
+    </div>
+
+    <!-- ID Paiement -->
+    <ion-item>
+      <ion-label position="stacked">ID Paiement (optionnel)</ion-label>
+      <ion-input
+        type="number"
+        formControlName="id_paiement"
+        placeholder="ID du paiement associé">
+      </ion-input>
+    </ion-item>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <ion-button
+        type="button"
+        fill="outline"
+        expand="block"
+        (click)="onCancel()">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="reservationForm.invalid">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+
