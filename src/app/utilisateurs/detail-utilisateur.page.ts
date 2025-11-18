@@ -21,7 +21,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { arrowBack, create, person, mail, call, shieldCheckmark, checkmarkCircle, closeCircle, calendar, key } from 'ionicons/icons';
+import { arrowBack, create, person, mail, call, shieldCheckmark, checkmarkCircle, closeCircle, calendar } from 'ionicons/icons';
 import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur } from '../models/utilisateur.model';
 import { RoleService } from '../services/role.service';
@@ -63,7 +63,7 @@ export class DetailUtilisateurPage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ arrowBack, create, person, mail, call, shieldCheckmark, checkmarkCircle, closeCircle, calendar, key });
+    addIcons({ arrowBack, create, person, mail, call, shieldCheckmark, checkmarkCircle, closeCircle, calendar });
   }
 
   ngOnInit() {
