@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gestion des Tailles</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addNewTaille()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Tailles</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher une taille..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Liste des tailles -->
+  <ion-list *ngIf="taillesFiltres.length > 0">
+    <ion-item *ngFor="let taille of taillesFiltres" [button]="true">
+      <ion-icon name="resize" slot="start" color="primary"></ion-icon>
+      <ion-label>
+        <h2>{{ taille.taille }}</h2>
+      </ion-label>
+      <div slot="end" class="actions-container">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="editTaille(taille)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          color="danger"
+          (click)="deleteTaille(taille)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="taillesFiltres.length === 0" class="empty-state">
+    <ion-icon name="resize"></ion-icon>
+    <p>Aucune taille trouvée</p>
+  </div>
+</ion-content>
+

@@ -1,0 +1,62 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gestion des Catégories</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addNewCategorie()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Catégories</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher une catégorie..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Liste des catégories -->
+  <ion-list *ngIf="categoriesFiltres.length > 0">
+    <ion-item *ngFor="let categorie of categoriesFiltres" [button]="true">
+      <ion-icon name="grid" slot="start" color="primary"></ion-icon>
+      <ion-label>
+        <h2>{{ categorie.nom_categorie }}</h2>
+        <p *ngIf="categorie.ordre_affichage" style="color: var(--ion-color-medium); font-size: 0.8rem;">
+          Ordre d'affichage: {{ categorie.ordre_affichage }}
+        </p>
+      </ion-label>
+      <div slot="end" class="actions-container">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="editCategorie(categorie)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          color="danger"
+          (click)="deleteCategorie(categorie)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="categoriesFiltres.length === 0" class="empty-state">
+    <ion-icon name="grid"></ion-icon>
+    <p>Aucune catégorie trouvée</p>
+  </div>
+</ion-content>
+

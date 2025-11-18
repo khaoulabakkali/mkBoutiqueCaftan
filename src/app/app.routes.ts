@@ -62,6 +62,36 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'parametres/tailles',
+    loadComponent: () => import('./parametres/tailles/liste-tailles.page').then((m) => m.ListeTaillesPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/tailles/new',
+    loadComponent: () => import('./parametres/tailles/form-taille.page').then((m) => m.FormTaillePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/tailles/edit/:id',
+    loadComponent: () => import('./parametres/tailles/form-taille.page').then((m) => m.FormTaillePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/categories',
+    loadComponent: () => import('./parametres/categories/liste-categories.page').then((m) => m.ListeCategoriesPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/categories/new',
+    loadComponent: () => import('./parametres/categories/form-categorie.page').then((m) => m.FormCategoriePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/categories/edit/:id',
+    loadComponent: () => import('./parametres/categories/form-categorie.page').then((m) => m.FormCategoriePage),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: '/login',
     pathMatch: 'full',

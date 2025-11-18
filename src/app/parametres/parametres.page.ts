@@ -17,7 +17,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { shieldCheckmark, settings } from 'ionicons/icons';
+import { shieldCheckmark, resize, grid, settings } from 'ionicons/icons';
 
 @Component({
   selector: 'app-parametres',
@@ -49,11 +49,25 @@ export class ParametresPage implements OnInit {
       icon: 'shield-checkmark',
       route: '/parametres/roles',
       color: 'primary'
+    },
+    {
+      title: 'Tailles',
+      description: 'Gérer les tailles disponibles',
+      icon: 'resize',
+      route: '/parametres/tailles',
+      color: 'secondary'
+    },
+    {
+      title: 'Catégories',
+      description: 'Gérer les catégories de produits',
+      icon: 'grid',
+      route: '/parametres/categories',
+      color: 'tertiary'
     }
   ];
 
   constructor(private router: Router) {
-    addIcons({ shieldCheckmark, settings });
+    addIcons({ shieldCheckmark, resize, grid, settings });
   }
 
   ngOnInit() {}
