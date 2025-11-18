@@ -33,12 +33,12 @@
           <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" 
                     [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'"
                     style="margin-right: 8px; vertical-align: middle;"></ion-icon>
-          {{ utilisateur.nom_complet || 'Nom non défini' }}
+          {{ utilisateur.nomComplet }}
         </h2>
         <div class="badges-container">
-          <ion-badge [color]="getRoleColor(utilisateur.role || 'STAFF')">
-            <ion-icon [name]="getRoleIcon(utilisateur.role || 'STAFF')" style="margin-right: 4px;"></ion-icon>
-            {{ getRoleLabel(utilisateur.role || 'STAFF') }}
+          <ion-badge [color]="getRoleColor(utilisateur.role)">
+            <ion-icon [name]="getRoleIcon(utilisateur.role)" style="margin-right: 4px;"></ion-icon>
+            {{ getRoleLabel(utilisateur.role) }}
           </ion-badge>
           <ion-badge [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
             <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>

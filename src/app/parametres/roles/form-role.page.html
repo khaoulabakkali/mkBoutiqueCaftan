@@ -13,35 +13,20 @@
   </ion-header>
 
   <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
-    <!-- Code rôle -->
-    <ion-item [class.item-has-error]="code_role?.invalid && code_role?.touched">
-      <ion-label position="stacked">Code du rôle *</ion-label>
-      <ion-input
-        type="text"
-        formControlName="code_role"
-        placeholder="ADMIN, STAFF, MANAGER..."
-        [readonly]="isEditMode">
-      </ion-input>
-    </ion-item>
-    <div class="error-message" *ngIf="code_role?.invalid && code_role?.touched">
-      <span *ngIf="code_role?.errors?.['required']">Le code est requis</span>
-      <span *ngIf="code_role?.errors?.['minlength']">Le code doit contenir au moins 2 caractères</span>
-      <span *ngIf="code_role?.errors?.['maxlength']">Le code ne doit pas dépasser 50 caractères</span>
-    </div>
 
     <!-- Libellé rôle -->
-    <ion-item [class.item-has-error]="libelle_role?.invalid && libelle_role?.touched">
+    <ion-item [class.item-has-error]="nomRole?.invalid && nomRole?.touched">
       <ion-label position="stacked">Libellé du rôle *</ion-label>
       <ion-input
         type="text"
-        formControlName="libelle_role"
+        formControlName="nomRole"
         placeholder="Administrateur, Staff, Manager...">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="libelle_role?.invalid && libelle_role?.touched">
-      <span *ngIf="libelle_role?.errors?.['required']">Le libellé est requis</span>
-      <span *ngIf="libelle_role?.errors?.['minlength']">Le libellé doit contenir au moins 2 caractères</span>
-      <span *ngIf="libelle_role?.errors?.['maxlength']">Le libellé ne doit pas dépasser 100 caractères</span>
+    <div class="error-message" *ngIf="nomRole?.invalid && nomRole?.touched">
+      <span *ngIf="nomRole?.errors?.['required']">Le libellé est requis</span>
+      <span *ngIf="nomRole?.errors?.['minlength']">Le libellé doit contenir au moins 2 caractères</span>
+      <span *ngIf="nomRole?.errors?.['maxlength']">Le libellé ne doit pas dépasser 100 caractères</span>
     </div>
 
     <!-- Description -->

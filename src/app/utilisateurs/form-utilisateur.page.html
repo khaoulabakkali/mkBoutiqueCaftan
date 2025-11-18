@@ -14,17 +14,17 @@
 
   <form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()">
     <!-- Nom complet -->
-    <ion-item [class.item-has-error]="nom_complet?.invalid && nom_complet?.touched">
+    <ion-item [class.item-has-error]="nomComplet?.invalid && nomComplet?.touched">
       <ion-label position="stacked">Nom complet *</ion-label>
       <ion-input
         type="text"
-        formControlName="nom_complet"
+        formControlName="nomComplet"
         placeholder="Nom et prénom">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="nom_complet?.invalid && nom_complet?.touched">
-      <span *ngIf="nom_complet?.errors?.['required']">Le nom complet est requis</span>
-      <span *ngIf="nom_complet?.errors?.['minlength']">Le nom doit contenir au moins 3 caractères</span>
+    <div class="error-message" *ngIf="nomComplet?.invalid && nomComplet?.touched">
+      <span *ngIf="nomComplet?.errors?.['required']">Le nom complet est requis</span>
+      <span *ngIf="nomComplet?.errors?.['minlength']">Le nom doit contenir au moins 3 caractères</span>
     </div>
 
     <!-- Identifiant (Login) -->
@@ -75,8 +75,8 @@
     <ion-item [class.item-has-error]="role?.invalid && role?.touched">
       <ion-label position="stacked">Rôle *</ion-label>
       <ion-select formControlName="role" placeholder="Sélectionner un rôle">
-        <ion-select-option *ngFor="let roleOption of roles" [value]="roleOption.code_role">
-          {{ roleOption.libelle_role }}
+        <ion-select-option *ngFor="let roleOption of roles" [value]="roleOption.nomRole">
+          {{ roleOption.nomRole }}
         </ion-select-option>
       </ion-select>
     </ion-item>

@@ -67,7 +67,7 @@ export class FormUtilisateurPage implements OnInit {
     addIcons({ save, arrowBack });
     
     this.utilisateurForm = this.formBuilder.group({
-      nom_complet: ['', [Validators.required, Validators.minLength(3)]],
+      nomComplet: ['', [Validators.required, Validators.minLength(3)]],
       login: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       mot_de_passe: ['', []],
@@ -98,7 +98,7 @@ export class FormUtilisateurPage implements OnInit {
         this.roles = roles;
         // Si aucun rôle n'est sélectionné et qu'il y a des rôles, sélectionner le premier
         if (!this.utilisateurForm.get('role')?.value && roles.length > 0) {
-          this.utilisateurForm.patchValue({ role: roles[0].code_role });
+          this.utilisateurForm.patchValue({ role: roles[0].nomRole });
         }
       },
       error: (error) => {
@@ -116,7 +116,7 @@ export class FormUtilisateurPage implements OnInit {
     this.utilisateurService.getUtilisateurById(id).subscribe({
       next: (utilisateur) => {
         this.utilisateurForm.patchValue({
-          nom_complet: utilisateur.nom_complet,
+          nomComplet: utilisateur.nomComplet,
           login: utilisateur.login,
           email: utilisateur.email || utilisateur.login, // Fallback sur login si email n'existe pas
           role: utilisateur.role,
@@ -145,11 +145,11 @@ export class FormUtilisateurPage implements OnInit {
 
       const formValue = this.utilisateurForm.value;
       const utilisateur: Utilisateur = {
-        nom_complet: formValue.nom_complet,
+        nomComplet: formValue.nomComplet,
         login: formValue.login,
         email: formValue.email || undefined,
         mot_de_passe: formValue.mot_de_passe,
-        role: formValue.role as any, // Le rôle est maintenant le code_role (string)
+        role: formValue.role as any,
         telephone: formValue.telephone || undefined,
         actif: formValue.actif
       };
@@ -202,8 +202,8 @@ export class FormUtilisateurPage implements OnInit {
     await toast.present();
   }
 
-  get nom_complet() {
-    return this.utilisateurForm.get('nom_complet');
+  get nomComplet() {
+    return this.utilisateurForm.get('nomComplet');
   }
 
   get login() {
@@ -222,9 +222,9 @@ export class FormUtilisateurPage implements OnInit {
     return this.utilisateurForm.get('role');
   }
 
-  getRoleLabel(codeRole: string): string {
-    const role = this.roles.find(r => r.code_role === codeRole);
-    return role ? role.libelle_role : codeRole;
+  getRoleLabel(nomRole: string): string {
+    const role = this.roles.find(r => r.nomRole === nomRole);
+    return role ? role.nomRole : nomRole;
   }
 
   onCancel() {

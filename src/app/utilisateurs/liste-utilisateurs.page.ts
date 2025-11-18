@@ -39,7 +39,7 @@ import {
 import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur } from '../models/utilisateur.model';
 import { RoleService } from '../services/role.service';
-import { Role as RoleModel } from '../models/role.model';
+import { Role  } from '../models/role.model';
 
 @Component({
   selector: 'app-liste-utilisateurs',
@@ -68,7 +68,7 @@ export class ListeUtilisateursPage implements OnInit {
   utilisateurs: Utilisateur[] = [];
   utilisateursFiltres: Utilisateur[] = [];
   searchTerm: string = '';
-  roles: RoleModel[] = [];
+  roles: Role[] = [];
 
   constructor(
     private utilisateurService: UtilisateurService,
@@ -154,20 +154,28 @@ export class ListeUtilisateursPage implements OnInit {
 
     const term = this.searchTerm.toLowerCase();
     this.utilisateursFiltres = this.utilisateurs.filter(
-      (user) =>
-        user &&
-        (
-          (user.nom_complet || '').toLowerCase().includes(term) ||
+      (user) => {
+        if (!user) return false;
+        let roleStr = '';
+        if (typeof user.role === 'string') {
+          roleStr = user.role;
+        } else if (user.role && typeof user.role === 'object' && 'nomRole' in user.role) {
+          roleStr = (user.role as Role).nomRole || '';
+        }
+        return (
+          (user.nomComplet || '').toLowerCase().includes(term) ||
           (user.login || '').toLowerCase().includes(term) ||
           (user.telephone || '').toLowerCase().includes(term) ||
-          (user.role || '').toLowerCase().includes(term)
-        )
+          roleStr.toLowerCase().includes(term)
+        );
+      }
     );
   }
 
-  getRoleColor(role: string): string {
-    if (!role) return 'medium';
-    switch (role.toUpperCase()) {
+  getRoleColor(role: Role | undefined): string {
+    if (!role) return '';
+    const roleStr =  role.nomRole || '';
+    switch (roleStr.toUpperCase()) {
       case 'ADMIN':
         return 'danger';
       case 'MANAGER':
@@ -179,16 +187,15 @@ export class ListeUtilisateursPage implements OnInit {
     }
   }
 
-  getRoleLabel(codeRole: string): string {
-    if (!codeRole) return 'Non défini';
-    if (!Array.isArray(this.roles)) return codeRole;
-    const role = this.roles.find(r => r && r.code_role === codeRole);
-    return role ? (role.libelle_role || codeRole) : codeRole;
+  getRoleLabel(role: Role): string {
+    if (!role) return '';
+    // Si c'est un objet Role
+    return role.nomRole || '';
   }
 
-  getRoleIcon(role: string): string {
-    if (!role) return 'person';
-    switch (role.toUpperCase()) {
+  getRoleIcon(role:Role): string {
+    const roleStr = role.nomRole || '';
+    switch (roleStr.toUpperCase()) {
       case 'ADMIN':
         return 'shield-checkmark';
       case 'MANAGER':
@@ -216,7 +223,7 @@ export class ListeUtilisateursPage implements OnInit {
 
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${utilisateur.nom_complet || 'cet utilisateur'}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${utilisateur.nomComplet || 'cet utilisateur'}" ?`,
       buttons: [
         {
           text: 'Annuler',

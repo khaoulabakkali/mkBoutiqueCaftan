@@ -21,28 +21,22 @@ export class RoleService {
     if (!existing) {
       const defaultRoles: Role[] = [
         {
-          id_role: 1,
-          code_role: 'ADMIN',
-          libelle_role: 'Administrateur',
+          idRole: 1,
+          nomRole: 'ADMIN',
           description: 'Accès complet à toutes les fonctionnalités',
-          actif: true,
-          date_creation: new Date().toISOString()
+          actif: true
         },
         {
-          id_role: 2,
-          code_role: 'MANAGER',
-          libelle_role: 'Manager',
+          idRole: 2,
+          nomRole: 'MANAGER',
           description: 'Gestion des opérations et du personnel',
-          actif: true,
-          date_creation: new Date().toISOString()
+          actif: true
         },
         {
-          id_role: 3,
-          code_role: 'STAFF',
-          libelle_role: 'Staff',
+          idRole: 3,
+          nomRole: 'STAFF',
           description: 'Accès aux fonctionnalités de base',
           actif: true,
-          date_creation: new Date().toISOString()
         }
       ];
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(defaultRoles));
@@ -70,7 +64,7 @@ export class RoleService {
   private getNextId(): number {
     const roles = this.getLocalRoles();
     if (roles.length === 0) return 1;
-    return Math.max(...roles.map(r => r.id_role || 0)) + 1;
+    return Math.max(...roles.map(r => r.idRole || 0)) + 1;
   }
 
   /**
@@ -95,7 +89,7 @@ export class RoleService {
    */
   getRoleById(id: number): Observable<Role> {
     const roles = this.getLocalRoles();
-    const role = roles.find(r => r.id_role === id);
+    const role = roles.find(r => r.idRole === id);
     
     if (!role) {
       return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));
@@ -105,31 +99,21 @@ export class RoleService {
   }
 
   /**
-   * Récupérer un rôle par code (local)
-   */
-  getRoleByCode(code: string): Observable<Role | null> {
-    const roles = this.getLocalRoles();
-    const role = roles.find(r => r.code_role === code);
-    return of(role ? { ...role } : null).pipe(delay(200));
-  }
-
-  /**
    * Créer un nouveau rôle (local)
    */
   createRole(role: Role): Observable<Role> {
     const roles = this.getLocalRoles();
     
     // Vérifier si le code existe déjà
-    if (roles.some(r => r.code_role.toUpperCase() === role.code_role.toUpperCase())) {
+    if (roles.some(r => r.nomRole.toUpperCase() === role.nomRole.toUpperCase())) {
       return throwError(() => new Error('Un rôle avec ce code existe déjà'));
     }
     
     // Créer le nouveau rôle
     const newRole: Role = {
       ...role,
-      id_role: this.getNextId(),
-      code_role: role.code_role.toUpperCase(), // Toujours en majuscules
-      date_creation: new Date().toISOString()
+      idRole: this.getNextId(),
+      nomRole: role.nomRole.toUpperCase()
     };
     
     roles.push(newRole);
@@ -143,14 +127,14 @@ export class RoleService {
    */
   updateRole(id: number, role: Role): Observable<Role> {
     const roles = this.getLocalRoles();
-    const index = roles.findIndex(r => r.id_role === id);
+    const index = roles.findIndex(r => r.idRole === id);
     
     if (index === -1) {
       return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));
     }
     
     // Vérifier si le code existe déjà pour un autre rôle
-    const existingRole = roles.find(r => r.code_role.toUpperCase() === role.code_role.toUpperCase() && r.id_role !== id);
+    const existingRole = roles.find(r => r.nomRole.toUpperCase() === role.nomRole.toUpperCase() && r.idRole !== id);
     if (existingRole) {
       return throwError(() => new Error('Un rôle avec ce code existe déjà'));
     }
@@ -159,8 +143,8 @@ export class RoleService {
     const updatedRole: Role = {
       ...roles[index],
       ...role,
-      id_role: id, // S'assurer que l'ID ne change pas
-      code_role: role.code_role.toUpperCase() // Toujours en majuscules
+      idRole: id, // S'assurer que l'ID ne change pas
+      nomRole: role.nomRole.toUpperCase() // Toujours en majuscules
     };
     
     roles[index] = updatedRole;
@@ -174,7 +158,7 @@ export class RoleService {
    */
   deleteRole(id: number): Observable<boolean> {
     const roles = this.getLocalRoles();
-    const index = roles.findIndex(r => r.id_role === id);
+    const index = roles.findIndex(r => r.idRole === id);
     
     if (index === -1) {
       return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));
@@ -191,7 +175,7 @@ export class RoleService {
    */
   toggleActif(id: number, actif: boolean): Observable<boolean> {
     const roles = this.getLocalRoles();
-    const role = roles.find(r => r.id_role === id);
+    const role = roles.find(r => r.idRole === id);
     
     if (!role) {
       return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));

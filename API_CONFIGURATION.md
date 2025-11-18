@@ -18,7 +18,7 @@
     "token": "jwt_token_here",
     "user": {
       "id_utilisateur": 1,
-      "nom_complet": "Nom Complet",
+      "nomComplet": "Nom Complet",
       "login": "email@exemple.com",
       "role": "ADMIN"
     }
@@ -34,7 +34,7 @@
   [
     {
       "id_utilisateur": 1,
-      "nom_complet": "Nom Complet",
+      "nomComplet": "Nom Complet",
       "login": "email@exemple.com",
       "role": "ADMIN",
       "telephone": "+212 6 12 34 56 78",
@@ -53,7 +53,7 @@
 - **Body:**
   ```json
   {
-    "nom_complet": "Nom Complet",
+    "nomComplet": "Nom Complet",
     "login": "email@exemple.com",
     "mot_de_passe": "password123",
     "role": "STAFF",

@@ -39,7 +39,7 @@ export class UtilisateurService {
    */
   getAllUtilisateurs(): Observable<Utilisateur[]> {
     return this.http.get<Utilisateur[]>(
-      `${this.apiUrl}/utilisateurs`,
+      `${this.apiUrl}/users`,
       this.getHttpOptions()
     ).pipe(
       catchError(this.handleError<Utilisateur[]>('getAllUtilisateurs', []))
@@ -51,7 +51,7 @@ export class UtilisateurService {
    */
   getUtilisateurById(id: number): Observable<Utilisateur> {
     return this.http.get<Utilisateur>(
-      `${this.apiUrl}/utilisateurs/${id}`,
+      `${this.apiUrl}/users/${id}`,
       this.getHttpOptions()
     ).pipe(
       catchError(this.handleError<Utilisateur>('getUtilisateurById'))
@@ -70,7 +70,7 @@ export class UtilisateurService {
     };
 
     return this.http.post<Utilisateur>(
-      `${this.apiUrl}/utilisateurs`,
+      `${this.apiUrl}/users`,
       payload,
       this.getHttpOptions()
     ).pipe(
@@ -92,7 +92,7 @@ export class UtilisateurService {
     }
 
     return this.http.put<Utilisateur>(
-      `${this.apiUrl}/utilisateurs/${id}`,
+      `${this.apiUrl}/users/${id}`,
       payload,
       this.getHttpOptions()
     ).pipe(
@@ -105,7 +105,7 @@ export class UtilisateurService {
    */
   deleteUtilisateur(id: number): Observable<boolean> {
     return this.http.delete<{ success: boolean }>(
-      `${this.apiUrl}/utilisateurs/${id}`,
+      `${this.apiUrl}/users/${id}`,
       this.getHttpOptions()
     ).pipe(
       map(() => true),
@@ -118,7 +118,7 @@ export class UtilisateurService {
    */
   toggleActif(id: number, actif: boolean): Observable<boolean> {
     return this.http.patch<{ success: boolean }>(
-      `${this.apiUrl}/utilisateurs/${id}/actif`,
+      `${this.apiUrl}/users/${id}/actif`,
       { actif },
       this.getHttpOptions()
     ).pipe(

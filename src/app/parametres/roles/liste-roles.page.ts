@@ -123,20 +123,19 @@ export class ListeRolesPage implements OnInit {
     const term = this.searchTerm.toLowerCase();
     this.rolesFiltres = this.roles.filter(
       (role) =>
-        role.code_role.toLowerCase().includes(term) ||
-        role.libelle_role.toLowerCase().includes(term) ||
+        role.nomRole.toLowerCase().includes(term) ||
         role.description?.toLowerCase().includes(term)
     );
   }
 
   async editRole(role: Role) {
-    this.router.navigate(['/parametres/roles/edit', role.id_role]);
+    this.router.navigate(['/parametres/roles/edit', role.idRole]);
   }
 
   async deleteRole(role: Role) {
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer le rôle "${role.libelle_role}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer le rôle "${role.nomRole}" ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -151,12 +150,12 @@ export class ListeRolesPage implements OnInit {
             });
             await loading.present();
 
-            this.roleService.deleteRole(role.id_role!).subscribe({
+            this.roleService.deleteRole(role.idRole!).subscribe({
               next: () => {
                 loading.dismiss();
                 this.presentToast('Rôle supprimé avec succès', 'success');
                 // Retirer le rôle de la liste localement pour une mise à jour immédiate
-                this.roles = this.roles.filter(r => r.id_role !== role.id_role);
+                this.roles = this.roles.filter(r => r.idRole !== role.idRole);
                 // Réappliquer le filtre si nécessaire
                 this.filterRoles();
               },
@@ -181,7 +180,7 @@ export class ListeRolesPage implements OnInit {
     });
     await loading.present();
 
-    this.roleService.toggleActif(role.id_role!, newActif).subscribe({
+    this.roleService.toggleActif(role.idRole!, newActif).subscribe({
       next: () => {
         role.actif = newActif;
         loading.dismiss();

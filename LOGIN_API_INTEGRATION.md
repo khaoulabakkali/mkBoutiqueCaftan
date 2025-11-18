@@ -20,7 +20,7 @@ POST /api/auth/login
   "message": string?,
   "user": {
     "id_utilisateur": number,
-    "nom_complet": string,
+    "nomComplet": string,
     "login": string,
     "role": string,
     "token"?: string  // Optionnel - voir ci-dessous

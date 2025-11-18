@@ -24,7 +24,7 @@ Le CRUD utilisateur est entièrement configuré pour consommer l'API backend. To
 - **Body:**
   ```json
   {
-    "nom_complet": "string",
+    "nomComplet": "string",
     "login": "string",
     "mot_de_passe": "string",
     "role": "ADMIN|STAFF|MANAGER",
@@ -123,7 +123,7 @@ export const environment = {
 [
   {
     "id_utilisateur": 1,
-    "nom_complet": "Nom Complet",
+    "nomComplet": "Nom Complet",
     "login": "email@exemple.com",
     "role": "ADMIN",
     "telephone": "+212 6 12 34 56 78",
@@ -137,7 +137,7 @@ export const environment = {
 ```json
 {
   "id_utilisateur": 1,
-  "nom_complet": "Nom Complet",
+  "nomComplet": "Nom Complet",
   "login": "email@exemple.com",
   "role": "ADMIN",
   "telephone": "+212 6 12 34 56 78",

@@ -14,7 +14,7 @@ export enum Role {
  * 
  * Structure de la table :
  * - id_utilisateur: INTEGER (clé primaire, auto-increment)
- * - nom_complet: VARCHAR(100)
+ * - nomComplet: VARCHAR(100)
  * - login: VARCHAR(50)
  * - mot_de_passe_hash: VARCHAR(255)
  * - role: ENUM('ADMIN', 'STAFF', 'MANAGER')
@@ -27,7 +27,7 @@ export interface Utilisateur {
   id_utilisateur?: number;
   
   /** VARCHAR(100) - Nom complet de l'utilisateur */
-  nom_complet: string;
+  nomComplet: string;
   
   /** VARCHAR(50) - Identifiant de connexion (username) */
   login: string;
@@ -51,6 +51,6 @@ export interface Utilisateur {
   actif: boolean;
   
   /** DATETIME - Date de création du compte */
-  date_creation_compte?: string;
+  dateCreationCompte?: string;
 }
 

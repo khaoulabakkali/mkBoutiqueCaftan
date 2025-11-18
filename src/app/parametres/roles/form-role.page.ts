@@ -64,8 +64,7 @@ export class FormRolePage implements OnInit {
     addIcons({ save, arrowBack });
     
     this.roleForm = this.formBuilder.group({
-      code_role: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
-      libelle_role: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      nomRole: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
       description: ['', [Validators.maxLength(500)]],
       actif: [true, [Validators.required]]
     });
@@ -91,8 +90,7 @@ export class FormRolePage implements OnInit {
     this.roleService.getRoleById(this.roleId).subscribe({
       next: (role) => {
         this.roleForm.patchValue({
-          code_role: role.code_role,
-          libelle_role: role.libelle_role,
+          nomRole: role.nomRole,
           description: role.description || '',
           actif: role.actif
         });
@@ -161,12 +159,8 @@ export class FormRolePage implements OnInit {
     await toast.present();
   }
 
-  get code_role() {
-    return this.roleForm.get('code_role');
-  }
-
-  get libelle_role() {
-    return this.roleForm.get('libelle_role');
+  get nomRole() {
+    return this.roleForm.get('nomRole');
   }
 
   get description() {

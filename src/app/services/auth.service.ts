@@ -10,7 +10,7 @@ export interface LoginResponse {
   message?: string;
   user?: {
     id_utilisateur: number;
-    nom_complet: string;
+    nomComplet: string;
     login: string;
     role: string;
     token?: string; // Le token peut être dans l'objet User ou dans un header
