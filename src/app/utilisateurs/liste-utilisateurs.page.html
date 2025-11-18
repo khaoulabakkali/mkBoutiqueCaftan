@@ -27,7 +27,7 @@
 
   <!-- Liste des utilisateurs -->
   <ion-list *ngIf="utilisateursFiltres.length > 0">
-    <ion-item *ngFor="let utilisateur of utilisateursFiltres" [button]="true">
+    <ion-item *ngFor="let utilisateur of utilisateursFiltres" [button]="true" (click)="viewDetail(utilisateur)">
       <ion-label>
         <h2>
           <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" 
@@ -50,22 +50,22 @@
         <ion-button
           fill="clear"
           size="small"
-          (click)="editUtilisateur(utilisateur)">
+          (click)="editUtilisateur(utilisateur); $event.stopPropagation()">
           <ion-icon name="create"></ion-icon>
         </ion-button>
         <ion-button
           fill="clear"
           size="small"
           color="danger"
-          (click)="deleteUtilisateur(utilisateur)">
+          (click)="deleteUtilisateur(utilisateur); $event.stopPropagation()">
           <ion-icon name="trash"></ion-icon>
         </ion-button>
         <ion-button
           fill="clear"
           size="small"
-          [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'warning' : 'success'"
-          (click)="toggleActif(utilisateur)">
-          <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'eye-off' : 'eye'"></ion-icon>
+          [color]="(utilisateur?.actif) ? 'warning' : 'success'"
+          (click)="toggleActif(utilisateur); $event.stopPropagation()">
+          <ion-icon [name]="(utilisateur?.actif) ? 'eye-off' : 'eye'"></ion-icon>
         </ion-button>
       </div>
     </ion-item>

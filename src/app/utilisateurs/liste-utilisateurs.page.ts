@@ -218,6 +218,14 @@ export class ListeUtilisateursPage implements OnInit {
     }
   }
 
+  viewDetail(utilisateur: Utilisateur) {
+    if (!utilisateur || !utilisateur.idUtilisateur) {
+      this.presentToast('ID utilisateur manquant', 'danger');
+      return;
+    }
+    this.router.navigate(['/utilisateurs/detail', utilisateur.idUtilisateur]);
+  }
+
   async editUtilisateur(utilisateur: Utilisateur) {
     if (!utilisateur || !utilisateur.idUtilisateur) {
       this.presentToast('ID utilisateur manquant', 'danger');
@@ -270,6 +278,7 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   async toggleActif(utilisateur: Utilisateur) {
+    console.log("utilisateur",utilisateur)
     if (!utilisateur || !utilisateur.idUtilisateur) {
       this.presentToast('ID utilisateur manquant', 'danger');
       return;
