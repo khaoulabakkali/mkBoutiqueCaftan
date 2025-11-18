@@ -1,0 +1,138 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Article</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvel' }} Article</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+    <!-- Nom article -->
+    <ion-item [class.item-has-error]="nom_article?.invalid && nom_article?.touched">
+      <ion-label position="stacked">Nom de l'article *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="nom_article"
+        placeholder="Caftan Royal, Tekchita Moderne..."
+        maxlength="150">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="nom_article?.invalid && nom_article?.touched">
+      <span *ngIf="nom_article?.errors?.['required']">Le nom est requis</span>
+      <span *ngIf="nom_article?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+      <span *ngIf="nom_article?.errors?.['maxlength']">Le nom ne doit pas dépasser 150 caractères</span>
+    </div>
+
+    <!-- Description -->
+    <ion-item [class.item-has-error]="description?.invalid && description?.touched">
+      <ion-label position="stacked">Description *</ion-label>
+      <ion-textarea
+        formControlName="description"
+        placeholder="Description complète (matière, style, etc.)"
+        rows="4">
+      </ion-textarea>
+    </ion-item>
+    <div class="error-message" *ngIf="description?.invalid && description?.touched">
+      <span *ngIf="description?.errors?.['required']">La description est requise</span>
+      <span *ngIf="description?.errors?.['minlength']">La description doit contenir au moins 10 caractères</span>
+    </div>
+
+    <!-- Prix location base -->
+    <ion-item [class.item-has-error]="prix_location_base?.invalid && prix_location_base?.touched">
+      <ion-label position="stacked">Prix de location (MAD/jour) *</ion-label>
+      <ion-input
+        type="number"
+        formControlName="prix_location_base"
+        placeholder="0.00"
+        step="0.01"
+        min="0">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="prix_location_base?.invalid && prix_location_base?.touched">
+      <span *ngIf="prix_location_base?.errors?.['required']">Le prix de location est requis</span>
+      <span *ngIf="prix_location_base?.errors?.['min']">Le prix ne peut pas être négatif</span>
+    </div>
+
+    <!-- Prix avance base -->
+    <ion-item [class.item-has-error]="prix_avance_base?.invalid && prix_avance_base?.touched">
+      <ion-label position="stacked">Montant de l'avance (MAD) *</ion-label>
+      <ion-input
+        type="number"
+        formControlName="prix_avance_base"
+        placeholder="0.00"
+        step="0.01"
+        min="0">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="prix_avance_base?.invalid && prix_avance_base?.touched">
+      <span *ngIf="prix_avance_base?.errors?.['required']">Le montant de l'avance est requis</span>
+      <span *ngIf="prix_avance_base?.errors?.['min']">Le montant ne peut pas être négatif</span>
+    </div>
+
+    <!-- Catégorie -->
+    <ion-item [class.item-has-error]="id_categorie?.invalid && id_categorie?.touched">
+      <ion-label position="stacked">Catégorie *</ion-label>
+      <ion-select formControlName="id_categorie" placeholder="Sélectionner une catégorie">
+        <ion-select-option *ngFor="let categorie of categories" [value]="categorie.id_categorie">
+          {{ categorie.nom_categorie }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+    <div class="error-message" *ngIf="id_categorie?.invalid && id_categorie?.touched">
+      <span *ngIf="id_categorie?.errors?.['required']">La catégorie est requise</span>
+    </div>
+
+    <!-- Taille -->
+    <ion-item>
+      <ion-label position="stacked">Taille</ion-label>
+      <ion-select formControlName="id_taille" placeholder="Sélectionner une taille (optionnel)">
+        <ion-select-option [value]="">Aucune taille</ion-select-option>
+        <ion-select-option *ngFor="let taille of tailles" [value]="taille.taille">
+          {{ taille.taille }}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Photo -->
+    <ion-item>
+      <ion-label position="stacked">Photo (URL ou base64)</ion-label>
+      <ion-input
+        type="text"
+        formControlName="photo"
+        placeholder="URL de l'image ou données base64">
+      </ion-input>
+    </ion-item>
+
+    <!-- Actif -->
+    <ion-item>
+      <ion-label>Article actif</ion-label>
+      <ion-checkbox slot="end" formControlName="actif"></ion-checkbox>
+    </ion-item>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <ion-button
+        type="button"
+        fill="outline"
+        expand="block"
+        (click)="onCancel()">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="articleForm.invalid">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+
