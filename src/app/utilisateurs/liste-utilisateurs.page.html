@@ -30,19 +30,19 @@
     <ion-item *ngFor="let utilisateur of utilisateursFiltres" [button]="true">
       <ion-label>
         <h2>
-          <ion-icon [name]="utilisateur.actif ? 'checkmark-circle' : 'close-circle'" 
-                    [color]="utilisateur.actif ? 'success' : 'danger'"
+          <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" 
+                    [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'"
                     style="margin-right: 8px; vertical-align: middle;"></ion-icon>
-          {{ utilisateur.nom_complet }}
+          {{ utilisateur.nom_complet || 'Nom non défini' }}
         </h2>
         <div class="badges-container">
-          <ion-badge [color]="getRoleColor(utilisateur.role)">
-            <ion-icon [name]="getRoleIcon(utilisateur.role)" style="margin-right: 4px;"></ion-icon>
-            {{ getRoleLabel(utilisateur.role) }}
+          <ion-badge [color]="getRoleColor(utilisateur.role || 'STAFF')">
+            <ion-icon [name]="getRoleIcon(utilisateur.role || 'STAFF')" style="margin-right: 4px;"></ion-icon>
+            {{ getRoleLabel(utilisateur.role || 'STAFF') }}
           </ion-badge>
-          <ion-badge [color]="utilisateur.actif ? 'success' : 'danger'">
-            <ion-icon [name]="utilisateur.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-            {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
+          <ion-badge [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
+            <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+            {{ (utilisateur.actif !== undefined && utilisateur.actif) ? 'Actif' : 'Inactif' }}
           </ion-badge>
         </div>
       </ion-label>
@@ -63,9 +63,9 @@
         <ion-button
           fill="clear"
           size="small"
-          [color]="utilisateur.actif ? 'warning' : 'success'"
+          [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'warning' : 'success'"
           (click)="toggleActif(utilisateur)">
-          <ion-icon [name]="utilisateur.actif ? 'eye-off' : 'eye'"></ion-icon>
+          <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'eye-off' : 'eye'"></ion-icon>
         </ion-button>
       </div>
     </ion-item>

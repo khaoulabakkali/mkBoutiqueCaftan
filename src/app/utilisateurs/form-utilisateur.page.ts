@@ -102,7 +102,7 @@ export class FormUtilisateurPage implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des rôles:', error);
+        // Erreur silencieuse - les rôles ne sont pas critiques
       }
     });
   }

@@ -105,7 +105,7 @@ export class ListeUtilisateursPage implements OnInit {
         this.roles = roles;
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des rôles:', error);
+        // Erreur silencieuse - les rôles ne sont pas critiques pour l'affichage
       }
     });
   }
@@ -118,12 +118,14 @@ export class ListeUtilisateursPage implements OnInit {
 
     this.utilisateurService.getAllUtilisateurs().subscribe({
       next: (data) => {
-        this.utilisateurs = data;
-        this.utilisateursFiltres = data;
+        this.utilisateurs = Array.isArray(data) ? data : [];
+        this.utilisateursFiltres = Array.isArray(data) ? data : [];
         loading.dismiss();
       },
       error: (error) => {
         loading.dismiss();
+        this.utilisateurs = [];
+        this.utilisateursFiltres = [];
         const errorMessage = error?.message || 'Erreur lors du chargement des utilisateurs';
         this.presentToast(errorMessage, 'danger');
       }
@@ -131,28 +133,41 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   onSearchChange(event: any) {
-    this.searchTerm = event.detail.value || '';
+    if (event && event.detail) {
+      this.searchTerm = event.detail.value || '';
+    } else {
+      this.searchTerm = '';
+    }
     this.filterUtilisateurs();
   }
 
   filterUtilisateurs() {
-    if (!this.searchTerm.trim()) {
-      this.utilisateursFiltres = this.utilisateurs;
+    if (!this.searchTerm || !this.searchTerm.trim()) {
+      this.utilisateursFiltres = this.utilisateurs || [];
+      return;
+    }
+
+    if (!Array.isArray(this.utilisateurs) || this.utilisateurs.length === 0) {
+      this.utilisateursFiltres = [];
       return;
     }
 
     const term = this.searchTerm.toLowerCase();
     this.utilisateursFiltres = this.utilisateurs.filter(
       (user) =>
-        user.nom_complet.toLowerCase().includes(term) ||
-        user.login.toLowerCase().includes(term) ||
-        user.telephone?.toLowerCase().includes(term) ||
-        user.role.toLowerCase().includes(term)
+        user &&
+        (
+          (user.nom_complet || '').toLowerCase().includes(term) ||
+          (user.login || '').toLowerCase().includes(term) ||
+          (user.telephone || '').toLowerCase().includes(term) ||
+          (user.role || '').toLowerCase().includes(term)
+        )
     );
   }
 
   getRoleColor(role: string): string {
-    switch (role) {
+    if (!role) return 'medium';
+    switch (role.toUpperCase()) {
       case 'ADMIN':
         return 'danger';
       case 'MANAGER':
@@ -165,12 +180,15 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   getRoleLabel(codeRole: string): string {
-    const role = this.roles.find(r => r.code_role === codeRole);
-    return role ? role.libelle_role : codeRole;
+    if (!codeRole) return 'Non défini';
+    if (!Array.isArray(this.roles)) return codeRole;
+    const role = this.roles.find(r => r && r.code_role === codeRole);
+    return role ? (role.libelle_role || codeRole) : codeRole;
   }
 
   getRoleIcon(role: string): string {
-    switch (role) {
+    if (!role) return 'person';
+    switch (role.toUpperCase()) {
       case 'ADMIN':
         return 'shield-checkmark';
       case 'MANAGER':
@@ -183,13 +201,22 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   async editUtilisateur(utilisateur: Utilisateur) {
+    if (!utilisateur || !utilisateur.id_utilisateur) {
+      this.presentToast('ID utilisateur manquant', 'danger');
+      return;
+    }
     this.router.navigate(['/utilisateurs/edit', utilisateur.id_utilisateur]);
   }
 
   async deleteUtilisateur(utilisateur: Utilisateur) {
+    if (!utilisateur || !utilisateur.id_utilisateur) {
+      this.presentToast('ID utilisateur manquant', 'danger');
+      return;
+    }
+
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${utilisateur.nom_complet}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${utilisateur.nom_complet || 'cet utilisateur'}" ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -225,13 +252,18 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   async toggleActif(utilisateur: Utilisateur) {
+    if (!utilisateur || !utilisateur.id_utilisateur) {
+      this.presentToast('ID utilisateur manquant', 'danger');
+      return;
+    }
+
     const newActif = !utilisateur.actif;
     const loading = await this.loadingController.create({
       message: newActif ? 'Activation...' : 'Désactivation...'
     });
     await loading.present();
 
-    this.utilisateurService.toggleActif(utilisateur.id_utilisateur!, newActif).subscribe({
+    this.utilisateurService.toggleActif(utilisateur.id_utilisateur, newActif).subscribe({
       next: () => {
         utilisateur.actif = newActif;
         loading.dismiss();
