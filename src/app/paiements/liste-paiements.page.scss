@@ -1,0 +1,34 @@
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.actions-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.reference-text {
+  font-size: 0.875rem;
+  color: var(--ion-color-medium);
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+}
+

@@ -1,0 +1,58 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gestion des Paiements</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addNewPaiement()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher un paiement..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Liste des paiements -->
+  <ion-list *ngIf="paiementsFiltres.length > 0">
+    <ion-item *ngFor="let paiement of paiementsFiltres">
+      <ion-icon name="wallet" slot="start" color="success"></ion-icon>
+      <ion-label>
+        <h2>Paiement #{{ paiement.id_paiement || 'N/A' }}</h2>
+        <p>{{ formatMontant(paiement.montant) }}</p>
+        <p *ngIf="paiement.reference_paiement" class="reference-text">
+          <ion-icon name="document-text" style="font-size: 0.9rem; margin-right: 4px; vertical-align: middle;"></ion-icon>
+          {{ paiement.reference_paiement }}
+        </p>
+      </ion-label>
+      <div slot="end" class="actions-container">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="editPaiement(paiement)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          color="danger"
+          (click)="deletePaiement(paiement)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="paiementsFiltres.length === 0" class="empty-state">
+    <ion-icon name="wallet"></ion-icon>
+    <p>Aucun paiement trouvé</p>
+  </div>
+</ion-content>
+
