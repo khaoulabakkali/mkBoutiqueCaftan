@@ -2,11 +2,19 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Article</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        type="submit"
+        form="articleForm"
+        [disabled]="articleForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="articleForm" (ngSubmit)="onSubmit()">
+  <form id="articleForm" [formGroup]="articleForm" (ngSubmit)="onSubmit()">
     <!-- Nom article -->
     <ion-item [class.item-has-error]="nom_article?.invalid && nom_article?.touched">
       <ion-label position="stacked">Nom de l'article *</ion-label>
@@ -120,7 +128,7 @@
       <ion-checkbox slot="end" formControlName="actif"></ion-checkbox>
     </ion-item>
 
-    <!-- Boutons -->
+    <!-- Bouton Annuler -->
     <div class="form-actions">
       <ion-button
         type="button"
@@ -129,13 +137,6 @@
         (click)="onCancel()">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
         Annuler
-      </ion-button>
-      <ion-button
-        type="submit"
-        expand="block"
-        [disabled]="articleForm.invalid">
-        <ion-icon name="save" slot="start"></ion-icon>
-        {{ isEditMode ? 'Modifier' : 'Créer' }}
       </ion-button>
     </div>
   </form>

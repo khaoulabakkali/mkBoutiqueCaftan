@@ -2,11 +2,19 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Rôle</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        type="submit"
+        form="roleForm"
+        [disabled]="roleForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="roleForm" (ngSubmit)="onSubmit()">
+  <form id="roleForm" [formGroup]="roleForm" (ngSubmit)="onSubmit()">
 
     <!-- Libellé rôle -->
     <ion-item [class.item-has-error]="nomRole?.invalid && nomRole?.touched">
@@ -42,7 +50,7 @@
       <ion-checkbox formControlName="actif" slot="end"></ion-checkbox>
     </ion-item>
 
-    <!-- Boutons -->
+    <!-- Bouton Annuler -->
     <div class="form-actions">
       <ion-button
         type="button"
@@ -51,13 +59,6 @@
         (click)="router.navigate(['/parametres/roles'])">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
         Annuler
-      </ion-button>
-      <ion-button
-        type="submit"
-        expand="block"
-        [disabled]="roleForm.invalid">
-        <ion-icon name="save" slot="start"></ion-icon>
-        {{ isEditMode ? 'Modifier' : 'Créer' }}
       </ion-button>
     </div>
   </form>

@@ -11,6 +11,7 @@ import {
   IonInput,
   IonTextarea,
   IonButton,
+  IonButtons,
   IonIcon,
   ToastController,
   LoadingController
@@ -18,7 +19,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack } from 'ionicons/icons';
+import { save, arrowBack, checkmark } from 'ionicons/icons';
 import { CategorieService } from '../../services/categorie.service';
 import { Categorie } from '../../models/categorie.model';
 import { environment } from '../../../environments/environment';
@@ -39,6 +40,7 @@ import { environment } from '../../../environments/environment';
     IonInput,
     IonTextarea,
     IonButton,
+    IonButtons,
     IonIcon,
     ReactiveFormsModule,
     CommonModule
@@ -60,7 +62,7 @@ export class FormCategoriePage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack });
+    addIcons({ save, arrowBack, checkmark });
     
     this.categorieForm = this.formBuilder.group({
       nom_categorie: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],

@@ -10,6 +10,7 @@ import {
   IonLabel,
   IonInput,
   IonButton,
+  IonButtons,
   IonIcon,
   ToastController,
   LoadingController
@@ -17,7 +18,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack } from 'ionicons/icons';
+import { save, arrowBack, checkmark } from 'ionicons/icons';
 import { TailleService } from '../../services/taille.service';
 import { Taille } from '../../models/taille.model';
 import { environment } from '../../../environments/environment';
@@ -37,6 +38,7 @@ import { environment } from '../../../environments/environment';
     IonLabel,
     IonInput,
     IonButton,
+    IonButtons,
     IonIcon,
     ReactiveFormsModule,
     CommonModule
@@ -58,7 +60,7 @@ export class FormTaillePage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack });
+    addIcons({ save, arrowBack, checkmark });
     
     this.tailleForm = this.formBuilder.group({
       taille: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(20)]]

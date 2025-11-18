@@ -11,6 +11,7 @@ import {
   IonLabel,
   IonInput,
   IonButton,
+  IonButtons,
   IonIcon,
   IonSelect,
   IonSelectOption,
@@ -22,7 +23,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, add, chevronDown } from 'ionicons/icons';
+import { save, arrowBack, add, chevronDown, checkmark } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation, StatutReservation } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
@@ -45,6 +46,7 @@ import { environment } from '../../environments/environment';
     IonLabel,
     IonInput,
     IonButton,
+    IonButtons,
     IonIcon,
     IonSelect,
     IonSelectOption,
@@ -71,7 +73,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private modalController: ModalController
   ) {
-    addIcons({ save, arrowBack, add, chevronDown });
+    addIcons({ save, arrowBack, add, chevronDown, checkmark });
     
     this.reservationForm = this.formBuilder.group({
       id_client: ['', [Validators.required]],

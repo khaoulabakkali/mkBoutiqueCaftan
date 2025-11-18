@@ -2,11 +2,19 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Réservation</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        type="submit"
+        form="reservationForm"
+        [disabled]="reservationForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
+  <form id="reservationForm" [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
     <!-- Client -->
     <ion-item [class.item-has-error]="id_client?.invalid && id_client?.touched" button (click)="openClientModal()">
       <ion-label position="stacked">Client *</ion-label>
@@ -112,7 +120,7 @@
       </ion-input>
     </ion-item>
 
-    <!-- Boutons -->
+    <!-- Bouton Annuler -->
     <div class="form-actions">
       <ion-button
         type="button"
@@ -121,13 +129,6 @@
         (click)="onCancel()">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
         Annuler
-      </ion-button>
-      <ion-button
-        type="submit"
-        expand="block"
-        [disabled]="reservationForm.invalid">
-        <ion-icon name="save" slot="start"></ion-icon>
-        {{ isEditMode ? 'Modifier' : 'Créer' }}
       </ion-button>
     </div>
   </form>

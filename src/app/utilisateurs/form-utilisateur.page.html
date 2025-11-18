@@ -2,11 +2,19 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Utilisateur</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        type="submit"
+        form="utilisateurForm"
+        [disabled]="utilisateurForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()">
+  <form id="utilisateurForm" [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()">
     <!-- Nom complet -->
     <ion-item [class.item-has-error]="nomComplet?.invalid && nomComplet?.touched">
       <ion-label position="stacked">Nom complet *</ion-label>
@@ -94,15 +102,8 @@
       <ion-checkbox formControlName="actif" slot="end"></ion-checkbox>
     </ion-item>
 
-    <!-- Boutons -->
+    <!-- Bouton Annuler -->
     <div class="form-actions">
-      <ion-button
-        expand="block"
-        type="submit"
-        [disabled]="utilisateurForm.invalid">
-        <ion-icon name="save" slot="start"></ion-icon>
-        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-      </ion-button>
       <ion-button
         expand="block"
         fill="outline"

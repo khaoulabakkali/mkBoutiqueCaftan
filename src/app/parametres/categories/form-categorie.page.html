@@ -2,11 +2,19 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Catégorie</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        type="submit"
+        form="categorieForm"
+        [disabled]="categorieForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()">
+  <form id="categorieForm" [formGroup]="categorieForm" (ngSubmit)="onSubmit()">
     <!-- Nom catégorie -->
     <ion-item [class.item-has-error]="nom_categorie?.invalid && nom_categorie?.touched">
       <ion-label position="stacked">Nom de la catégorie *</ion-label>
@@ -51,7 +59,7 @@
       <span *ngIf="ordre_affichage?.errors?.['min']">L'ordre ne peut pas être négatif</span>
     </div>
 
-    <!-- Boutons -->
+    <!-- Bouton Annuler -->
     <div class="form-actions">
       <ion-button
         type="button"
@@ -60,13 +68,6 @@
         (click)="router.navigate(['/parametres/categories'])">
         <ion-icon name="arrow-back" slot="start"></ion-icon>
         Annuler
-      </ion-button>
-      <ion-button
-        type="submit"
-        expand="block"
-        [disabled]="categorieForm.invalid">
-        <ion-icon name="save" slot="start"></ion-icon>
-        {{ isEditMode ? 'Modifier' : 'Créer' }}
       </ion-button>
     </div>
   </form>

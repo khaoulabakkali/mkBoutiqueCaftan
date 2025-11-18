@@ -11,6 +11,7 @@ import {
   IonInput,
   IonTextarea,
   IonButton,
+  IonButtons,
   IonIcon,
   ToastController,
   LoadingController
@@ -18,7 +19,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack } from 'ionicons/icons';
+import { save, arrowBack, checkmark } from 'ionicons/icons';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
 import { environment } from '../../environments/environment';
@@ -39,6 +40,7 @@ import { environment } from '../../environments/environment';
     IonInput,
     IonTextarea,
     IonButton,
+    IonButtons,
     IonIcon,
     ReactiveFormsModule,
     CommonModule
@@ -58,7 +60,7 @@ export class FormClientPage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack });
+    addIcons({ save, arrowBack, checkmark });
     
     this.clientForm = this.formBuilder.group({
       nom_client: ['', [Validators.required, Validators.minLength(2)]],

@@ -10,6 +10,7 @@ import {
   IonLabel,
   IonInput,
   IonButton,
+  IonButtons,
   IonIcon,
   ToastController,
   LoadingController
@@ -17,7 +18,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack } from 'ionicons/icons';
+import { save, arrowBack, checkmark } from 'ionicons/icons';
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
 
@@ -36,6 +37,7 @@ import { Paiement } from '../models/paiement.model';
     IonLabel,
     IonInput,
     IonButton,
+    IonButtons,
     IonIcon,
     ReactiveFormsModule,
     CommonModule
@@ -54,7 +56,7 @@ export class FormPaiementPage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack });
+    addIcons({ save, arrowBack, checkmark });
     
     this.paiementForm = this.formBuilder.group({
       montant: ['', [Validators.required, Validators.min(0.01)]],

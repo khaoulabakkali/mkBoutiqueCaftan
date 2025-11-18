@@ -11,6 +11,7 @@ import {
   IonInput,
   IonTextarea,
   IonButton,
+  IonButtons,
   IonIcon,
   IonSelect,
   IonSelectOption,
@@ -21,7 +22,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack } from 'ionicons/icons';
+import { save, arrowBack, checkmark } from 'ionicons/icons';
 import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
 import { CategorieService } from '../services/categorie.service';
@@ -46,6 +47,7 @@ import { environment } from '../../environments/environment';
     IonInput,
     IonTextarea,
     IonButton,
+    IonButtons,
     IonIcon,
     IonSelect,
     IonSelectOption,
@@ -71,7 +73,7 @@ export class FormArticlePage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack });
+    addIcons({ save, arrowBack, checkmark });
     
     this.articleForm = this.formBuilder.group({
       nom_article: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],

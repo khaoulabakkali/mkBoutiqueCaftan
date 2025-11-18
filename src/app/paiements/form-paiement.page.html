@@ -2,11 +2,19 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Paiement</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        type="submit"
+        form="paiementForm"
+        [disabled]="paiementForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form [formGroup]="paiementForm" (ngSubmit)="onSubmit()">
+  <form id="paiementForm" [formGroup]="paiementForm" (ngSubmit)="onSubmit()">
     <!-- Montant -->
     <ion-item [class.item-has-error]="montant?.invalid && montant?.touched">
       <ion-label position="stacked">Montant (MAD) *</ion-label>
@@ -33,15 +41,8 @@
       </ion-input>
     </ion-item>
 
-    <!-- Boutons -->
+    <!-- Bouton Annuler -->
     <div class="form-actions">
-      <ion-button
-        expand="block"
-        type="submit"
-        [disabled]="paiementForm.invalid">
-        <ion-icon name="save" slot="start"></ion-icon>
-        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
-      </ion-button>
       <ion-button
         expand="block"
         fill="outline"
