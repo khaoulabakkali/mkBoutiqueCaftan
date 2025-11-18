@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of, delay } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Utilisateur, Role } from '../models/utilisateur.model';
+import { Utilisateur, Role, CreateUserRequest } from '../models/utilisateur.model';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -61,9 +61,9 @@ export class UtilisateurService {
   /**
    * Créer un nouvel utilisateur
    */
-  createUtilisateur(utilisateur: Utilisateur): Observable<Utilisateur> {
-    // Préparer les données pour l'API (exclure mot_de_passe_hash si présent)
-    const { mot_de_passe_hash, password, ...userData } = utilisateur;
+  createUtilisateur(utilisateur: CreateUserRequest): Observable<Utilisateur> {
+    // Préparer les données pour l'API
+    const { password, ...userData } = utilisateur;
     const payload: any = {
       ...userData
     };
@@ -85,9 +85,9 @@ export class UtilisateurService {
   /**
    * Mettre à jour un utilisateur
    */
-  updateUtilisateur(id: number, utilisateur: Utilisateur): Observable<Utilisateur> {
+  updateUtilisateur(id: number, utilisateur: CreateUserRequest | Utilisateur): Observable<Utilisateur> {
     // Préparer les données pour l'API
-    const { mot_de_passe_hash, idUtilisateur, password, ...userData } = utilisateur;
+    const { mot_de_passe_hash, idUtilisateur, password, ...userData } = utilisateur as any;
     const payload: any = { ...userData };
     
     // Inclure le mot de passe seulement s'il est fourni

@@ -115,11 +115,19 @@ export class FormUtilisateurPage implements OnInit {
 
     this.utilisateurService.getUtilisateurById(id).subscribe({
       next: (utilisateur) => {
+        // Convertir le rôle en nomRole pour le formulaire
+        let roleValue = '';
+        if (typeof utilisateur.role === 'string') {
+          roleValue = utilisateur.role;
+        } else if (utilisateur.role && typeof utilisateur.role === 'object' && 'nomRole' in utilisateur.role) {
+          roleValue = (utilisateur.role as any).nomRole;
+        }
+        
         this.utilisateurForm.patchValue({
           nomComplet: utilisateur.nomComplet,
           login: utilisateur.login,
           email: utilisateur.email || utilisateur.login, // Fallback sur login si email n'existe pas
-          role: utilisateur.role,
+          role: roleValue,
           telephone: utilisateur.telephone || '',
           actif: utilisateur.actif
         });
@@ -144,12 +152,22 @@ export class FormUtilisateurPage implements OnInit {
       await loading.present();
 
       const formValue = this.utilisateurForm.value;
+      
+      // Convertir le nomRole en idRole
+      const selectedRole = this.roles.find(r => r.nomRole === formValue.role);
+      const idRole = selectedRole?.idRole;
+      
+      if (!idRole && !this.isEditMode) {
+        this.presentToast('Veuillez sélectionner un rôle valide', 'danger');
+        return;
+      }
+      
       const utilisateur: CreateUserRequest = {
         nomComplet: formValue.nomComplet,
         login: formValue.login,
         email: formValue.email || undefined,
         password: formValue.password,
-        idRole: formValue.role as any,
+        idRole: idRole || 0, // Fallback à 0 si non trouvé (sera géré par le backend)
         telephone: formValue.telephone || undefined,
         actif: formValue.actif
       };
