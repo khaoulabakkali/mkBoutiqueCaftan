@@ -78,6 +78,7 @@ export class FormArticlePage implements OnInit {
       prix_location_base: [0, [Validators.required, Validators.min(0)]],
       prix_avance_base: [0, [Validators.required, Validators.min(0)]],
       id_taille: ['', []],
+      couleur: ['', []],
       photo: ['', []],
       id_categorie: ['', [Validators.required]],
       actif: [true, [Validators.required]]
@@ -138,6 +139,7 @@ export class FormArticlePage implements OnInit {
           prix_location_base: article.prix_location_base,
           prix_avance_base: article.prix_avance_base,
           id_taille: article.id_taille || '',
+          couleur: article.couleur || '',
           photo: article.photo || '',
           id_categorie: article.id_categorie,
           actif: article.actif
@@ -167,6 +169,7 @@ export class FormArticlePage implements OnInit {
         prix_location_base: parseFloat(formValue.prix_location_base),
         prix_avance_base: parseFloat(formValue.prix_avance_base),
         id_taille: formValue.id_taille || undefined,
+        couleur: formValue.couleur || undefined,
         photo: formValue.photo || undefined,
         id_categorie: formValue.id_categorie,
         actif: formValue.actif

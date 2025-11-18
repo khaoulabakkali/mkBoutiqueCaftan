@@ -32,6 +32,9 @@ export interface Article {
   /** VARCHAR(20) - La taille de l'article (référence à la table tailles) */
   id_taille?: string;
   
+  /** VARCHAR(50) - La couleur de l'article */
+  couleur?: string;
+  
   /** Longtext - La photo de l'article (base64 ou URL) */
   photo?: string;
   
