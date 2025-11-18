@@ -278,7 +278,6 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   async toggleActif(utilisateur: Utilisateur) {
-    console.log("utilisateur",utilisateur)
     if (!utilisateur || !utilisateur.idUtilisateur) {
       this.presentToast('ID utilisateur manquant', 'danger');
       return;

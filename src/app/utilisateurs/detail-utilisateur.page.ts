@@ -112,6 +112,10 @@ export class DetailUtilisateurPage implements OnInit {
     }
   }
 
+  goBack() {
+    this.router.navigate(['/utilisateurs']);
+  }
+
   getRoleColor(role: Role | string | undefined): string {
     if (!role) return 'medium';
     const roleStr = typeof role === 'string' ? role : (role as Role).nomRole || '';

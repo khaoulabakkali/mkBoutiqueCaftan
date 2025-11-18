@@ -6,12 +6,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouvel' }} Utilisateur</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <form [formGroup]="utilisateurForm" (ngSubmit)="onSubmit()">
     <!-- Nom complet -->
     <ion-item [class.item-has-error]="nomComplet?.invalid && nomComplet?.touched">

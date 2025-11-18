@@ -11,12 +11,6 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Détails Utilisateur</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
   <div *ngIf="utilisateur" class="detail-container">
     <!-- En-tête avec nom et statut -->
     <ion-card class="header-card">
@@ -145,7 +139,7 @@
           <ion-icon name="create" slot="start"></ion-icon>
           Modifier l'utilisateur
         </ion-button>
-        <ion-button expand="block" fill="outline" (click)="router.navigate(['/utilisateurs'])">
+        <ion-button expand="block" fill="outline" (click)="goBack()">
           <ion-icon name="arrow-back" slot="start"></ion-icon>
           Retour à la liste
         </ion-button>
