@@ -37,6 +37,21 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'articles',
+    loadComponent: () => import('./articles/liste-articles.page').then((m) => m.ListeArticlesPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'articles/new',
+    loadComponent: () => import('./articles/form-article.page').then((m) => m.FormArticlePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'articles/edit/:id',
+    loadComponent: () => import('./articles/form-article.page').then((m) => m.FormArticlePage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'tabs',
     loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
     canActivate: [authGuard],

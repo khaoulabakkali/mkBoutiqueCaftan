@@ -1,0 +1,85 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gestion des Articles</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addNewArticle()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Articles</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher un article..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Liste des articles -->
+  <ion-list *ngIf="articlesFiltres.length > 0">
+    <ion-item *ngFor="let article of articlesFiltres" [button]="true">
+      <ion-label>
+        <h2>
+          <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" 
+                    [color]="article.actif ? 'success' : 'danger'"
+                    style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+          {{ article.nom_article }}
+        </h2>
+        <div class="badges-container">
+          <ion-badge color="primary">
+            {{ getCategorieName(article.id_categorie) }}
+          </ion-badge>
+          <ion-badge *ngIf="article.id_taille" color="secondary">
+            Taille: {{ getTailleLabel(article.id_taille) }}
+          </ion-badge>
+          <ion-badge [color]="article.actif ? 'success' : 'danger'">
+            <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+            {{ article.actif ? 'Actif' : 'Inactif' }}
+          </ion-badge>
+        </div>
+        <p style="margin-top: 0.5rem; color: var(--ion-color-medium);">
+          Prix location: {{ article.prix_location_base }} MAD/jour | Avance: {{ article.prix_avance_base }} MAD
+        </p>
+      </ion-label>
+      <div slot="end" class="actions-container">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="editArticle(article)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          color="danger"
+          (click)="deleteArticle(article)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          [color]="article.actif ? 'warning' : 'success'"
+          (click)="toggleActif(article)">
+          <ion-icon [name]="article.actif ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="articlesFiltres.length === 0" class="empty-state">
+    <ion-icon name="cube"></ion-icon>
+    <p>Aucun article trouvé</p>
+  </div>
+</ion-content>
+
