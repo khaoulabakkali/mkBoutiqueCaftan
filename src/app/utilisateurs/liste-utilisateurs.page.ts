@@ -172,9 +172,10 @@ export class ListeUtilisateursPage implements OnInit {
     );
   }
 
-  getRoleColor(role: Role | undefined): string {
-    if (!role) return '';
-    const roleStr =  role.nomRole || '';
+  getRoleColor(role: Role | string | undefined): string {
+    if (!role) return 'medium';
+    const roleStr = typeof role === 'string' ? role : (role as Role).nomRole || '';
+    if (!roleStr) return 'medium';
     switch (roleStr.toUpperCase()) {
       case 'ADMIN':
         return 'danger';
@@ -187,14 +188,24 @@ export class ListeUtilisateursPage implements OnInit {
     }
   }
 
-  getRoleLabel(role: Role): string {
-    if (!role) return '';
+  getRoleLabel(role: Role | string | undefined): string {
+    if (!role) return 'Non défini';
+    if (typeof role === 'string') {
+      // Si c'est un string, chercher dans la liste des rôles
+      if (Array.isArray(this.roles)) {
+        const roleFind = this.roles.find(r => r && r.nomRole === role);
+        return roleFind ? roleFind.nomRole : role;
+      }
+      return role;
+    }
     // Si c'est un objet Role
-    return role.nomRole || '';
+    return (role as Role).nomRole || 'Non défini';
   }
 
-  getRoleIcon(role:Role): string {
-    const roleStr = role.nomRole || '';
+  getRoleIcon(role: Role | string | undefined): string {
+    if (!role) return 'person';
+    const roleStr = typeof role === 'string' ? role : (role as Role).nomRole || '';
+    if (!roleStr) return 'person';
     switch (roleStr.toUpperCase()) {
       case 'ADMIN':
         return 'shield-checkmark';
