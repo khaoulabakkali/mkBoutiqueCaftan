@@ -21,6 +21,7 @@ import { addIcons } from 'ionicons';
 import { save, arrowBack } from 'ionicons/icons';
 import { CategorieService } from '../../services/categorie.service';
 import { Categorie } from '../../models/categorie.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-form-categorie',
@@ -95,7 +96,9 @@ export class FormCategoriePage implements OnInit {
         loading.then(l => l.dismiss());
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.then(l => l.dismiss());
         this.showToast('Erreur lors du chargement de la catégorie', 'danger');
         this.routerInstance.navigate(['/parametres/categories']);

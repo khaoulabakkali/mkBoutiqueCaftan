@@ -39,6 +39,7 @@ import { CategorieService } from '../services/categorie.service';
 import { Categorie } from '../models/categorie.model';
 import { TailleService } from '../services/taille.service';
 import { Taille } from '../models/taille.model';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-liste-articles',
@@ -104,7 +105,9 @@ export class ListeArticlesPage implements OnInit {
         this.categories = data;
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des catégories:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des catégories:', error);
+        }
       }
     });
   }
@@ -115,7 +118,9 @@ export class ListeArticlesPage implements OnInit {
         this.tailles = data;
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des tailles:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des tailles:', error);
+        }
       }
     });
   }
@@ -133,7 +138,9 @@ export class ListeArticlesPage implements OnInit {
         loading.dismiss();
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des articles';
         this.presentToast(errorMessage, 'danger');

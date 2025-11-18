@@ -20,6 +20,7 @@ import { addIcons } from 'ionicons';
 import { save, arrowBack } from 'ionicons/icons';
 import { TailleService } from '../../services/taille.service';
 import { Taille } from '../../models/taille.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-form-taille',
@@ -89,7 +90,9 @@ export class FormTaillePage implements OnInit {
         loading.then(l => l.dismiss());
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.then(l => l.dismiss());
         this.showToast('Erreur lors du chargement de la taille', 'danger');
         this.routerInstance.navigate(['/parametres/tailles']);

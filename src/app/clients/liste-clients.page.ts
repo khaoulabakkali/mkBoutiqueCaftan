@@ -33,6 +33,7 @@ import {
 } from 'ionicons/icons';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-liste-clients',
@@ -97,7 +98,9 @@ export class ListeClientsPage implements OnInit {
         loading.dismiss();
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des clients';
         this.presentToast(errorMessage, 'danger');

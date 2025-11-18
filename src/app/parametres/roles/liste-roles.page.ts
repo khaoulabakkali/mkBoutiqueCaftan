@@ -35,6 +35,7 @@ import {
 } from 'ionicons/icons';
 import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-liste-roles',
@@ -101,7 +102,9 @@ export class ListeRolesPage implements OnInit {
         loading.dismiss();
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des rôles';
         this.presentToast(errorMessage, 'danger');

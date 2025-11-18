@@ -30,6 +30,7 @@ import {
 } from 'ionicons/icons';
 import { TailleService } from '../../services/taille.service';
 import { Taille } from '../../models/taille.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-liste-tailles',
@@ -91,7 +92,9 @@ export class ListeTaillesPage implements OnInit {
         loading.dismiss();
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des tailles';
         this.presentToast(errorMessage, 'danger');

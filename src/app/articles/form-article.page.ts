@@ -28,6 +28,7 @@ import { CategorieService } from '../services/categorie.service';
 import { Categorie } from '../models/categorie.model';
 import { TailleService } from '../services/taille.service';
 import { Taille } from '../models/taille.model';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-form-article',
@@ -107,7 +108,9 @@ export class FormArticlePage implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des catégories:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des catégories:', error);
+        }
       }
     });
   }
@@ -118,7 +121,9 @@ export class FormArticlePage implements OnInit {
         this.tailles = data;
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des tailles:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des tailles:', error);
+        }
       }
     });
   }
@@ -147,7 +152,9 @@ export class FormArticlePage implements OnInit {
         loading.then(l => l.dismiss());
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.then(l => l.dismiss());
         this.showToast('Erreur lors du chargement de l\'article', 'danger');
         this.router.navigate(['/articles']);

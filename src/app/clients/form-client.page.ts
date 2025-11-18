@@ -21,6 +21,7 @@ import { addIcons } from 'ionicons';
 import { save, arrowBack } from 'ionicons/icons';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-form-client',
@@ -111,7 +112,9 @@ export class FormClientPage implements OnInit {
         loading.then(l => l.dismiss());
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.then(l => l.dismiss());
         this.showToast('Erreur lors du chargement du client', 'danger');
         this.router.navigate(['/clients']);

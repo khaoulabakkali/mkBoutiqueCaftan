@@ -28,6 +28,7 @@ import { Reservation, StatutReservation } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
 import { ClientSelectionModalComponent } from './client-selection-modal.component';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-form-reservation',
@@ -126,7 +127,9 @@ export class FormReservationPage implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des clients:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des clients:', error);
+        }
       }
     });
   }
@@ -148,7 +151,9 @@ export class FormReservationPage implements OnInit, OnDestroy {
           resolve();
         },
         error: (error) => {
+          if (!environment.production) {
           console.error('Erreur lors du chargement des clients:', error);
+        }
           resolve(); // Continuer même en cas d'erreur
         }
       });
@@ -219,7 +224,9 @@ export class FormReservationPage implements OnInit, OnDestroy {
         loading.then(l => l.dismiss());
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.then(l => l.dismiss());
         this.showToast('Erreur lors du chargement de la réservation', 'danger');
         this.router.navigate(['/reservations']);

@@ -30,6 +30,7 @@ import {
 } from 'ionicons/icons';
 import { CategorieService } from '../../services/categorie.service';
 import { Categorie } from '../../models/categorie.model';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-liste-categories',
@@ -91,7 +92,9 @@ export class ListeCategoriesPage implements OnInit {
         loading.dismiss();
       },
       error: (error) => {
-        console.error('Erreur lors du chargement:', error);
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des catégories';
         this.presentToast(errorMessage, 'danger');
