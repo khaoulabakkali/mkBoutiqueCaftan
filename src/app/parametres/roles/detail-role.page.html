@@ -83,6 +83,33 @@
       </ion-card-content>
     </ion-card>
 
+    <!-- Utilisateurs associés -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Utilisateurs associés ({{ utilisateurs.length }})</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list *ngIf="utilisateurs.length > 0">
+          <ion-item [button]="true" (click)="viewUtilisateur(utilisateur)" *ngFor="let utilisateur of utilisateurs">
+            <ion-icon name="person" slot="start" color="primary"></ion-icon>
+            <ion-label>
+              <h2>{{ utilisateur.nomComplet || 'Nom non défini' }}</h2>
+              <p>{{ utilisateur.login || 'Login non défini' }}</p>
+            </ion-label>
+            <ion-badge 
+              slot="end" 
+              [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
+              {{ (utilisateur.actif !== undefined && utilisateur.actif) ? 'Actif' : 'Inactif' }}
+            </ion-badge>
+          </ion-item>
+        </ion-list>
+        <div *ngIf="utilisateurs.length === 0" class="empty-state">
+          <ion-icon name="person-outline"></ion-icon>
+          <p>Aucun utilisateur associé à ce rôle</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
     <!-- Actions -->
     <ion-card>
       <ion-card-content>

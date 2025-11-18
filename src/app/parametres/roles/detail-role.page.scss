@@ -93,3 +93,54 @@ ion-button {
   }
 }
 
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--ion-color-medium);
+  
+  ion-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+ion-list {
+  background: transparent;
+  
+  ion-item {
+    --padding-start: 0;
+    --padding-end: 0;
+    margin-bottom: 0.5rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    ion-icon {
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+    
+    ion-label {
+      h2 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin: 0 0 0.25rem 0;
+        color: var(--ion-color-dark);
+      }
+      
+      p {
+        font-size: 0.85rem;
+        margin: 0;
+        color: var(--ion-color-medium);
+      }
+    }
+  }
+}
+

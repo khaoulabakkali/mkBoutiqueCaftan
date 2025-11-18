@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of, delay } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Utilisateur, Role, CreateUserRequest } from '../models/utilisateur.model';
+import { Utilisateur, CreateUserRequest } from '../models/utilisateur.model';
+import { Role } from '../models/role.model';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -128,6 +129,38 @@ export class UtilisateurService {
     ).pipe(
       map(() => true),
       catchError(this.handleError<boolean>('toggleActif', false))
+    );
+  }
+
+  /**
+   * Récupérer les utilisateurs par ID de rôle
+   * Utilise l'endpoint API /api/roles/{id}/utilisateurs
+   */
+  getUtilisateursByRole(roleId: number): Observable<Utilisateur[]> {
+    return this.http.get<Utilisateur[]>(
+      `${this.apiUrl}/roles/${roleId}/utilisateurs`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Utilisateur[]>('getUtilisateursByRole', []))
+    );
+  }
+
+  /**
+   * Récupérer les utilisateurs par nom de rôle
+   */
+  getUtilisateursByRoleName(roleName: string): Observable<Utilisateur[]> {
+    return this.getAllUtilisateurs().pipe(
+      map(utilisateurs => {
+        return utilisateurs.filter(user => {
+          if (typeof user.role === 'string') {
+            return user.role === roleName;
+          }
+          if (typeof user.role === 'object' && user.role !== null && 'nomRole' in user.role) {
+            return (user.role as any).nomRole === roleName;
+          }
+          return false;
+        });
+      })
     );
   }
 

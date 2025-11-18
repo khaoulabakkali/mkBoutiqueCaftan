@@ -1,12 +1,4 @@
-/**
- * Enum pour les rôles des utilisateurs
- * Correspond à l'ENUM de la base de données
- */
-export enum Role {
-  ADMIN = 'ADMIN',
-  STAFF = 'STAFF',
-  MANAGER = 'MANAGER'
-}
+import { Role } from './role.model';
 
 /**
  * Modèle Utilisateur
@@ -17,7 +9,7 @@ export enum Role {
  * - nomComplet: VARCHAR(100)
  * - login: VARCHAR(50)
  * - mot_de_passe_hash: VARCHAR(255)
- * - role: ENUM('ADMIN', 'STAFF', 'MANAGER')
+ * - idRole: INTEGER - Référence à la table roles
  * - telephone: VARCHAR(20)
  * - actif: BOOLEAN
  * - date_creation_compte: DATETIME
@@ -37,7 +29,7 @@ export interface CreateUserRequest {
   /** Champ temporaire pour le formulaire uniquement (non stocké en base) */
   password?: string;
   
-  /** VARCHAR(50) - Code du rôle (ex: ADMIN, STAFF, MANAGER) - Référence à la table roles */
+  /** INTEGER - ID du rôle - Référence à la table roles */
   idRole: number;
   
   /** VARCHAR(20) - Numéro de téléphone (optionnel) */
@@ -47,6 +39,7 @@ export interface CreateUserRequest {
   actif: boolean;
   
 }
+
 export interface Utilisateur {
   /** INTEGER - Clé primaire, auto-increment */
   idUtilisateur?: number;
@@ -66,8 +59,11 @@ export interface Utilisateur {
   /** Champ temporaire pour le formulaire uniquement (non stocké en base) */
   password?: string;
   
-  /** VARCHAR(50) - Code du rôle (ex: ADMIN, STAFF, MANAGER) - Référence à la table roles */
-  role: Role | string;
+  /** INTEGER - ID du rôle - Référence à la table roles */
+  idRole?: number;
+  
+  /** Rôle complet (objet Role) ou nom du rôle (string) - Peut être retourné par l'API */
+  role?: Role | string;
   
   /** VARCHAR(20) - Numéro de téléphone (optionnel) */
   telephone?: string;
