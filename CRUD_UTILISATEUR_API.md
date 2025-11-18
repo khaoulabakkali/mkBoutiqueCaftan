@@ -122,7 +122,7 @@ export const environment = {
 ```json
 [
   {
-    "id_utilisateur": 1,
+    "idUtilisateur": 1,
     "nomComplet": "Nom Complet",
     "login": "email@exemple.com",
     "role": "ADMIN",
@@ -136,7 +136,7 @@ export const environment = {
 ### Réponse POST/PUT /api/utilisateurs
 ```json
 {
-  "id_utilisateur": 1,
+  "idUtilisateur": 1,
   "nomComplet": "Nom Complet",
   "login": "email@exemple.com",
   "role": "ADMIN",

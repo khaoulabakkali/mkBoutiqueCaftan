@@ -13,7 +13,7 @@ export enum Role {
  * Correspond à la structure de la table utilisateurs dans la base de données
  * 
  * Structure de la table :
- * - id_utilisateur: INTEGER (clé primaire, auto-increment)
+ * - idUtilisateur: INTEGER (clé primaire, auto-increment)
  * - nomComplet: VARCHAR(100)
  * - login: VARCHAR(50)
  * - mot_de_passe_hash: VARCHAR(255)
@@ -24,7 +24,7 @@ export enum Role {
  */
 export interface Utilisateur {
   /** INTEGER - Clé primaire, auto-increment */
-  id_utilisateur?: number;
+  idUtilisateur?: number;
   
   /** VARCHAR(100) - Nom complet de l'utilisateur */
   nomComplet: string;

@@ -83,7 +83,7 @@ export class UtilisateurService {
    */
   updateUtilisateur(id: number, utilisateur: Utilisateur): Observable<Utilisateur> {
     // Préparer les données pour l'API
-    const { mot_de_passe_hash, id_utilisateur, ...userData } = utilisateur;
+    const { mot_de_passe_hash, idUtilisateur, ...userData } = utilisateur;
     const payload: any = { ...userData };
     
     // Inclure le mot de passe seulement s'il est fourni

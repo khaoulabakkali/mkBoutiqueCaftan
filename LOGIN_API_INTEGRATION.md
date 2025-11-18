@@ -19,7 +19,7 @@ POST /api/auth/login
   "success": boolean,
   "message": string?,
   "user": {
-    "id_utilisateur": number,
+    "idUtilisateur": number,
     "nomComplet": string,
     "login": string,
     "role": string,

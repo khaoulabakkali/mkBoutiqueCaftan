@@ -42,7 +42,7 @@
           </ion-badge>
           <ion-badge [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
             <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-            {{ (utilisateur.actif !== undefined && utilisateur.actif) ? 'Actif' : 'Inactif' }}
+            {{ utilisateur.actif ? 'Actif' : 'Inactif' }}
           </ion-badge>
         </div>
       </ion-label>

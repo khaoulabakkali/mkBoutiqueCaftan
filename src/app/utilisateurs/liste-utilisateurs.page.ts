@@ -208,15 +208,15 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   async editUtilisateur(utilisateur: Utilisateur) {
-    if (!utilisateur || !utilisateur.id_utilisateur) {
+    if (!utilisateur || !utilisateur.idUtilisateur) {
       this.presentToast('ID utilisateur manquant', 'danger');
       return;
     }
-    this.router.navigate(['/utilisateurs/edit', utilisateur.id_utilisateur]);
+    this.router.navigate(['/utilisateurs/edit', utilisateur.idUtilisateur]);
   }
 
   async deleteUtilisateur(utilisateur: Utilisateur) {
-    if (!utilisateur || !utilisateur.id_utilisateur) {
+    if (!utilisateur || !utilisateur.idUtilisateur) {
       this.presentToast('ID utilisateur manquant', 'danger');
       return;
     }
@@ -238,7 +238,7 @@ export class ListeUtilisateursPage implements OnInit {
             });
             await loading.present();
 
-            this.utilisateurService.deleteUtilisateur(utilisateur.id_utilisateur!).subscribe({
+            this.utilisateurService.deleteUtilisateur(utilisateur.idUtilisateur!).subscribe({
               next: () => {
                 loading.dismiss();
                 this.presentToast('Utilisateur supprimé avec succès', 'success');
@@ -259,7 +259,7 @@ export class ListeUtilisateursPage implements OnInit {
   }
 
   async toggleActif(utilisateur: Utilisateur) {
-    if (!utilisateur || !utilisateur.id_utilisateur) {
+    if (!utilisateur || !utilisateur.idUtilisateur) {
       this.presentToast('ID utilisateur manquant', 'danger');
       return;
     }
@@ -270,7 +270,7 @@ export class ListeUtilisateursPage implements OnInit {
     });
     await loading.present();
 
-    this.utilisateurService.toggleActif(utilisateur.id_utilisateur, newActif).subscribe({
+    this.utilisateurService.toggleActif(utilisateur.idUtilisateur, newActif).subscribe({
       next: () => {
         utilisateur.actif = newActif;
         loading.dismiss();
