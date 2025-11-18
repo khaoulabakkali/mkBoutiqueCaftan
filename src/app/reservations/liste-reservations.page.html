@@ -1,0 +1,75 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gestion des Réservations</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addNewReservation()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Réservations</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher une réservation..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Liste des réservations -->
+  <ion-list *ngIf="reservationsFiltres.length > 0">
+    <ion-item *ngFor="let reservation of reservationsFiltres" [button]="true">
+      <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
+      <ion-label>
+        <h2>Réservation #{{ reservation.id_reservation }}</h2>
+        <p><strong>Client:</strong> {{ getClientName(reservation.id_client) }}</p>
+        <p>
+          <ion-icon name="time-outline" style="margin-right: 4px;"></ion-icon>
+          Du {{ formatDate(reservation.date_debut) }} au {{ formatDate(reservation.date_fin) }}
+        </p>
+        <div class="badges-container">
+          <ion-badge [color]="getStatutColor(reservation.statut_reservation)">
+            {{ reservation.statut_reservation }}
+          </ion-badge>
+          <ion-badge color="primary">
+            {{ reservation.montant_total }} MAD
+          </ion-badge>
+          <ion-badge *ngIf="reservation.remise_appliquee > 0" color="success">
+            Remise: {{ reservation.remise_appliquee }} MAD
+          </ion-badge>
+        </div>
+      </ion-label>
+      <div slot="end" class="actions-container">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="editReservation(reservation)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          color="danger"
+          (click)="deleteReservation(reservation)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="reservationsFiltres.length === 0" class="empty-state">
+    <ion-icon name="calendar-outline"></ion-icon>
+    <p>Aucune réservation trouvée</p>
+  </div>
+</ion-content>
+

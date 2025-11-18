@@ -50,6 +50,16 @@
           </ion-item>
           <ion-item 
             button 
+            routerLink="/reservations" 
+            routerDirection="root"
+            [class.menu-item-active]="isRouteActive('/reservations')"
+            routerLinkActive="menu-item-active"
+            [routerLinkActiveOptions]="{exact: false}">
+            <ion-icon name="calendar" slot="start"></ion-icon>
+            <ion-label>Réservations</ion-label>
+          </ion-item>
+          <ion-item 
+            button 
             (click)="toggleParametres($event)"
             [class.menu-item-active]="isRouteActive('/parametres')"
             [detail]="false">

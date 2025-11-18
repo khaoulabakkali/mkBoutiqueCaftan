@@ -11,7 +11,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   // Rediriger vers la page de login si non authentifié
-  router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  // Encoder l'URL pour éviter les problèmes avec les query params imbriqués
+  router.navigate(['/login'], { queryParams: { returnUrl: encodeURIComponent(state.url) } });
   return false;
 };
 
