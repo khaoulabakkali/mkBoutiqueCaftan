@@ -54,25 +54,21 @@ export class LoginPage implements OnInit {
     addIcons({ lockClosed, mail, person });
     
     this.loginForm = this.formBuilder.group({
-      login: ['test@gmail.com', [Validators.required]],
-      password: ['123456', [Validators.required, Validators.minLength(6)]]
+      login: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   ngOnInit() {
     // Si l'utilisateur est déjà authentifié, rediriger vers la page d'accueil
     if (this.authService.isAuthenticated()) {
-
-      this.router.navigate(['/utilisateurs']);
+      this.router.navigate(['/tabs/tab1']);
     }
   }
 
   async onSubmit() {
     if (this.loginForm.valid) {
       this.isLoading = true;
-      
-      // Simuler un délai de connexion
-      setTimeout(() => {
 
       const login = this.loginForm.value.login;
       const password = this.loginForm.value.password;
@@ -80,8 +76,8 @@ export class LoginPage implements OnInit {
       this.authService.login(login, password).subscribe({
         next: (response) => {
           this.isLoading = false;
-          // Récupérer l'URL de retour ou rediriger vers les tabs
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/utilisateurs';
+          // Récupérer l'URL de retour ou rediriger vers l'accueil
+          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
           // Décoder l'URL au cas où elle serait encodée
           let decodedUrl = returnUrl;
           try {
@@ -113,7 +109,7 @@ export class LoginPage implements OnInit {
           await this.showErrorToast(errorMessage);
         }
       });
-    })  } else {
+    } else {
       // Marquer tous les champs comme touchés pour afficher les erreurs
       Object.keys(this.loginForm.controls).forEach(key => {
         this.loginForm.get(key)?.markAsTouched();

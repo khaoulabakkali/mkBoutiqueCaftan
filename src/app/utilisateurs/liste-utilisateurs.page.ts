@@ -69,6 +69,7 @@ export class ListeUtilisateursPage implements OnInit {
   utilisateursFiltres: Utilisateur[] = [];
   searchTerm: string = '';
   roles: Role[] = [];
+  private isLoadingData = false;
 
   constructor(
     private utilisateurService: UtilisateurService,
@@ -99,6 +100,13 @@ export class ListeUtilisateursPage implements OnInit {
     this.loadUtilisateurs();
   }
 
+  ionViewWillEnter() {
+    // Recharger les données chaque fois que la page est sur le point d'être affichée
+    // Cela garantit que les modifications effectuées ailleurs sont reflétées
+    // Ne pas afficher le loading si on revient juste de la modification
+    this.loadUtilisateurs(false);
+  }
+
   loadRoles() {
     this.roleService.getAllRoles().subscribe({
       next: (roles) => {
@@ -110,22 +118,34 @@ export class ListeUtilisateursPage implements OnInit {
     });
   }
 
-  async loadUtilisateurs() {
-    const loading = await this.loadingController.create({
+  async loadUtilisateurs(showLoading = true) {
+    if (this.isLoadingData) return;
+    
+    this.isLoadingData = true;
+    const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
-    });
-    await loading.present();
+    }) : null;
+    
+    if (loading) {
+      await loading.present();
+    }
 
     this.utilisateurService.getAllUtilisateurs().subscribe({
       next: (data) => {
         this.utilisateurs = Array.isArray(data) ? data : [];
         this.utilisateursFiltres = Array.isArray(data) ? data : [];
-        loading.dismiss();
+        if (loading) {
+          loading.dismiss();
+        }
+        this.isLoadingData = false;
       },
       error: (error) => {
-        loading.dismiss();
+        if (loading) {
+          loading.dismiss();
+        }
         this.utilisateurs = [];
         this.utilisateursFiltres = [];
+        this.isLoadingData = false;
         const errorMessage = error?.message || 'Erreur lors du chargement des utilisateurs';
         this.presentToast(errorMessage, 'danger');
       }
