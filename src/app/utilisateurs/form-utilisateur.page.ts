@@ -71,7 +71,7 @@ export class FormUtilisateurPage implements OnInit {
       login: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', []],
-      role: ['', [Validators.required]],
+      idRole: ['', [Validators.required]],
       telephone: ['', []],
       actif: [true, [Validators.required]]
     });
@@ -97,8 +97,8 @@ export class FormUtilisateurPage implements OnInit {
       next: (roles) => {
         this.roles = roles;
         // Si aucun rôle n'est sélectionné et qu'il y a des rôles, sélectionner le premier
-        if (!this.utilisateurForm.get('role')?.value && roles.length > 0) {
-          this.utilisateurForm.patchValue({ role: roles[0].nomRole });
+        if (!this.utilisateurForm.get('idRole')?.value && roles.length > 0) {
+          this.utilisateurForm.patchValue({ role: roles[0].idRole });
         }
       },
       error: (error) => {
@@ -127,7 +127,7 @@ export class FormUtilisateurPage implements OnInit {
           nomComplet: utilisateur.nomComplet,
           login: utilisateur.login,
           email: utilisateur.email || utilisateur.login, // Fallback sur login si email n'existe pas
-          role: roleValue,
+          idRole: roleValue,
           telephone: utilisateur.telephone || '',
           actif: utilisateur.actif
         });
@@ -145,6 +145,7 @@ export class FormUtilisateurPage implements OnInit {
   }
 
   async onSubmit() {
+    console.log(this.utilisateurForm)
     if (this.utilisateurForm.valid) {
       const loading = await this.loadingController.create({
         message: this.isEditMode ? 'Mise à jour...' : 'Création...'
@@ -152,25 +153,19 @@ export class FormUtilisateurPage implements OnInit {
       await loading.present();
 
       const formValue = this.utilisateurForm.value;
-      
-      // Convertir le nomRole en idRole
-      const selectedRole = this.roles.find(r => r.nomRole === formValue.role);
-      const idRole = selectedRole?.idRole;
-      
-      if (!idRole && !this.isEditMode) {
-        this.presentToast('Veuillez sélectionner un rôle valide', 'danger');
-        return;
-      }
-      
+    
       const utilisateur: CreateUserRequest = {
         nomComplet: formValue.nomComplet,
         login: formValue.login,
         email: formValue.email || undefined,
         password: formValue.password,
-        idRole: idRole || 0, // Fallback à 0 si non trouvé (sera géré par le backend)
+        idRole: formValue.idRole || 1, // Fallback à 0 si non trouvé (sera géré par le backend)
         telephone: formValue.telephone || undefined,
         actif: formValue.actif
       };
+
+      console.debug('Form value', formValue);
+      console.debug('Payload utilisateur', utilisateur);
 
       if (this.isEditMode && this.utilisateurId) {
         // Mise à jour
@@ -237,7 +232,7 @@ export class FormUtilisateurPage implements OnInit {
   }
 
   get role() {
-    return this.utilisateurForm.get('role');
+    return this.utilisateurForm.get('idRole');
   }
 
   getRoleLabel(nomRole: string): string {

@@ -71,7 +71,7 @@ export class UtilisateurService {
     
     // Inclure le mot de passe seulement s'il est fourni
     if (password) {
-      payload.mot_de_passe = password; // Le backend devrait hasher le mot de passe
+      payload.password = password; // Le backend devrait hasher le mot de passe
     }
 
     return this.http.post<Utilisateur>(
@@ -93,7 +93,7 @@ export class UtilisateurService {
     
     // Inclure le mot de passe seulement s'il est fourni
     if (password) {
-      payload.mot_de_passe = password; // Le backend devrait hasher le mot de passe
+      payload.password = password; // Le backend devrait hasher le mot de passe
     }
 
     return this.http.put<Utilisateur>(

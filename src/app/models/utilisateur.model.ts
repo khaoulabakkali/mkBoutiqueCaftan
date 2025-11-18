@@ -8,7 +8,7 @@ import { Role } from './role.model';
  * - idUtilisateur: INTEGER (clé primaire, auto-increment)
  * - nomComplet: VARCHAR(100)
  * - login: VARCHAR(50)
- * - mot_de_passe_hash: VARCHAR(255)
+ * - password: VARCHAR(255)
  * - idRole: INTEGER - Référence à la table roles
  * - telephone: VARCHAR(20)
  * - actif: BOOLEAN
