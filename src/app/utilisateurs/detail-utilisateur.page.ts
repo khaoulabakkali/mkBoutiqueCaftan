@@ -94,7 +94,7 @@ export class DetailUtilisateurPage implements OnInit {
 
     this.utilisateurService.getUtilisateurById(id).subscribe({
       next: (data) => {
-        this.utilisateur = data;
+        this.utilisateur = data || null;
         loading.dismiss();
       },
       error: async (error) => {
