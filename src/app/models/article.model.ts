@@ -10,7 +10,7 @@
  * - prix_avance_base: DECIMAL(10, 2) NOT NULL
  * - idTaille: VARCHAR(20) NULLABLE (référence à la table tailles)
  * - photo: Longtext NULLABLE
- * - id_categorie: INTEGER FK (référence à Categories)
+ * - idCategorie: INTEGER FK (référence à Categories)
  * - actif: BOOLEAN NOT NULL
  */
 export interface Article {
@@ -39,7 +39,7 @@ export interface Article {
   photo?: string;
   
   /** INTEGER - Lien vers la catégorie (FK vers Categories) */
-  id_categorie: number;
+  idCategorie: number;
   
   /** BOOLEAN - Indique si l'article est visible dans le catalogue */
   actif: boolean;

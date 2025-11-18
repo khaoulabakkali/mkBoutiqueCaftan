@@ -65,9 +65,9 @@ export class FormCategoriePage implements OnInit {
     addIcons({ save, arrowBack, checkmark });
     
     this.categorieForm = this.formBuilder.group({
-      nom_categorie: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
+      nomCategorie: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
       description: ['', [Validators.maxLength(500)]],
-      ordre_affichage: [null, [Validators.min(0)]]
+      ordreAffichage: [null, [Validators.min(0)]]
     });
   }
 
@@ -91,9 +91,9 @@ export class FormCategoriePage implements OnInit {
     this.categorieService.getCategorieById(this.categorieId).subscribe({
       next: (categorie) => {
         this.categorieForm.patchValue({
-          nom_categorie: categorie.nom_categorie,
+          nomCategorie: categorie.nomCategorie,
           description: categorie.description || '',
-          ordre_affichage: categorie.ordre_affichage || null
+          ordreAffichage: categorie.ordreAffichage || null
         });
         loading.then(l => l.dismiss());
       },
@@ -117,7 +117,7 @@ export class FormCategoriePage implements OnInit {
 
       const categorieData: Categorie = {
         ...this.categorieForm.value,
-        ordre_affichage: this.categorieForm.value.ordre_affichage || undefined
+        ordreAffichage: this.categorieForm.value.ordreAffichage || undefined
       };
 
       if (this.isEditMode && this.categorieId) {
@@ -165,16 +165,16 @@ export class FormCategoriePage implements OnInit {
     await toast.present();
   }
 
-  get nom_categorie() {
-    return this.categorieForm.get('nom_categorie');
+  get nomCategorie() {
+    return this.categorieForm.get('nomCategorie');
   }
 
   get description() {
     return this.categorieForm.get('description');
   }
 
-  get ordre_affichage() {
-    return this.categorieForm.get('ordre_affichage');
+  get ordreAffichage() {
+    return this.categorieForm.get('ordreAffichage');
   }
 }
 

@@ -78,16 +78,16 @@
     </div>
 
     <!-- Catégorie -->
-    <ion-item [class.item-has-error]="id_categorie?.invalid && id_categorie?.touched">
+    <ion-item [class.item-has-error]="idCategorie?.invalid && idCategorie?.touched">
       <ion-label position="stacked">Catégorie *</ion-label>
-      <ion-select formControlName="id_categorie" placeholder="Sélectionner une catégorie">
-        <ion-select-option *ngFor="let categorie of categories" [value]="categorie.id_categorie">
-          {{ categorie.nom_categorie }}
+      <ion-select formControlName="idCategorie" placeholder="Sélectionner une catégorie">
+        <ion-select-option *ngFor="let categorie of categories" [value]="categorie.idCategorie">
+          {{ categorie.nomCategorie }}
         </ion-select-option>
       </ion-select>
     </ion-item>
-    <div class="error-message" *ngIf="id_categorie?.invalid && id_categorie?.touched">
-      <span *ngIf="id_categorie?.errors?.['required']">La catégorie est requise</span>
+    <div class="error-message" *ngIf="idCategorie?.invalid && idCategorie?.touched">
+      <span *ngIf="idCategorie?.errors?.['required']">La catégorie est requise</span>
     </div>
 
     <!-- Taille -->

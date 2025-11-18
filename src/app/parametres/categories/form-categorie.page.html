@@ -16,19 +16,19 @@
 <ion-content [fullscreen]="true">
   <form id="categorieForm" [formGroup]="categorieForm" (ngSubmit)="onSubmit()">
     <!-- Nom catégorie -->
-    <ion-item [class.item-has-error]="nom_categorie?.invalid && nom_categorie?.touched">
+    <ion-item [class.item-has-error]="nomCategorie?.invalid && nomCategorie?.touched">
       <ion-label position="stacked">Nom de la catégorie *</ion-label>
       <ion-input
         type="text"
-        formControlName="nom_categorie"
+        formControlName="nomCategorie"
         placeholder="Caftans, Tekchitas, Sacs..."
         maxlength="50">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="nom_categorie?.invalid && nom_categorie?.touched">
-      <span *ngIf="nom_categorie?.errors?.['required']">Le nom est requis</span>
-      <span *ngIf="nom_categorie?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
-      <span *ngIf="nom_categorie?.errors?.['maxlength']">Le nom ne doit pas dépasser 50 caractères</span>
+    <div class="error-message" *ngIf="nomCategorie?.invalid && nomCategorie?.touched">
+      <span *ngIf="nomCategorie?.errors?.['required']">Le nom est requis</span>
+      <span *ngIf="nomCategorie?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+      <span *ngIf="nomCategorie?.errors?.['maxlength']">Le nom ne doit pas dépasser 50 caractères</span>
     </div>
 
     <!-- Description -->
@@ -46,17 +46,17 @@
     </div>
 
     <!-- Ordre d'affichage -->
-    <ion-item [class.item-has-error]="ordre_affichage?.invalid && ordre_affichage?.touched">
+    <ion-item [class.item-has-error]="ordreAffichage?.invalid && ordreAffichage?.touched">
       <ion-label position="stacked">Ordre d'affichage</ion-label>
       <ion-input
         type="number"
-        formControlName="ordre_affichage"
+        formControlName="ordreAffichage"
         placeholder="1, 2, 3..."
         min="0">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="ordre_affichage?.invalid && ordre_affichage?.touched">
-      <span *ngIf="ordre_affichage?.errors?.['min']">L'ordre ne peut pas être négatif</span>
+    <div class="error-message" *ngIf="ordreAffichage?.invalid && ordreAffichage?.touched">
+      <span *ngIf="ordreAffichage?.errors?.['min']">L'ordre ne peut pas être négatif</span>
     </div>
 
     <!-- Bouton Annuler -->

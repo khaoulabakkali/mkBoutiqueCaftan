@@ -24,9 +24,9 @@
     <ion-item *ngFor="let categorie of categoriesFiltres" [button]="true">
       <ion-icon name="grid" slot="start" color="primary"></ion-icon>
       <ion-label>
-        <h2>{{ categorie.nom_categorie }}</h2>
-        <p *ngIf="categorie.ordre_affichage" style="color: var(--ion-color-medium); font-size: 0.8rem;">
-          Ordre d'affichage: {{ categorie.ordre_affichage }}
+        <h2>{{ categorie.nomCategorie }}</h2>
+        <p *ngIf="categorie.ordreAffichage" style="color: var(--ion-color-medium); font-size: 0.8rem;">
+          Ordre d'affichage: {{ categorie.ordreAffichage }}
         </p>
       </ion-label>
       <div slot="end" class="actions-container">

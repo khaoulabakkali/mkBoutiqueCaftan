@@ -168,8 +168,8 @@ export class ListeArticlesPage implements OnInit {
   }
 
   getCategorieName(idCategorie: number): string {
-    const categorie = this.categories.find(c => c.id_categorie === idCategorie);
-    return categorie ? categorie.nom_categorie : 'N/A';
+    const categorie = this.categories.find(c => c.idCategorie === idCategorie);
+    return categorie ? categorie.nomCategorie : 'N/A';
   }
 
   getTailleLabel(idTaille?: string): string {

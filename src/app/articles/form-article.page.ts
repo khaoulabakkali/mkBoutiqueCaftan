@@ -83,7 +83,7 @@ export class FormArticlePage implements OnInit {
       idTaille: ['', []],
       couleur: ['', []],
       photo: ['', []],
-      id_categorie: ['', [Validators.required]],
+      idCategorie: ['', [Validators.required]],
       actif: [true, [Validators.required]]
     });
   }
@@ -105,8 +105,8 @@ export class FormArticlePage implements OnInit {
       next: (data) => {
         this.categories = data;
         // Si aucun catégorie n'est sélectionnée et qu'il y a des catégories, sélectionner la première
-        if (!this.articleForm.get('id_categorie')?.value && data.length > 0) {
-          this.articleForm.patchValue({ id_categorie: data[0].id_categorie });
+        if (!this.articleForm.get('idCategorie')?.value && data.length > 0) {
+          this.articleForm.patchValue({ idCategorie: data[0].idCategorie });
         }
       },
       error: (error) => {
@@ -148,7 +148,7 @@ export class FormArticlePage implements OnInit {
           idTaille: article.idTaille || '',
           couleur: article.couleur || '',
           photo: article.photo || '',
-          id_categorie: article.id_categorie,
+          idCategorie: article.idCategorie,
           actif: article.actif
         });
         loading.then(l => l.dismiss());
@@ -180,7 +180,7 @@ export class FormArticlePage implements OnInit {
         idTaille: formValue.idTaille || undefined,
         couleur: formValue.couleur || undefined,
         photo: formValue.photo || undefined,
-        id_categorie: formValue.id_categorie,
+        idCategorie: formValue.idCategorie,
         actif: formValue.actif
       };
 
@@ -245,8 +245,8 @@ export class FormArticlePage implements OnInit {
     return this.articleForm.get('prix_avance_base');
   }
 
-  get id_categorie() {
-    return this.articleForm.get('id_categorie');
+  get idCategorie() {
+    return this.articleForm.get('idCategorie');
   }
 
   onCancel() {

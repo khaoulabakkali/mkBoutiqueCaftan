@@ -27,7 +27,7 @@ export class ArticleService {
           prix_location_base: 500.00,
           prix_avance_base: 200.00,
           idTaille: 'M',
-          id_categorie: 1,
+          idCategorie: 1,
           actif: true
         },
         {
@@ -37,7 +37,7 @@ export class ArticleService {
           prix_location_base: 300.00,
           prix_avance_base: 150.00,
           idTaille: 'L',
-          id_categorie: 2,
+          idCategorie: 2,
           actif: true
         },
         {
@@ -46,7 +46,7 @@ export class ArticleService {
           description: 'Sac à main en cuir véritable avec fermeture dorée',
           prix_location_base: 100.00,
           prix_avance_base: 50.00,
-          id_categorie: 3,
+          idCategorie: 3,
           actif: true
         }
       ];

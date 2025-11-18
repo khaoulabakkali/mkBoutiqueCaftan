@@ -1,182 +1,166 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError, of, delay } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Categorie } from '../models/categorie.model';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CategorieService {
-  private readonly STORAGE_KEY = 'local_categories';
+  private apiUrl = environment.apiUrl || 'http://localhost:5000/api';
 
-  constructor() {
-    // Initialiser le stockage local avec des données de démonstration si vide
-    this.initializeLocalStorage();
-  }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
   /**
-   * Initialise le stockage local avec des données de démonstration
+   * Récupère les options HTTP avec le token d'authentification
    */
-  private initializeLocalStorage(): void {
-    const existing = localStorage.getItem(this.STORAGE_KEY);
-    if (!existing) {
-      const defaultCategories: Categorie[] = [
-        {
-          id_categorie: 1,
-          nom_categorie: 'Caftans',
-          description: 'Collection de caftans traditionnels et modernes',
-          ordre_affichage: 1
-        },
-        {
-          id_categorie: 2,
-          nom_categorie: 'Tekchitas',
-          description: 'Tekchitas élégantes pour toutes les occasions',
-          ordre_affichage: 2
-        },
-        {
-          id_categorie: 3,
-          nom_categorie: 'Sacs',
-          description: 'Sacs à main et accessoires de mode',
-          ordre_affichage: 3
-        },
-        {
-          id_categorie: 4,
-          nom_categorie: 'Talons',
-          description: 'Chaussures à talons pour femmes',
-          ordre_affichage: 4
-        },
-        {
-          id_categorie: 5,
-          nom_categorie: 'Accessoires',
-          description: 'Accessoires de mode et bijoux',
-          ordre_affichage: 5
-        }
-      ];
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(defaultCategories));
+  private getHttpOptions(): { headers: HttpHeaders } {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
+
+    return { headers };
   }
 
   /**
-   * Récupère toutes les catégories du stockage local
-   */
-  private getLocalCategories(): Categorie[] {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  }
-
-  /**
-   * Sauvegarde les catégories dans le stockage local
-   */
-  private saveLocalCategories(categories: Categorie[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categories));
-  }
-
-  /**
-   * Génère un nouvel ID pour une catégorie
-   */
-  private getNextId(): number {
-    const categories = this.getLocalCategories();
-    if (categories.length === 0) return 1;
-    return Math.max(...categories.map(c => c.id_categorie || 0)) + 1;
-  }
-
-  /**
-   * Récupérer toutes les catégories (local)
+   * Récupérer toutes les catégories
    */
   getAllCategories(): Observable<Categorie[]> {
-    const categories = this.getLocalCategories();
-    // Trier par ordre_affichage si défini
-    const sorted = [...categories].sort((a, b) => {
-      const ordreA = a.ordre_affichage ?? 999;
-      const ordreB = b.ordre_affichage ?? 999;
-      return ordreA - ordreB;
-    });
-    return of(sorted).pipe(delay(300));
+    return this.http.get<Categorie[]>(
+      `${this.apiUrl}/categories`,
+      this.getHttpOptions()
+    ).pipe(
+      map(categories => {
+        // Trier par ordreAffichage si défini
+        return [...categories].sort((a, b) => {
+          const ordreA = a.ordreAffichage ?? 999;
+          const ordreB = b.ordreAffichage ?? 999;
+          return ordreA - ordreB;
+        });
+      }),
+      catchError(this.handleError<Categorie[]>('getAllCategories', []))
+    );
   }
 
   /**
-   * Récupérer une catégorie par ID (local)
+   * Récupérer une catégorie par ID
    */
   getCategorieById(id: number): Observable<Categorie> {
-    const categories = this.getLocalCategories();
-    const categorie = categories.find(c => c.id_categorie === id);
-    
-    if (!categorie) {
-      return throwError(() => new Error(`Catégorie avec l'ID ${id} non trouvée`));
-    }
-    
-    return of({ ...categorie }).pipe(delay(200));
+    return this.http.get<Categorie>(
+      `${this.apiUrl}/categories/${id}`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Categorie>('getCategorieById'))
+    );
   }
 
   /**
-   * Créer une nouvelle catégorie (local)
+   * Créer une nouvelle catégorie
    */
   createCategorie(categorie: Categorie): Observable<Categorie> {
-    const categories = this.getLocalCategories();
-    
-    // Vérifier si le nom existe déjà (insensible à la casse)
-    if (categories.some(c => c.nom_categorie.toUpperCase() === categorie.nom_categorie.toUpperCase())) {
-      return throwError(() => new Error('Une catégorie avec ce nom existe déjà'));
-    }
-    
-    // Créer la nouvelle catégorie
-    const newCategorie: Categorie = {
-      ...categorie,
-      id_categorie: this.getNextId(),
-      nom_categorie: categorie.nom_categorie.trim()
+    const payload = {
+      nomCategorie: categorie.nomCategorie.trim(),
+      description: categorie.description || undefined,
+      ordreAffichage: categorie.ordreAffichage || undefined
     };
-    
-    categories.push(newCategorie);
-    this.saveLocalCategories(categories);
-    
-    return of({ ...newCategorie }).pipe(delay(300));
+
+    return this.http.post<Categorie>(
+      `${this.apiUrl}/categories`,
+      payload,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Categorie>('createCategorie'))
+    );
   }
 
   /**
-   * Mettre à jour une catégorie (local)
+   * Mettre à jour une catégorie
    */
   updateCategorie(id: number, categorie: Categorie): Observable<Categorie> {
-    const categories = this.getLocalCategories();
-    const index = categories.findIndex(c => c.id_categorie === id);
-    
-    if (index === -1) {
-      return throwError(() => new Error(`Catégorie avec l'ID ${id} non trouvée`));
-    }
-    
-    // Vérifier si le nom existe déjà pour une autre catégorie
-    const existingCategorie = categories.find(c => c.nom_categorie.toUpperCase() === categorie.nom_categorie.toUpperCase() && c.id_categorie !== id);
-    if (existingCategorie) {
-      return throwError(() => new Error('Une catégorie avec ce nom existe déjà'));
-    }
-    
-    // Mettre à jour la catégorie
-    const updatedCategorie: Categorie = {
-      ...categories[index],
-      ...categorie,
-      id_categorie: id, // S'assurer que l'ID ne change pas
-      nom_categorie: categorie.nom_categorie.trim()
+    const payload = {
+      nomCategorie: categorie.nomCategorie.trim(),
+      description: categorie.description || undefined,
+      ordreAffichage: categorie.ordreAffichage || undefined
     };
-    
-    categories[index] = updatedCategorie;
-    this.saveLocalCategories(categories);
-    
-    return of({ ...updatedCategorie }).pipe(delay(300));
+
+    return this.http.put<Categorie>(
+      `${this.apiUrl}/categories/${id}`,
+      payload,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Categorie>('updateCategorie'))
+    );
   }
 
   /**
-   * Supprimer une catégorie (local)
+   * Supprimer une catégorie
    */
   deleteCategorie(id: number): Observable<boolean> {
-    const categories = this.getLocalCategories();
-    const index = categories.findIndex(c => c.id_categorie === id);
-    
-    if (index === -1) {
-      return throwError(() => new Error(`Catégorie avec l'ID ${id} non trouvée`));
+    return this.http.delete<{ success: boolean }>(
+      `${this.apiUrl}/categories/${id}`,
+      this.getHttpOptions()
+    ).pipe(
+      map(() => true),
+      catchError(this.handleError<boolean>('deleteCategorie', false))
+    );
+  }
+
+  /**
+   * Gestion des erreurs HTTP
+   */
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: HttpErrorResponse): Observable<T> => {
+      if (!environment.production) {
+        console.error(`${operation} failed:`, error);
+      }
+      
+      const errorMessage = this.extractErrorMessage(error);
+      return throwError(() => new Error(errorMessage));
+    };
+  }
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    if (error.error instanceof ErrorEvent) {
+      return `Erreur: ${error.error.message}`;
     }
-    
-    categories.splice(index, 1);
-    this.saveLocalCategories(categories);
-    
-    return of(true).pipe(delay(300));
+
+    const statusMessages: { [key: number]: string } = {
+      401: 'Non autorisé. Veuillez vous reconnecter.',
+      403: 'Accès interdit.',
+      404: 'Ressource non trouvée.',
+      500: 'Erreur serveur. Veuillez réessayer plus tard.'
+    };
+
+    if (error.status && statusMessages[error.status]) {
+      return statusMessages[error.status];
+    }
+
+    if (error.error) {
+      if (error.error.message) {
+        return error.error.message;
+      }
+      if (error.error.error) {
+        return error.error.error;
+      }
+      if (typeof error.error === 'string') {
+        return error.error;
+      }
+      if (Array.isArray(error.error.errors)) {
+        return error.error.errors.map((e: any) => e.message || e).join(', ');
+      }
+    }
+
+    return 'Une erreur est survenue';
   }
 }
-
