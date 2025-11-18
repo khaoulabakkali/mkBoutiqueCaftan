@@ -76,32 +76,8 @@ export class LoginPage implements OnInit {
       this.authService.login(login, password).subscribe({
         next: (response) => {
           this.isLoading = false;
-          // Récupérer l'URL de retour ou rediriger vers l'accueil
-          const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/tabs/tab1';
-          // Décoder l'URL au cas où elle serait encodée
-          let decodedUrl = returnUrl;
-          try {
-            decodedUrl = decodeURIComponent(returnUrl);
-          } catch (e) {
-            // Si le décodage échoue, utiliser la valeur telle quelle
-            decodedUrl = returnUrl;
-          }
-          // Utiliser navigateByUrl pour gérer correctement les URLs avec query params
-          // ou split pour extraire seulement le chemin si c'est une URL complète
-          if (decodedUrl.includes('?')) {
-            const [path, queryString] = decodedUrl.split('?');
-            const queryParams: any = {};
-            queryString.split('&').forEach((param: string) => {
-              const [key, value] = param.split('=');
-              if (key && value) {
-                queryParams[decodeURIComponent(key)] = decodeURIComponent(value);
-              }
-            });
-            this.router.navigate([path], { queryParams });
-          } else {
-            // Si pas de query params, utiliser navigate normalement
-            this.router.navigate([decodedUrl]);
-          }
+          // Toujours rediriger vers la page d'accueil après connexion
+          this.router.navigate(['/tabs/tab1']);
         },
         error: async (error) => {
           this.isLoading = false;
