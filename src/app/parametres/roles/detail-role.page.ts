@@ -22,7 +22,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { arrowBack, create, shieldCheckmark, checkmarkCircle, closeCircle, key, informationCircle, person, personOutline } from 'ionicons/icons';
+import { arrowBack, create, shieldCheckmark, checkmarkCircle, closeCircle, informationCircle, person, personOutline } from 'ionicons/icons';
 import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.model';
 import { UtilisateurService } from '../../services/utilisateur.service';
@@ -66,7 +66,7 @@ export class DetailRolePage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ arrowBack, create, shieldCheckmark, checkmarkCircle, closeCircle, key, informationCircle, person, personOutline });
+    addIcons({ arrowBack, create, shieldCheckmark, checkmarkCircle, closeCircle, informationCircle, person, personOutline });
   }
 
   ngOnInit() {
