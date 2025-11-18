@@ -9,11 +9,7 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonIcon,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent
+  IonIcon
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
@@ -34,10 +30,6 @@ import { shieldCheckmark, resize, grid, settings } from 'ionicons/icons';
     IonItem,
     IonLabel,
     IonIcon,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardContent,
     CommonModule
   ],
 })
