@@ -1,190 +1,184 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError, of, delay } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Role } from '../models/role.model';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleService {
-  private readonly STORAGE_KEY = 'local_roles';
+  private apiUrl = environment.apiUrl || 'http://localhost:5000/api';
 
-  constructor() {
-    // Initialiser le stockage local avec des données de démonstration si vide
-    this.initializeLocalStorage();
-  }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
   /**
-   * Initialise le stockage local avec des données de démonstration
+   * Récupère les options HTTP avec le token d'authentification
    */
-  private initializeLocalStorage(): void {
-    const existing = localStorage.getItem(this.STORAGE_KEY);
-    if (!existing) {
-      const defaultRoles: Role[] = [
-        {
-          idRole: 1,
-          nomRole: 'ADMIN',
-          description: 'Accès complet à toutes les fonctionnalités',
-          actif: true
-        },
-        {
-          idRole: 2,
-          nomRole: 'MANAGER',
-          description: 'Gestion des opérations et du personnel',
-          actif: true
-        },
-        {
-          idRole: 3,
-          nomRole: 'STAFF',
-          description: 'Accès aux fonctionnalités de base',
-          actif: true,
-        }
-      ];
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(defaultRoles));
+  private getHttpOptions(): { headers: HttpHeaders } {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
+
+    return { headers };
   }
 
   /**
-   * Récupère tous les rôles du stockage local
-   */
-  private getLocalRoles(): Role[] {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  }
-
-  /**
-   * Sauvegarde les rôles dans le stockage local
-   */
-  private saveLocalRoles(roles: Role[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(roles));
-  }
-
-  /**
-   * Génère un nouvel ID pour un rôle
-   */
-  private getNextId(): number {
-    const roles = this.getLocalRoles();
-    if (roles.length === 0) return 1;
-    return Math.max(...roles.map(r => r.idRole || 0)) + 1;
-  }
-
-  /**
-   * Récupérer tous les rôles (local)
+   * Récupérer tous les rôles
    */
   getAllRoles(): Observable<Role[]> {
-    const roles = this.getLocalRoles();
-    return of(roles).pipe(delay(300));
+    return this.http.get<Role[]>(
+      `${this.apiUrl}/roles`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Role[]>('getAllRoles', []))
+    );
   }
 
   /**
-   * Récupérer tous les rôles actifs (local)
+   * Récupérer tous les rôles actifs
    */
   getActiveRoles(): Observable<Role[]> {
-    const roles = this.getLocalRoles();
-    const activeRoles = roles.filter(r => r.actif);
-    return of(activeRoles).pipe(delay(200));
+    return this.getAllRoles().pipe(
+      map(roles => roles.filter(role => role.actif)),
+      catchError(this.handleError<Role[]>('getActiveRoles', []))
+    );
   }
 
   /**
-   * Récupérer un rôle par ID (local)
+   * Récupérer un rôle par ID
    */
   getRoleById(id: number): Observable<Role> {
-    const roles = this.getLocalRoles();
-    const role = roles.find(r => r.idRole === id);
-    
-    if (!role) {
-      return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));
-    }
-    
-    return of({ ...role }).pipe(delay(200));
+    return this.http.get<Role>(
+      `${this.apiUrl}/roles/${id}`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Role>('getRoleById'))
+    );
   }
 
   /**
-   * Créer un nouveau rôle (local)
+   * Créer un nouveau rôle
    */
   createRole(role: Role): Observable<Role> {
-    const roles = this.getLocalRoles();
-    
-    // Vérifier si le code existe déjà
-    if (roles.some(r => r.nomRole.toUpperCase() === role.nomRole.toUpperCase())) {
-      return throwError(() => new Error('Un rôle avec ce code existe déjà'));
-    }
-    
-    // Créer le nouveau rôle
-    const newRole: Role = {
-      ...role,
-      idRole: this.getNextId(),
-      nomRole: role.nomRole.toUpperCase()
+    // Préparer les données pour l'API
+    const payload = {
+      nomRole: role.nomRole.toUpperCase(), // Toujours en majuscules
+      description: role.description || undefined,
+      actif: role.actif !== undefined ? role.actif : true
     };
-    
-    roles.push(newRole);
-    this.saveLocalRoles(roles);
-    
-    return of({ ...newRole }).pipe(delay(300));
+
+    return this.http.post<Role>(
+      `${this.apiUrl}/roles`,
+      payload,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Role>('createRole'))
+    );
   }
 
   /**
-   * Mettre à jour un rôle (local)
+   * Mettre à jour un rôle
    */
   updateRole(id: number, role: Role): Observable<Role> {
-    const roles = this.getLocalRoles();
-    const index = roles.findIndex(r => r.idRole === id);
-    
-    if (index === -1) {
-      return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));
-    }
-    
-    // Vérifier si le code existe déjà pour un autre rôle
-    const existingRole = roles.find(r => r.nomRole.toUpperCase() === role.nomRole.toUpperCase() && r.idRole !== id);
-    if (existingRole) {
-      return throwError(() => new Error('Un rôle avec ce code existe déjà'));
-    }
-    
-    // Mettre à jour le rôle
-    const updatedRole: Role = {
-      ...roles[index],
-      ...role,
-      idRole: id, // S'assurer que l'ID ne change pas
-      nomRole: role.nomRole.toUpperCase() // Toujours en majuscules
+    // Préparer les données pour l'API
+    const payload = {
+      nomRole: role.nomRole.toUpperCase(), // Toujours en majuscules
+      description: role.description || undefined,
+      actif: role.actif !== undefined ? role.actif : true
     };
-    
-    roles[index] = updatedRole;
-    this.saveLocalRoles(roles);
-    
-    return of({ ...updatedRole }).pipe(delay(300));
+
+    return this.http.put<Role>(
+      `${this.apiUrl}/roles/${id}`,
+      payload,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Role>('updateRole'))
+    );
   }
 
   /**
-   * Supprimer un rôle (local)
+   * Supprimer un rôle
    */
   deleteRole(id: number): Observable<boolean> {
-    const roles = this.getLocalRoles();
-    const index = roles.findIndex(r => r.idRole === id);
-    
-    if (index === -1) {
-      return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));
-    }
-    
-    roles.splice(index, 1);
-    this.saveLocalRoles(roles);
-    
-    return of(true).pipe(delay(300));
+    return this.http.delete<{ success: boolean }>(
+      `${this.apiUrl}/roles/${id}`,
+      this.getHttpOptions()
+    ).pipe(
+      map(() => true),
+      catchError(this.handleError<boolean>('deleteRole', false))
+    );
   }
 
   /**
-   * Désactiver/Activer un rôle (local)
+   * Désactiver/Activer un rôle
    */
   toggleActif(id: number, actif: boolean): Observable<boolean> {
-    const roles = this.getLocalRoles();
-    const role = roles.find(r => r.idRole === id);
-    
-    if (!role) {
-      return throwError(() => new Error(`Rôle avec l'ID ${id} non trouvé`));
+    return this.http.patch<{ success: boolean }>(
+      `${this.apiUrl}/roles/${id}/actif`,
+      { actif },
+      this.getHttpOptions()
+    ).pipe(
+      map(() => true),
+      catchError(this.handleError<boolean>('toggleActif', false))
+    );
+  }
+
+  /**
+   * Gestion des erreurs HTTP
+   */
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: HttpErrorResponse): Observable<T> => {
+      if (!environment.production) {
+        console.error(`${operation} failed:`, error);
+      }
+      
+      const errorMessage = this.extractErrorMessage(error);
+      return throwError(() => new Error(errorMessage));
+    };
+  }
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    if (error.error instanceof ErrorEvent) {
+      return `Erreur: ${error.error.message}`;
     }
-    
-    role.actif = actif;
-    this.saveLocalRoles(roles);
-    
-    return of(true).pipe(delay(200));
+
+    const statusMessages: { [key: number]: string } = {
+      401: 'Non autorisé. Veuillez vous reconnecter.',
+      403: 'Accès interdit.',
+      404: 'Ressource non trouvée.',
+      500: 'Erreur serveur. Veuillez réessayer plus tard.'
+    };
+
+    if (error.status && statusMessages[error.status]) {
+      return statusMessages[error.status];
+    }
+
+    if (error.error) {
+      if (error.error.message) {
+        return error.error.message;
+      }
+      if (error.error.error) {
+        return error.error.error;
+      }
+      if (typeof error.error === 'string') {
+        return error.error;
+      }
+      if (Array.isArray(error.error.errors)) {
+        return error.error.errors.map((e: any) => e.message || e).join(', ');
+      }
+    }
+
+    return 'Une erreur est survenue';
   }
 }
-
