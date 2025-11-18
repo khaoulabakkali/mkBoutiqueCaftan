@@ -1,0 +1,191 @@
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonMenuButton,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonTextarea,
+  IonButton,
+  IonIcon,
+  ToastController,
+  LoadingController
+} from '@ionic/angular/standalone';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { addIcons } from 'ionicons';
+import { save, arrowBack } from 'ionicons/icons';
+import { ClientService } from '../services/client.service';
+import { Client } from '../models/client.model';
+
+@Component({
+  selector: 'app-form-client',
+  templateUrl: 'form-client.page.html',
+  styleUrls: ['form-client.page.scss'],
+  standalone: true,
+  imports: [
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    IonMenuButton,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonTextarea,
+    IonButton,
+    IonIcon,
+    ReactiveFormsModule,
+    CommonModule
+  ],
+})
+export class FormClientPage implements OnInit {
+  clientForm: FormGroup;
+  isEditMode = false;
+  clientId?: number;
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private clientService: ClientService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private toastController: ToastController,
+    private loadingController: LoadingController
+  ) {
+    addIcons({ save, arrowBack });
+    
+    this.clientForm = this.formBuilder.group({
+      nom_client: ['', [Validators.required, Validators.minLength(2)]],
+      prenom_client: ['', [Validators.required, Validators.minLength(2)]],
+      telephone: ['', [Validators.required, Validators.pattern(/^\+?[0-9\s-]+$/)]],
+      email: ['', [Validators.email]],
+      adresse_principale: ['', []],
+      total_commandes: [0, [Validators.required, Validators.min(0)]]
+    });
+  }
+
+  ngOnInit() {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id && id !== 'new') {
+      this.isEditMode = true;
+      this.clientId = +id;
+      this.loadClient();
+    }
+  }
+
+  loadClient() {
+    if (!this.clientId) return;
+
+    const loading = this.loadingController.create({
+      message: 'Chargement...'
+    });
+    loading.then(l => l.present());
+
+    this.clientService.getClientById(this.clientId).subscribe({
+      next: (client) => {
+        this.clientForm.patchValue({
+          nom_client: client.nom_client,
+          prenom_client: client.prenom_client,
+          telephone: client.telephone,
+          email: client.email || '',
+          adresse_principale: client.adresse_principale || '',
+          total_commandes: client.total_commandes || 0
+        });
+        loading.then(l => l.dismiss());
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement:', error);
+        loading.then(l => l.dismiss());
+        this.showToast('Erreur lors du chargement du client', 'danger');
+        this.router.navigate(['/clients']);
+      }
+    });
+  }
+
+  async onSubmit() {
+    if (this.clientForm.valid) {
+      const loading = await this.loadingController.create({
+        message: this.isEditMode ? 'Modification...' : 'Création...'
+      });
+      await loading.present();
+
+      const clientData: Client = this.clientForm.value;
+
+      if (this.isEditMode && this.clientId) {
+        this.clientService.updateClient(this.clientId, clientData).subscribe({
+          next: () => {
+            loading.dismiss();
+            this.showToast('Client modifié avec succès', 'success');
+            this.router.navigate(['/clients']);
+          },
+          error: (error) => {
+            loading.dismiss();
+            const errorMessage = error?.message || 'Erreur lors de la modification';
+            this.showToast(errorMessage, 'danger');
+          }
+        });
+      } else {
+        this.clientService.createClient(clientData).subscribe({
+          next: () => {
+            loading.dismiss();
+            this.showToast('Client créé avec succès', 'success');
+            this.router.navigate(['/clients']);
+          },
+          error: (error) => {
+            loading.dismiss();
+            const errorMessage = error?.message || 'Erreur lors de la création';
+            this.showToast(errorMessage, 'danger');
+          }
+        });
+      }
+    } else {
+      Object.keys(this.clientForm.controls).forEach(key => {
+        this.clientForm.get(key)?.markAsTouched();
+      });
+      this.showToast('Veuillez remplir tous les champs requis', 'warning');
+    }
+  }
+
+  async showToast(message: string, color: string) {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      color,
+      position: 'top'
+    });
+    await toast.present();
+  }
+
+  get nom_client() {
+    return this.clientForm.get('nom_client');
+  }
+
+  get prenom_client() {
+    return this.clientForm.get('prenom_client');
+  }
+
+  get telephone() {
+    return this.clientForm.get('telephone');
+  }
+
+  get email() {
+    return this.clientForm.get('email');
+  }
+
+  get adresse_principale() {
+    return this.clientForm.get('adresse_principale');
+  }
+
+  get total_commandes() {
+    return this.clientForm.get('total_commandes');
+  }
+
+  onCancel() {
+    this.router.navigate(['/clients']);
+  }
+}
+

@@ -1,0 +1,116 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouveau' }} Client</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">{{ isEditMode ? 'Modifier' : 'Nouveau' }} Client</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+    <!-- Nom -->
+    <ion-item [class.item-has-error]="nom_client?.invalid && nom_client?.touched">
+      <ion-label position="stacked">Nom *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="nom_client"
+        placeholder="Nom du client">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="nom_client?.invalid && nom_client?.touched">
+      <span *ngIf="nom_client?.errors?.['required']">Le nom est requis</span>
+      <span *ngIf="nom_client?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+    </div>
+
+    <!-- Prénom -->
+    <ion-item [class.item-has-error]="prenom_client?.invalid && prenom_client?.touched">
+      <ion-label position="stacked">Prénom *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="prenom_client"
+        placeholder="Prénom du client">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="prenom_client?.invalid && prenom_client?.touched">
+      <span *ngIf="prenom_client?.errors?.['required']">Le prénom est requis</span>
+      <span *ngIf="prenom_client?.errors?.['minlength']">Le prénom doit contenir au moins 2 caractères</span>
+    </div>
+
+    <!-- Téléphone -->
+    <ion-item [class.item-has-error]="telephone?.invalid && telephone?.touched">
+      <ion-label position="stacked">Téléphone *</ion-label>
+      <ion-input
+        type="tel"
+        formControlName="telephone"
+        placeholder="+212 6 12 34 56 78">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="telephone?.invalid && telephone?.touched">
+      <span *ngIf="telephone?.errors?.['required']">Le téléphone est requis</span>
+      <span *ngIf="telephone?.errors?.['pattern']">Format de téléphone invalide</span>
+    </div>
+
+    <!-- Email -->
+    <ion-item [class.item-has-error]="email?.invalid && email?.touched">
+      <ion-label position="stacked">Email</ion-label>
+      <ion-input
+        type="email"
+        formControlName="email"
+        placeholder="email@exemple.com">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="email?.invalid && email?.touched">
+      <span *ngIf="email?.errors?.['email']">Format d'email invalide</span>
+    </div>
+
+    <!-- Adresse principale -->
+    <ion-item [class.item-has-error]="adresse_principale?.invalid && adresse_principale?.touched">
+      <ion-label position="stacked">Adresse principale</ion-label>
+      <ion-textarea
+        formControlName="adresse_principale"
+        placeholder="Adresse complète du client"
+        rows="3">
+      </ion-textarea>
+    </ion-item>
+
+    <!-- Total commandes -->
+    <ion-item [class.item-has-error]="total_commandes?.invalid && total_commandes?.touched">
+      <ion-label position="stacked">Total commandes *</ion-label>
+      <ion-input
+        type="number"
+        formControlName="total_commandes"
+        placeholder="0"
+        min="0">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="total_commandes?.invalid && total_commandes?.touched">
+      <span *ngIf="total_commandes?.errors?.['required']">Le total des commandes est requis</span>
+      <span *ngIf="total_commandes?.errors?.['min']">Le total ne peut pas être négatif</span>
+    </div>
+
+    <!-- Boutons -->
+    <div class="form-actions">
+      <ion-button
+        type="button"
+        fill="outline"
+        expand="block"
+        (click)="onCancel()">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+      <ion-button
+        type="submit"
+        expand="block"
+        [disabled]="clientForm.invalid">
+        <ion-icon name="save" slot="start"></ion-icon>
+        {{ isEditMode ? 'Modifier' : 'Créer' }}
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+

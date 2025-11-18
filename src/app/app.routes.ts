@@ -22,6 +22,21 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'clients',
+    loadComponent: () => import('./clients/liste-clients.page').then((m) => m.ListeClientsPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'clients/new',
+    loadComponent: () => import('./clients/form-client.page').then((m) => m.FormClientPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'clients/edit/:id',
+    loadComponent: () => import('./clients/form-client.page').then((m) => m.FormClientPage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'tabs',
     loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
     canActivate: [authGuard],
