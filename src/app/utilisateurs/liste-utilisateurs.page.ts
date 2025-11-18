@@ -223,7 +223,7 @@ export class ListeUtilisateursPage implements OnInit {
 
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${utilisateur.nomComplet || 'cet utilisateur'}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer l'utilisateur "${utilisateur.nomComplet || ''}" ?`,
       buttons: [
         {
           text: 'Annuler',
