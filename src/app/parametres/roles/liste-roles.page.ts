@@ -153,8 +153,16 @@ export class ListeRolesPage implements OnInit {
     );
   }
 
+  viewRole(role: Role) {
+    if (role.idRole) {
+      this.router.navigate(['/parametres/roles/detail', role.idRole]);
+    }
+  }
+
   async editRole(role: Role) {
-    this.router.navigate(['/parametres/roles/edit', role.idRole]);
+    if (role.idRole) {
+      this.router.navigate(['/parametres/roles/edit', role.idRole]);
+    }
   }
 
   async deleteRole(role: Role) {

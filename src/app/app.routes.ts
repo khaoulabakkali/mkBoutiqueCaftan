@@ -97,6 +97,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'parametres/roles/detail/:id',
+    loadComponent: () => import('./parametres/roles/detail-role.page').then((m) => m.DetailRolePage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'parametres/tailles',
     loadComponent: () => import('./parametres/tailles/liste-tailles.page').then((m) => m.ListeTaillesPage),
     canActivate: [authGuard],

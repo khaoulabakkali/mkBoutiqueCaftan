@@ -21,7 +21,7 @@
 
   <!-- Liste des rôles -->
   <ion-list *ngIf="rolesFiltres.length > 0">
-    <ion-item *ngFor="let role of rolesFiltres" [button]="true">
+    <ion-item *ngFor="let role of rolesFiltres" [button]="true" (click)="viewRole(role)">
       <ion-label>
         <h2>
           <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" 
@@ -36,7 +36,7 @@
           </ion-badge>
         </div>
       </ion-label>
-      <div slot="end" class="actions-container">
+      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
         <ion-button
           fill="clear"
           size="small"
