@@ -58,6 +58,7 @@ export class ListeTaillesPage implements OnInit {
   tailles: Taille[] = [];
   taillesFiltres: Taille[] = [];
   searchTerm: string = '';
+  private isLoadingData = false;
 
   constructor(
     private tailleService: TailleService,
@@ -79,23 +80,44 @@ export class ListeTaillesPage implements OnInit {
     this.loadTailles();
   }
 
-  async loadTailles() {
-    const loading = await this.loadingController.create({
+  ionViewWillEnter() {
+    // Recharger les données chaque fois que la page est sur le point d'être affichée
+    // Cela garantit que les modifications effectuées ailleurs sont reflétées
+    // Ne pas afficher le loading si on revient juste de la modification
+    this.loadTailles(false);
+  }
+
+  async loadTailles(showLoading = true) {
+    if (this.isLoadingData) return;
+    
+    this.isLoadingData = true;
+    const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
-    });
-    await loading.present();
+    }) : null;
+    
+    if (loading) {
+      await loading.present();
+    }
 
     this.tailleService.getAllTailles().subscribe({
       next: (data) => {
-        this.tailles = data;
-        this.taillesFiltres = data;
-        loading.dismiss();
+        this.tailles = data || [];
+        this.taillesFiltres = data || [];
+        if (loading) {
+          loading.dismiss();
+        }
+        this.isLoadingData = false;
       },
       error: (error) => {
+        if (loading) {
+          loading.dismiss();
+        }
+        this.tailles = [];
+        this.taillesFiltres = [];
+        this.isLoadingData = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }
-        loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des tailles';
         this.presentToast(errorMessage, 'danger');
       }
@@ -120,7 +142,7 @@ export class ListeTaillesPage implements OnInit {
   }
 
   async editTaille(taille: Taille) {
-    this.router.navigate(['/parametres/tailles/edit', taille.id_taille]);
+    this.router.navigate(['/parametres/tailles/edit', taille.idTaille]);
   }
 
   async deleteTaille(taille: Taille) {
@@ -141,13 +163,12 @@ export class ListeTaillesPage implements OnInit {
             });
             await loading.present();
 
-            this.tailleService.deleteTaille(taille.id_taille!).subscribe({
+            this.tailleService.deleteTaille(taille.idTaille!).subscribe({
               next: () => {
                 loading.dismiss();
                 this.presentToast('Taille supprimée avec succès', 'success');
-                // Retirer la taille de la liste localement
-                this.tailles = this.tailles.filter(t => t.id_taille !== taille.id_taille);
-                this.filterTailles();
+                // Recharger la liste depuis l'API
+                this.loadTailles(false);
               },
               error: (error) => {
                 loading.dismiss();

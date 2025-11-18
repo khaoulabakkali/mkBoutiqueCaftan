@@ -26,7 +26,7 @@ export class ArticleService {
           description: 'Caftan traditionnel en soie avec broderies dorées, parfait pour les occasions spéciales',
           prix_location_base: 500.00,
           prix_avance_base: 200.00,
-          id_taille: 'M',
+          idTaille: 'M',
           id_categorie: 1,
           actif: true
         },
@@ -36,7 +36,7 @@ export class ArticleService {
           description: 'Tekchita élégante avec motifs modernes, idéale pour les soirées',
           prix_location_base: 300.00,
           prix_avance_base: 150.00,
-          id_taille: 'L',
+          idTaille: 'L',
           id_categorie: 2,
           actif: true
         },

@@ -33,8 +33,8 @@
           <ion-badge color="primary">
             {{ getCategorieName(article.id_categorie) }}
           </ion-badge>
-          <ion-badge *ngIf="article.id_taille" color="secondary">
-            Taille: {{ getTailleLabel(article.id_taille) }}
+          <ion-badge *ngIf="article.idTaille" color="secondary">
+            Taille: {{ getTailleLabel(article.idTaille) }}
           </ion-badge>
           <ion-badge [color]="article.actif ? 'success' : 'danger'">
             <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>

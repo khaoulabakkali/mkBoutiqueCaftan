@@ -85,7 +85,7 @@
     <!-- Taille -->
     <ion-item>
       <ion-label position="stacked">Taille</ion-label>
-      <ion-select formControlName="id_taille" placeholder="Sélectionner une taille (optionnel)">
+      <ion-select formControlName="idTaille" placeholder="Sélectionner une taille (optionnel)">
         <ion-select-option [value]="">Aucune taille</ion-select-option>
         <ion-select-option *ngFor="let taille of tailles" [value]="taille.taille">
           {{ taille.taille }}

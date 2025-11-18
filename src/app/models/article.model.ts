@@ -8,7 +8,7 @@
  * - description: TEXT NOT NULL
  * - prix_location_base: DECIMAL(10, 2) NOT NULL
  * - prix_avance_base: DECIMAL(10, 2) NOT NULL
- * - id_taille: VARCHAR(20) NULLABLE (référence à la table tailles)
+ * - idTaille: VARCHAR(20) NULLABLE (référence à la table tailles)
  * - photo: Longtext NULLABLE
  * - id_categorie: INTEGER FK (référence à Categories)
  * - actif: BOOLEAN NOT NULL
@@ -30,7 +30,7 @@ export interface Article {
   prix_avance_base: number;
   
   /** VARCHAR(20) - La taille de l'article (référence à la table tailles) */
-  id_taille?: string;
+  idTaille?: string;
   
   /** VARCHAR(50) - La couleur de l'article */
   couleur?: string;
