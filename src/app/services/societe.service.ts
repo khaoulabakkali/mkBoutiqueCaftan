@@ -34,13 +34,32 @@ export class SocieteService {
   }
 
   /**
+   * Mapper les données de l'API (PascalCase) vers le modèle (camelCase)
+   */
+  private mapApiToModel(data: any): Societe {
+    return {
+      idSociete: data.IdSociete || data.idSociete,
+      nomSociete: data.NomSociete || data.nomSociete,
+      description: data.Description || data.description,
+      adresse: data.Adresse || data.adresse,
+      telephone: data.Telephone || data.telephone,
+      email: data.Email || data.email,
+      siteWeb: data.SiteWeb || data.siteWeb,
+      logo: data.Logo || data.logo,
+      actif: data.Actif !== undefined ? data.Actif : data.actif,
+      dateCreation: data.DateCreation || data.dateCreation
+    };
+  }
+
+  /**
    * Récupérer toutes les sociétés
    */
   getAllSocietes(): Observable<Societe[]> {
-    return this.http.get<Societe[]>(
+    return this.http.get<any[]>(
       `${this.apiUrl}/societes`,
       this.getHttpOptions()
     ).pipe(
+      map(data => Array.isArray(data) ? data.map(item => this.mapApiToModel(item)) : []),
       catchError(this.handleError<Societe[]>('getAllSocietes', []))
     );
   }
@@ -49,10 +68,11 @@ export class SocieteService {
    * Récupérer une société par ID
    */
   getSocieteById(id: number): Observable<Societe> {
-    return this.http.get<Societe>(
+    return this.http.get<any>(
       `${this.apiUrl}/societes/${id}`,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Societe>('getSocieteById'))
     );
   }
@@ -72,11 +92,12 @@ export class SocieteService {
       Actif: societe.actif
     };
 
-    return this.http.post<Societe>(
+    return this.http.post<any>(
       `${this.apiUrl}/societes`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Societe>('createSociete'))
     );
   }
@@ -96,11 +117,12 @@ export class SocieteService {
       Actif: societe.actif
     };
 
-    return this.http.put<Societe>(
+    return this.http.put<any>(
       `${this.apiUrl}/societes/${id}`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Societe>('updateSociete'))
     );
   }

@@ -62,13 +62,13 @@ export class ClientService {
    */
   createClient(client: Client): Observable<Client> {
     const payload = {
-      NomClient: client.nomClient.trim(),
-      PrenomClient: client.prenomClient.trim(),
-      Telephone: client.telephone.trim(),
-      Email: client.email?.trim() || undefined,
-      AdressePrincipale: client.adressePrincipale?.trim() || undefined,
-      TotalCommandes: client.totalCommandes || 0,
-      Actif: client.actif !== undefined ? client.actif : true
+      nomClient: client.nomClient.trim(),
+      prenomClient: client.prenomClient.trim(),
+      telephone: client.telephone.trim(),
+      email: client.email?.trim() || undefined,
+      adressePrincipale: client.adressePrincipale?.trim() || undefined,
+      totalCommandes: client.totalCommandes || 0,
+      actif: client.actif !== undefined ? client.actif : true
     };
 
     return this.http.post<Client>(

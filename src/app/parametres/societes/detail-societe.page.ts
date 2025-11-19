@@ -87,7 +87,9 @@ export class DetailSocietePage implements OnInit {
       error: async (error) => {
         loading.dismiss();
         if (!environment.production) {
-          console.error('Erreur lors du chargement:', error);
+          console.error('Erreur lors du chargement de la société:', error);
+          console.error('ID utilisé:', id);
+          console.error('Erreur complète:', JSON.stringify(error, null, 2));
         }
         const errorMessage = error?.message || 'Erreur lors du chargement de la société';
         await this.presentToast(errorMessage, 'danger');

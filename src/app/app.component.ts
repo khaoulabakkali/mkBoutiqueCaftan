@@ -6,6 +6,7 @@ import { addIcons } from 'ionicons';
 import { home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business } from 'ionicons/icons';
 import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs/operators';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -75,13 +76,18 @@ export class AppComponent {
     this.authService.logout();
   }
 
-  navigateToSociete() {
+  async navigateToSociete() {
     const societeId = this.authService.getSocieteId();
     if (societeId) {
       this.router.navigate(['/parametres/societes/detail', societeId]);
     } else {
-      // Si pas de societeId, afficher un message d'erreur
-      console.error('SocieteId non trouvé dans le token');
+      // Si pas de societeId, essayer de charger toutes les sociétés et prendre la première
+      // ou afficher un message d'erreur
+      if (!environment.production) {
+        console.error('SocieteId non trouvé dans le token');
+      }
+      // Rediriger vers l'accueil avec un message d'erreur
+      this.router.navigate(['/tabs/tab1']);
     }
   }
 
