@@ -145,6 +145,55 @@ export class AuthService {
   }
 
   /**
+   * Décode le token JWT et retourne le payload
+   */
+  private decodeToken(token: string): any {
+    try {
+      const base64Url = token.split('.')[1];
+      if (!base64Url) {
+        return null;
+      }
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      return JSON.parse(jsonPayload);
+    } catch (error) {
+      if (!environment.production) {
+        console.error('Erreur lors du décodage du token:', error);
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Récupère le societeId depuis le token JWT
+   */
+  getSocieteId(): number | null {
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+
+    const decodedToken = this.decodeToken(token);
+    if (!decodedToken) {
+      return null;
+    }
+
+    // Essayer différentes variantes possibles du nom de la propriété
+    return decodedToken.societeId || 
+           decodedToken.SocieteId || 
+           decodedToken.idSociete || 
+           decodedToken.IdSociete ||
+           decodedToken.societe_id ||
+           decodedToken.societe_Id ||
+           null;
+  }
+
+  /**
    * Extrait le token depuis l'objet User ou les headers HTTP
    */
   private extractToken(user: any, httpResponse: HttpResponse<LoginResponse>): string | null {
