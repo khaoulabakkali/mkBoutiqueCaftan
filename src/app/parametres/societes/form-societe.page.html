@@ -1,0 +1,120 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Société</ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        type="submit"
+        form="societeForm"
+        [disabled]="societeForm.invalid">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form id="societeForm" [formGroup]="societeForm" (ngSubmit)="onSubmit()">
+
+    <!-- Nom de la société -->
+    <ion-item [class.item-has-error]="nomSociete?.invalid && nomSociete?.touched">
+      <ion-label position="stacked">Nom de la société *</ion-label>
+      <ion-input
+        type="text"
+        formControlName="nomSociete"
+        placeholder="Nom de la société">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="nomSociete?.invalid && nomSociete?.touched">
+      <span *ngIf="nomSociete?.errors?.['required']">Le nom est requis</span>
+      <span *ngIf="nomSociete?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+      <span *ngIf="nomSociete?.errors?.['maxlength']">Le nom ne doit pas dépasser 100 caractères</span>
+    </div>
+
+    <!-- Description -->
+    <ion-item [class.item-has-error]="description?.invalid && description?.touched">
+      <ion-label position="stacked">Description</ion-label>
+      <ion-textarea
+        formControlName="description"
+        placeholder="Description de la société (optionnel)"
+        rows="3">
+      </ion-textarea>
+    </ion-item>
+    <div class="error-message" *ngIf="description?.invalid && description?.touched">
+      <span *ngIf="description?.errors?.['maxlength']">La description ne doit pas dépasser 500 caractères</span>
+    </div>
+
+    <!-- Adresse -->
+    <ion-item>
+      <ion-label position="stacked">Adresse</ion-label>
+      <ion-textarea
+        formControlName="adresse"
+        placeholder="Adresse de la société (optionnel)"
+        rows="2">
+      </ion-textarea>
+    </ion-item>
+
+    <!-- Téléphone -->
+    <ion-item>
+      <ion-label position="stacked">Téléphone</ion-label>
+      <ion-input
+        type="tel"
+        formControlName="telephone"
+        placeholder="Téléphone (optionnel)">
+      </ion-input>
+    </ion-item>
+
+    <!-- Email -->
+    <ion-item [class.item-has-error]="email?.invalid && email?.touched">
+      <ion-label position="stacked">Email</ion-label>
+      <ion-input
+        type="email"
+        formControlName="email"
+        placeholder="Email (optionnel)">
+      </ion-input>
+    </ion-item>
+    <div class="error-message" *ngIf="email?.invalid && email?.touched">
+      <span *ngIf="email?.errors?.['email']">Format d'email invalide</span>
+      <span *ngIf="email?.errors?.['maxlength']">L'email ne doit pas dépasser 100 caractères</span>
+    </div>
+
+    <!-- Site web -->
+    <ion-item>
+      <ion-label position="stacked">Site web</ion-label>
+      <ion-input
+        type="url"
+        formControlName="siteWeb"
+        placeholder="https://www.example.com (optionnel)">
+      </ion-input>
+    </ion-item>
+
+    <!-- Logo -->
+    <ion-item>
+      <ion-label position="stacked">Logo (URL ou base64)</ion-label>
+      <ion-input
+        type="text"
+        formControlName="logo"
+        placeholder="URL ou base64 (optionnel)">
+      </ion-input>
+    </ion-item>
+
+    <!-- Actif -->
+    <ion-item>
+      <ion-label>Société active</ion-label>
+      <ion-checkbox formControlName="actif" slot="end"></ion-checkbox>
+    </ion-item>
+
+    <!-- Bouton Annuler -->
+    <div class="form-actions">
+      <ion-button
+        type="button"
+        fill="outline"
+        expand="block"
+        (click)="router.navigate(['/parametres/societes'])">
+        <ion-icon name="arrow-back" slot="start"></ion-icon>
+        Annuler
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+

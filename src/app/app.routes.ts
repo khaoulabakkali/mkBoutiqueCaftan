@@ -62,6 +62,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'articles/detail/:id',
+    loadComponent: () => import('./articles/detail-article.page').then((m) => m.DetailArticlePage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'reservations',
     loadComponent: () => import('./reservations/liste-reservations.page').then((m) => m.ListeReservationsPage),
     canActivate: [authGuard],
@@ -74,6 +79,11 @@ export const routes: Routes = [
   {
     path: 'reservations/edit/:id',
     loadComponent: () => import('./reservations/form-reservation.page').then((m) => m.FormReservationPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'reservations/detail/:id',
+    loadComponent: () => import('./reservations/detail-reservation.page').then((m) => m.DetailReservationPage),
     canActivate: [authGuard],
   },
   {
@@ -144,6 +154,26 @@ export const routes: Routes = [
   {
     path: 'parametres/categories/detail/:id',
     loadComponent: () => import('./parametres/categories/detail-categorie.page').then((m) => m.DetailCategoriePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/societes',
+    loadComponent: () => import('./parametres/societes/liste-societes.page').then((m) => m.ListeSocietesPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/societes/new',
+    loadComponent: () => import('./parametres/societes/form-societe.page').then((m) => m.FormSocietePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/societes/edit/:id',
+    loadComponent: () => import('./parametres/societes/form-societe.page').then((m) => m.FormSocietePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'parametres/societes/detail/:id',
+    loadComponent: () => import('./parametres/societes/detail-societe.page').then((m) => m.DetailSocietePage),
     canActivate: [authGuard],
   },
   {

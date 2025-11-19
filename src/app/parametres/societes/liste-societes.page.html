@@ -1,0 +1,71 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Gestion des Sociétés</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addNewSociete()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher une société..."
+    debounce="300">
+  </ion-searchbar>
+
+  <!-- Liste des sociétés -->
+  <ion-list *ngIf="societesFiltres.length > 0">
+    <ion-item *ngFor="let societe of societesFiltres" [button]="true" (click)="viewSociete(societe)">
+      <ion-label>
+        <h2>
+          <ion-icon [name]="societe.actif ? 'checkmark-circle' : 'close-circle'" 
+                    [color]="societe.actif ? 'success' : 'danger'"
+                    style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+          {{ societe.nomSociete }}
+        </h2>
+        <p *ngIf="societe.description">{{ societe.description }}</p>
+        <div class="badges-container">
+          <ion-badge [color]="societe.actif ? 'success' : 'danger'">
+            <ion-icon [name]="societe.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+            {{ societe.actif ? 'Actif' : 'Inactif' }}
+          </ion-badge>
+        </div>
+      </ion-label>
+      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
+        <ion-button
+          fill="clear"
+          size="small"
+          (click)="editSociete(societe)">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          color="danger"
+          (click)="deleteSociete(societe)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+        <ion-button
+          fill="clear"
+          size="small"
+          [color]="societe.actif ? 'warning' : 'success'"
+          (click)="toggleActif(societe)">
+          <ion-icon [name]="societe.actif ? 'eye-off' : 'eye'"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="societesFiltres.length === 0" class="empty-state">
+    <ion-icon name="business"></ion-icon>
+    <p>Aucune société trouvée</p>
+  </div>
+</ion-content>
+

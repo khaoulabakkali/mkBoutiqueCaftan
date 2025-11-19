@@ -288,5 +288,11 @@ export class ListeArticlesPage implements OnInit {
   addNewArticle() {
     this.router.navigate(['/articles/new']);
   }
+
+  viewArticle(article: Article) {
+    if (article.idArticle) {
+      this.router.navigate(['/articles/detail', article.idArticle]);
+    }
+  }
 }
 

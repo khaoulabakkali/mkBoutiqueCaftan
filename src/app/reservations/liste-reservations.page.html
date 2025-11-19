@@ -21,7 +21,7 @@
 
   <!-- Liste des réservations -->
   <ion-list *ngIf="reservationsFiltres.length > 0">
-    <ion-item *ngFor="let reservation of reservationsFiltres" [button]="true">
+    <ion-item *ngFor="let reservation of reservationsFiltres" [button]="true" (click)="viewReservation(reservation)">
       <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
       <ion-label>
         <h2>Réservation #{{ reservation.id_reservation }}</h2>
@@ -42,7 +42,7 @@
           </ion-badge>
         </div>
       </ion-label>
-      <div slot="end" class="actions-container">
+      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
         <ion-button
           fill="clear"
           size="small"

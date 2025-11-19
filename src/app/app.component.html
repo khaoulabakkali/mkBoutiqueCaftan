@@ -124,6 +124,16 @@
               <ion-icon name="grid" slot="start"></ion-icon>
               <ion-label>Catégories</ion-label>
             </ion-item>
+            <ion-item 
+              button 
+              routerLink="/parametres/societes" 
+              routerDirection="root"
+              [class.menu-item-active]="isRouteActive('/parametres/societes')"
+              routerLinkActive="menu-item-active"
+              class="submenu-item">
+              <ion-icon name="business" slot="start"></ion-icon>
+              <ion-label>Sociétés</ion-label>
+            </ion-item>
           </ng-container>
           <ion-item button (click)="logout()">
             <ion-icon name="log-out" slot="start"></ion-icon>

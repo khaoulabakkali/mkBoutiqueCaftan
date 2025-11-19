@@ -265,5 +265,11 @@ export class ListeReservationsPage implements OnInit {
   addNewReservation() {
     this.router.navigate(['/reservations/new']);
   }
+
+  viewReservation(reservation: Reservation) {
+    if (reservation.id_reservation) {
+      this.router.navigate(['/reservations/detail', reservation.id_reservation]);
+    }
+  }
 }
 

@@ -21,7 +21,7 @@
 
   <!-- Liste des articles -->
   <ion-list *ngIf="articlesFiltres.length > 0">
-    <ion-item *ngFor="let article of articlesFiltres" [button]="true">
+    <ion-item *ngFor="let article of articlesFiltres" [button]="true" (click)="viewArticle(article)">
       <ion-label>
         <h2>
           <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" 
@@ -45,7 +45,7 @@
           Prix location: {{ article.prixLocationBase }} MAD/jour | Avance: {{ article.prixAvanceBase }} MAD
         </p>
       </ion-label>
-      <div slot="end" class="actions-container">
+      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
         <ion-button
           fill="clear"
           size="small"
