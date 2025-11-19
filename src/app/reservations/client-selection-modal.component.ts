@@ -71,8 +71,8 @@ export class ClientSelectionModalComponent implements OnInit {
     const term = this.searchTerm.toLowerCase();
     this.clientsFiltres = this.clients.filter(
       (client) =>
-        client.nom_client.toLowerCase().includes(term) ||
-        client.prenom_client.toLowerCase().includes(term) ||
+        client.nomClient.toLowerCase().includes(term) ||
+        client.prenomClient.toLowerCase().includes(term) ||
         client.telephone.toLowerCase().includes(term)
     );
   }
@@ -90,7 +90,7 @@ export class ClientSelectionModalComponent implements OnInit {
   }
 
   getClientName(client: Client): string {
-    return `${client.prenom_client} ${client.nom_client}`;
+    return `${client.prenomClient} ${client.nomClient}`;
   }
 }
 

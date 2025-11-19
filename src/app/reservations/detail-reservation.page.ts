@@ -127,8 +127,8 @@ export class DetailReservationPage implements OnInit {
   }
 
   viewClient() {
-    if (this.client?.id_client) {
-      this.router.navigate(['/clients/detail', this.client.id_client]);
+    if (this.client?.idClient) {
+      this.router.navigate(['/clients/detail', this.client.idClient]);
     }
   }
 
@@ -196,7 +196,7 @@ export class DetailReservationPage implements OnInit {
 
   getClientName(): string {
     if (!this.client) return 'Client non trouvé';
-    return `${this.client.prenom_client} ${this.client.nom_client}`;
+    return `${this.client.prenomClient} ${this.client.nomClient}`;
   }
 
   private async presentToast(message: string, color: string): Promise<void> {

@@ -143,23 +143,23 @@ export class ListeClientsPage implements OnInit {
     const term = this.searchTerm.toLowerCase();
     this.clientsFiltres = this.clients.filter(
       (client) =>
-        client.nom_client.toLowerCase().includes(term) ||
-        client.prenom_client.toLowerCase().includes(term) ||
+        client.nomClient.toLowerCase().includes(term) ||
+        client.prenomClient.toLowerCase().includes(term) ||
         client.telephone.toLowerCase().includes(term) ||
         client.email?.toLowerCase().includes(term)
     );
   }
 
   async editClient(client: Client) {
-    if (client.id_client) {
-      this.router.navigate(['/clients/edit', client.id_client]);
+    if (client.idClient) {
+      this.router.navigate(['/clients/edit', client.idClient]);
     }
   }
 
   async deleteClient(client: Client) {
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer le client "${client.prenom_client} ${client.nom_client}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer le client "${client.prenomClient} ${client.nomClient}" ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -174,8 +174,8 @@ export class ListeClientsPage implements OnInit {
             });
             await loading.present();
 
-            if (client.id_client) {
-              this.clientService.deleteClient(client.id_client).subscribe({
+            if (client.idClient) {
+              this.clientService.deleteClient(client.idClient).subscribe({
                 next: () => {
                   loading.dismiss();
                   this.presentToast('Client supprimé avec succès', 'success');
@@ -212,12 +212,12 @@ export class ListeClientsPage implements OnInit {
   }
 
   getFullName(client: Client): string {
-    return `${client.prenom_client} ${client.nom_client}`;
+    return `${client.prenomClient} ${client.nomClient}`;
   }
 
   viewClient(client: Client) {
-    if (client.id_client) {
-      this.router.navigate(['/clients/detail', client.id_client]);
+    if (client.idClient) {
+      this.router.navigate(['/clients/detail', client.idClient]);
     }
   }
 }

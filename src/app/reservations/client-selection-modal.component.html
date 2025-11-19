@@ -32,7 +32,7 @@
     <ion-item 
       *ngFor="let client of clientsFiltres" 
       button 
-      (click)="selectClient(client.id_client!)">
+      (click)="selectClient(client.idClient!)">
       <ion-icon name="person" slot="start" color="primary"></ion-icon>
       <ion-label>
         <h2>{{ getClientName(client) }}</h2>

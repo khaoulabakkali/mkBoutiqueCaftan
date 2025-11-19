@@ -97,8 +97,8 @@ export class DetailClientPage implements OnInit {
   }
 
   editClient() {
-    if (this.client?.id_client) {
-      this.router.navigate(['/clients/edit', this.client.id_client]);
+    if (this.client?.idClient) {
+      this.router.navigate(['/clients/edit', this.client.idClient]);
     }
   }
 
@@ -108,7 +108,7 @@ export class DetailClientPage implements OnInit {
 
   getFullName(): string {
     if (!this.client) return '';
-    return `${this.client.prenom_client} ${this.client.nom_client}`;
+    return `${this.client.prenomClient} ${this.client.nomClient}`;
   }
 
   formatDate(dateString: string | undefined): string {

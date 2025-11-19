@@ -62,12 +62,13 @@ export class ClientService {
    */
   createClient(client: Client): Observable<Client> {
     const payload = {
-      nom_client: client.nom_client.trim(),
-      prenom_client: client.prenom_client.trim(),
-      telephone: client.telephone.trim(),
-      email: client.email?.trim() || undefined,
-      adresse_principale: client.adresse_principale?.trim() || undefined,
-      total_commandes: client.total_commandes || 0
+      NomClient: client.nomClient.trim(),
+      PrenomClient: client.prenomClient.trim(),
+      Telephone: client.telephone.trim(),
+      Email: client.email?.trim() || undefined,
+      AdressePrincipale: client.adressePrincipale?.trim() || undefined,
+      TotalCommandes: client.totalCommandes || 0,
+      Actif: client.actif !== undefined ? client.actif : true
     };
 
     return this.http.post<Client>(
@@ -84,12 +85,13 @@ export class ClientService {
    */
   updateClient(id: number, client: Client): Observable<Client> {
     const payload = {
-      nom_client: client.nom_client.trim(),
-      prenom_client: client.prenom_client.trim(),
-      telephone: client.telephone.trim(),
-      email: client.email?.trim() || undefined,
-      adresse_principale: client.adresse_principale?.trim() || undefined,
-      total_commandes: client.total_commandes || 0
+      NomClient: client.nomClient.trim(),
+      PrenomClient: client.prenomClient.trim(),
+      Telephone: client.telephone.trim(),
+      Email: client.email?.trim() || undefined,
+      AdressePrincipale: client.adressePrincipale?.trim() || undefined,
+      TotalCommandes: client.totalCommandes || 0,
+      Actif: client.actif !== undefined ? client.actif : true
     };
 
     return this.http.put<Client>(

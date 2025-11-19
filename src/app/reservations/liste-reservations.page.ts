@@ -166,8 +166,8 @@ export class ListeReservationsPage implements OnInit {
       (reservation) => {
         const client = this.getClient(reservation.id_client);
         return (
-          client?.nom_client.toLowerCase().includes(term) ||
-          client?.prenom_client.toLowerCase().includes(term) ||
+          client?.nomClient.toLowerCase().includes(term) ||
+          client?.prenomClient.toLowerCase().includes(term) ||
           reservation.statut_reservation.toLowerCase().includes(term)
         );
       }
@@ -175,12 +175,12 @@ export class ListeReservationsPage implements OnInit {
   }
 
   getClient(idClient: number): Client | undefined {
-    return this.clients.find(c => c.id_client === idClient);
+    return this.clients.find(c => c.idClient === idClient);
   }
 
   getClientName(idClient: number): string {
     const client = this.getClient(idClient);
-    return client ? `${client.prenom_client} ${client.nom_client}` : 'N/A';
+    return client ? `${client.prenomClient} ${client.nomClient}` : 'N/A';
   }
 
   getStatutColor(statut: StatutReservation): string {

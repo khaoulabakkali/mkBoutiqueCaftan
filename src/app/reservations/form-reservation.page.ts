@@ -140,8 +140,8 @@ export class FormReservationPage implements OnInit, OnDestroy {
     const clientId = this.reservationForm.get('id_client')?.value;
     if (!clientId) return '';
     
-    const client = this.clients.find(c => c.id_client === clientId);
-    return client ? `${client.prenom_client} ${client.nom_client} - ${client.telephone}` : '';
+    const client = this.clients.find(c => c.idClient === clientId);
+    return client ? `${client.prenomClient} ${client.nomClient} - ${client.telephone}` : '';
   }
 
   async openClientModal() {

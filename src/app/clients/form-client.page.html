@@ -16,31 +16,31 @@
 <ion-content [fullscreen]="true">
   <form id="clientForm" [formGroup]="clientForm" (ngSubmit)="onSubmit()">
     <!-- Nom -->
-    <ion-item [class.item-has-error]="nom_client?.invalid && nom_client?.touched">
+    <ion-item [class.item-has-error]="nomClient?.invalid && nomClient?.touched">
       <ion-label position="stacked">Nom *</ion-label>
       <ion-input
         type="text"
-        formControlName="nom_client"
+        formControlName="nomClient"
         placeholder="Nom du client">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="nom_client?.invalid && nom_client?.touched">
-      <span *ngIf="nom_client?.errors?.['required']">Le nom est requis</span>
-      <span *ngIf="nom_client?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+    <div class="error-message" *ngIf="nomClient?.invalid && nomClient?.touched">
+      <span *ngIf="nomClient?.errors?.['required']">Le nom est requis</span>
+      <span *ngIf="nomClient?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
     </div>
 
     <!-- Prénom -->
-    <ion-item [class.item-has-error]="prenom_client?.invalid && prenom_client?.touched">
+    <ion-item [class.item-has-error]="prenomClient?.invalid && prenomClient?.touched">
       <ion-label position="stacked">Prénom *</ion-label>
       <ion-input
         type="text"
-        formControlName="prenom_client"
+        formControlName="prenomClient"
         placeholder="Prénom du client">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="prenom_client?.invalid && prenom_client?.touched">
-      <span *ngIf="prenom_client?.errors?.['required']">Le prénom est requis</span>
-      <span *ngIf="prenom_client?.errors?.['minlength']">Le prénom doit contenir au moins 2 caractères</span>
+    <div class="error-message" *ngIf="prenomClient?.invalid && prenomClient?.touched">
+      <span *ngIf="prenomClient?.errors?.['required']">Le prénom est requis</span>
+      <span *ngIf="prenomClient?.errors?.['minlength']">Le prénom doit contenir au moins 2 caractères</span>
     </div>
 
     <!-- Téléphone -->
@@ -71,28 +71,28 @@
     </div>
 
     <!-- Adresse principale -->
-    <ion-item [class.item-has-error]="adresse_principale?.invalid && adresse_principale?.touched">
+    <ion-item [class.item-has-error]="adressePrincipale?.invalid && adressePrincipale?.touched">
       <ion-label position="stacked">Adresse principale</ion-label>
       <ion-textarea
-        formControlName="adresse_principale"
+        formControlName="adressePrincipale"
         placeholder="Adresse complète du client"
         rows="3">
       </ion-textarea>
     </ion-item>
 
     <!-- Total commandes -->
-    <ion-item [class.item-has-error]="total_commandes?.invalid && total_commandes?.touched">
+    <ion-item [class.item-has-error]="totalCommandes?.invalid && totalCommandes?.touched">
       <ion-label position="stacked">Total commandes *</ion-label>
       <ion-input
         type="number"
-        formControlName="total_commandes"
+        formControlName="totalCommandes"
         placeholder="0"
         min="0">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="total_commandes?.invalid && total_commandes?.touched">
-      <span *ngIf="total_commandes?.errors?.['required']">Le total des commandes est requis</span>
-      <span *ngIf="total_commandes?.errors?.['min']">Le total ne peut pas être négatif</span>
+    <div class="error-message" *ngIf="totalCommandes?.invalid && totalCommandes?.touched">
+      <span *ngIf="totalCommandes?.errors?.['required']">Le total des commandes est requis</span>
+      <span *ngIf="totalCommandes?.errors?.['min']">Le total ne peut pas être négatif</span>
     </div>
 
     <!-- Bouton Annuler -->

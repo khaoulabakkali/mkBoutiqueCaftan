@@ -63,12 +63,13 @@ export class FormClientPage implements OnInit {
     addIcons({ save, arrowBack, checkmark });
     
     this.clientForm = this.formBuilder.group({
-      nom_client: ['', [Validators.required, Validators.minLength(2)]],
-      prenom_client: ['', [Validators.required, Validators.minLength(2)]],
+      nomClient: ['', [Validators.required, Validators.minLength(2)]],
+      prenomClient: ['', [Validators.required, Validators.minLength(2)]],
       telephone: ['', [Validators.required, Validators.pattern(/^\+?[0-9\s-]+$/)]],
       email: ['', [Validators.email]],
-      adresse_principale: ['', []],
-      total_commandes: [0, [Validators.required, Validators.min(0)]]
+      adressePrincipale: ['', []],
+      totalCommandes: [0, [Validators.required, Validators.min(0)]],
+      actif: [true, [Validators.required]]
     });
   }
 
@@ -104,12 +105,13 @@ export class FormClientPage implements OnInit {
     this.clientService.getClientById(this.clientId).subscribe({
       next: (client) => {
         this.clientForm.patchValue({
-          nom_client: client.nom_client,
-          prenom_client: client.prenom_client,
+          nomClient: client.nomClient,
+          prenomClient: client.prenomClient,
           telephone: client.telephone,
           email: client.email || '',
-          adresse_principale: client.adresse_principale || '',
-          total_commandes: client.total_commandes || 0
+          adressePrincipale: client.adressePrincipale || '',
+          totalCommandes: client.totalCommandes || 0,
+          actif: client.actif !== undefined ? client.actif : true
         });
         loading.then(l => l.dismiss());
       },
@@ -156,7 +158,7 @@ export class FormClientPage implements OnInit {
               // S'assurer que returnTo commence par / et n'est pas encodé
               const returnPath = this.returnTo.startsWith('/') ? this.returnTo : '/' + this.returnTo;
               this.router.navigate([returnPath], { 
-                queryParams: { clientId: newClient.id_client },
+                queryParams: { clientId: newClient.idClient },
                 replaceUrl: true
               });
             } else {
@@ -188,12 +190,12 @@ export class FormClientPage implements OnInit {
     await toast.present();
   }
 
-  get nom_client() {
-    return this.clientForm.get('nom_client');
+  get nomClient() {
+    return this.clientForm.get('nomClient');
   }
 
-  get prenom_client() {
-    return this.clientForm.get('prenom_client');
+  get prenomClient() {
+    return this.clientForm.get('prenomClient');
   }
 
   get telephone() {
@@ -204,12 +206,16 @@ export class FormClientPage implements OnInit {
     return this.clientForm.get('email');
   }
 
-  get adresse_principale() {
-    return this.clientForm.get('adresse_principale');
+  get adressePrincipale() {
+    return this.clientForm.get('adressePrincipale');
   }
 
-  get total_commandes() {
-    return this.clientForm.get('total_commandes');
+  get totalCommandes() {
+    return this.clientForm.get('totalCommandes');
+  }
+
+  get actif() {
+    return this.clientForm.get('actif');
   }
 
   onCancel() {
