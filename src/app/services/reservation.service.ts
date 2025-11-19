@@ -38,16 +38,16 @@ export class ReservationService {
    */
   private mapApiToModel(data: any): Reservation {
     return {
-      idReservation: data.IdReservation || data.idReservation,
-      idClient: data.IdClient || data.idClient,
-      dateReservation: data.DateReservation || data.dateReservation,
-      dateDebut: data.DateDebut || data.dateDebut,
-      dateFin: data.DateFin || data.dateFin,
-      montantTotal: data.MontantTotal || data.montantTotal,
-      statutReservation: data.StatutReservation || data.statutReservation,
-      idPaiement: data.IdPaiement || data.idPaiement,
-      remiseAppliquee: data.RemiseAppliquee || data.remiseAppliquee,
-      client: data.Client || data.client
+      idReservation: data.idReservation,
+      idClient: data.idClient,
+      dateReservation: data.dateReservation,
+      dateDebut: data.dateDebut,
+      dateFin: data.dateFin,
+      montantTotal: data.montantTotal,
+      statutReservation: data.statutReservation,
+      idPaiement: data.idPaiement,
+      remiseAppliquee: data.remiseAppliquee,
+      client: data.client
     };
   }
 
@@ -82,14 +82,14 @@ export class ReservationService {
    */
   createReservation(reservation: Reservation): Observable<Reservation> {
     const payload = {
-      IdClient: reservation.idClient,
-      DateReservation: reservation.dateReservation,
-      DateDebut: reservation.dateDebut,
-      DateFin: reservation.dateFin,
-      MontantTotal: reservation.montantTotal,
-      StatutReservation: reservation.statutReservation,
-      IdPaiement: reservation.idPaiement || undefined,
-      RemiseAppliquee: reservation.remiseAppliquee || 0.00
+      idClient: reservation.idClient,
+      dateReservation: reservation.dateReservation,
+      dateDebut: reservation.dateDebut,
+      dateFin: reservation.dateFin,
+      montantTotal: reservation.montantTotal,
+      statutReservation: reservation.statutReservation,
+      idPaiement: reservation.idPaiement || undefined,
+      remiseAppliquee: reservation.remiseAppliquee || 0.00
     };
 
     return this.http.post<any>(

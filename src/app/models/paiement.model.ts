@@ -2,15 +2,7 @@ import { Reservation } from './reservation.model';
 
 /**
  * Modèle Paiement
- * Pour la gestion des paiements dans l'application
- * 
- * Structure de la table paiements (si base de données) :
- * - IdPaiement: INTEGER (clé primaire, auto-increment)
- * - IdReservation: INTEGER FK (référence à Reservations) NOT NULL
- * - Montant: DECIMAL(10, 2) NOT NULL
- * - DatePaiement: DATETIME NOT NULL
- * - MethodePaiement: VARCHAR(50) NULLABLE (Espèces, Carte, Chèque, etc.)
- * - Reference: VARCHAR(100) NULLABLE (Numéro de transaction, référence chèque, etc.)
+ * Correspond à la structure C# du backend
  */
 export interface Paiement {
   /** INTEGER - Clé primaire, auto-increment */

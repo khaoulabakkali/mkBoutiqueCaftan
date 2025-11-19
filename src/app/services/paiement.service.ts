@@ -34,13 +34,29 @@ export class PaiementService {
   }
 
   /**
+   * Mapper les données de l'API (PascalCase) vers le modèle (camelCase)
+   */
+  private mapApiToModel(data: any): Paiement {
+    return {
+      idPaiement: data.IdPaiement || data.idPaiement,
+      idReservation: data.IdReservation || data.idReservation,
+      montant: data.Montant || data.montant,
+      datePaiement: data.DatePaiement || data.datePaiement,
+      methodePaiement: data.MethodePaiement || data.methodePaiement,
+      reference: data.Reference || data.reference,
+      reservation: data.Reservation || data.reservation
+    };
+  }
+
+  /**
    * Récupérer tous les paiements
    */
   getAllPaiements(): Observable<Paiement[]> {
-    return this.http.get<Paiement[]>(
+    return this.http.get<any[]>(
       `${this.apiUrl}/paiements`,
       this.getHttpOptions()
     ).pipe(
+      map(data => Array.isArray(data) ? data.map(item => this.mapApiToModel(item)) : []),
       catchError(this.handleError<Paiement[]>('getAllPaiements', []))
     );
   }
@@ -49,10 +65,11 @@ export class PaiementService {
    * Récupérer un paiement par ID
    */
   getPaiementById(id: number): Observable<Paiement> {
-    return this.http.get<Paiement>(
+    return this.http.get<any>(
       `${this.apiUrl}/paiements/${id}`,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Paiement>('getPaiementById'))
     );
   }
@@ -69,11 +86,12 @@ export class PaiementService {
       Reference: paiement.reference || undefined
     };
 
-    return this.http.post<Paiement>(
+    return this.http.post<any>(
       `${this.apiUrl}/paiements`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Paiement>('createPaiement'))
     );
   }
@@ -90,11 +108,12 @@ export class PaiementService {
       Reference: paiement.reference || undefined
     };
 
-    return this.http.put<Paiement>(
+    return this.http.put<any>(
       `${this.apiUrl}/paiements/${id}`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Paiement>('updatePaiement'))
     );
   }
