@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Reservation } from '../models/reservation.model';
+import { Reservation, StatutReservation, StatutReservationEnum, StatutReservationMapping, StatutReservationReverseMapping } from '../models/reservation.model';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -34,9 +34,40 @@ export class ReservationService {
   }
 
   /**
+   * Convertir la valeur numérique de l'enum API vers la valeur string du frontend
+   */
+  private mapStatutFromApi(statutValue: number | string | undefined): StatutReservation {
+    if (statutValue === undefined || statutValue === null) {
+      return 'En attente';
+    }
+    
+    // Si c'est déjà une string valide, la retourner telle quelle
+    if (typeof statutValue === 'string') {
+      const validStatuts: StatutReservation[] = ['En attente', 'Confirmée', 'En cours', 'Terminée', 'Annulée'];
+      if (validStatuts.includes(statutValue as StatutReservation)) {
+        return statutValue as StatutReservation;
+      }
+    }
+    
+    // Convertir la valeur numérique vers la string correspondante
+    const enumValue = statutValue as StatutReservationEnum;
+    return StatutReservationMapping[enumValue] || 'En attente';
+  }
+
+  /**
+   * Convertir la valeur string du frontend vers la valeur numérique de l'enum API
+   */
+  private mapStatutToApi(statutString: string): number {
+    return StatutReservationReverseMapping[statutString] ?? StatutReservationEnum.EnAttente;
+  }
+
+  /**
    * Mapper les données de l'API (PascalCase) vers le modèle (camelCase)
    */
   private mapApiToModel(data: any): Reservation {
+    // L'API peut envoyer StatutReservation comme nombre (enum) ou comme string
+    const statutValue = data.statutReservation;
+    
     return {
       idReservation: data.idReservation,
       idClient: data.idClient,
@@ -44,7 +75,7 @@ export class ReservationService {
       dateDebut: data.dateDebut,
       dateFin: data.dateFin,
       montantTotal: data.montantTotal,
-      statutReservation: data.statutReservation,
+      statutReservation: this.mapStatutFromApi(statutValue),
       idPaiement: data.idPaiement,
       remiseAppliquee: data.remiseAppliquee,
       client: data.client
@@ -87,7 +118,7 @@ export class ReservationService {
       dateDebut: reservation.dateDebut,
       dateFin: reservation.dateFin,
       montantTotal: reservation.montantTotal,
-      statutReservation: reservation.statutReservation,
+      statutReservation: this.mapStatutToApi(reservation.statutReservation),
       idPaiement: reservation.idPaiement || undefined,
       remiseAppliquee: reservation.remiseAppliquee || 0.00
     };
@@ -112,7 +143,7 @@ export class ReservationService {
       DateDebut: reservation.dateDebut,
       DateFin: reservation.dateFin,
       MontantTotal: reservation.montantTotal,
-      StatutReservation: reservation.statutReservation,
+      StatutReservation: this.mapStatutToApi(reservation.statutReservation),
       IdPaiement: reservation.idPaiement || undefined,
       RemiseAppliquee: reservation.remiseAppliquee || 0.00
     };

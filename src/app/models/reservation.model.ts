@@ -2,7 +2,44 @@
  * Modèle Reservation
  * Correspond à la structure C# du backend
  */
+
+/**
+ * Enum StatutReservation correspondant à l'enum C# du backend
+ */
+export enum StatutReservationEnum {
+  EnAttente = 0,      // Réservation créée mais non confirmée
+  Confirmee = 1,      // Réservation confirmée
+  EnCours = 2,        // Location en cours
+  Terminee = 3,       // Location terminée
+  Annulee = 4         // Réservation annulée
+}
+
+/**
+ * Type pour l'affichage dans le frontend (valeurs string lisibles)
+ */
 export type StatutReservation = 'En attente' | 'Confirmée' | 'En cours' | 'Terminée' | 'Annulée';
+
+/**
+ * Mapping entre les valeurs numériques de l'API et les valeurs string du frontend
+ */
+export const StatutReservationMapping = {
+  [StatutReservationEnum.EnAttente]: 'En attente' as StatutReservation,
+  [StatutReservationEnum.Confirmee]: 'Confirmée' as StatutReservation,
+  [StatutReservationEnum.EnCours]: 'En cours' as StatutReservation,
+  [StatutReservationEnum.Terminee]: 'Terminée' as StatutReservation,
+  [StatutReservationEnum.Annulee]: 'Annulée' as StatutReservation
+};
+
+/**
+ * Mapping inverse : string → enum numérique
+ */
+export const StatutReservationReverseMapping: { [key: string]: StatutReservationEnum } = {
+  'En attente': StatutReservationEnum.EnAttente,
+  'Confirmée': StatutReservationEnum.Confirmee,
+  'En cours': StatutReservationEnum.EnCours,
+  'Terminée': StatutReservationEnum.Terminee,
+  'Annulée': StatutReservationEnum.Annulee
+};
 
 export interface Reservation {
   /** INTEGER - Clé primaire, auto-increment */

@@ -212,12 +212,15 @@ export class FormReservationPage implements OnInit, OnDestroy {
       next: (reservation) => {
         // Formater les dates pour les inputs
         const dateReservation = reservation.dateReservation ? new Date(reservation.dateReservation).toISOString().slice(0, 16) : '';
+        // Formater les dates pour les inputs de type "date" (format YYYY-MM-DD)
+        const dateDebut = reservation.dateDebut ? new Date(reservation.dateDebut).toISOString().slice(0, 10) : '';
+        const dateFin = reservation.dateFin ? new Date(reservation.dateFin).toISOString().slice(0, 10) : '';
         
         this.reservationForm.patchValue({
           idClient: reservation.idClient,
           dateReservation: dateReservation,
-          dateDebut: reservation.dateDebut,
-          dateFin: reservation.dateFin,
+          dateDebut: dateDebut,
+          dateFin: dateFin,
           montantTotal: reservation.montantTotal,
           statutReservation: reservation.statutReservation,
           idPaiement: reservation.idPaiement || '',
