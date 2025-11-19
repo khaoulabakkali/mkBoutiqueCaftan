@@ -70,7 +70,6 @@ export class ArticleService {
       Couleur: article.couleur || undefined,
       Photo: article.photo || undefined,
       IdCategorie: article.idCategorie,
-      IdSociete: article.idSociete,
       Actif: article.actif
     };
 
@@ -96,7 +95,6 @@ export class ArticleService {
       Couleur: article.couleur || undefined,
       Photo: article.photo || undefined,
       IdCategorie: article.idCategorie,
-      IdSociete: article.idSociete,
       Actif: article.actif
     };
 

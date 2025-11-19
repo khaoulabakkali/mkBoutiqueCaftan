@@ -15,7 +15,6 @@ import { Categorie } from './categorie.model';
  * - Couleur: VARCHAR(50) NULLABLE
  * - Photo: Longtext NULLABLE
  * - IdCategorie: INTEGER FK (référence à Categories)
- * - IdSociete: INTEGER FK (référence à Societes)
  * - Actif: BOOLEAN NOT NULL
  */
 export interface Article {
@@ -45,9 +44,6 @@ export interface Article {
   
   /** INTEGER - Lien vers la catégorie (FK vers Categories) */
   idCategorie: number;
-  
-  /** INTEGER - Lien vers la société (FK vers Societes) */
-  idSociete: number;
   
   /** BOOLEAN - Indique si l'article est visible dans le catalogue */
   actif: boolean;

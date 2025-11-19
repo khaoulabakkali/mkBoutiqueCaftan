@@ -84,7 +84,6 @@ export class FormArticlePage implements OnInit {
       couleur: ['', []],
       photo: ['', []],
       idCategorie: ['', [Validators.required]],
-      idSociete: [1, [Validators.required]], // Valeur par défaut, à ajuster selon votre logique
       actif: [true, [Validators.required]]
     });
   }
@@ -150,7 +149,6 @@ export class FormArticlePage implements OnInit {
           couleur: article.couleur || '',
           photo: article.photo || '',
           idCategorie: article.idCategorie,
-          idSociete: article.idSociete,
           actif: article.actif
         });
         loading.then(l => l.dismiss());
@@ -183,7 +181,6 @@ export class FormArticlePage implements OnInit {
         couleur: formValue.couleur || undefined,
         photo: formValue.photo || undefined,
         idCategorie: formValue.idCategorie,
-        idSociete: formValue.idSociete,
         actif: formValue.actif
       };
 
