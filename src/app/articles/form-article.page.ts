@@ -76,14 +76,15 @@ export class FormArticlePage implements OnInit {
     addIcons({ save, arrowBack, checkmark });
     
     this.articleForm = this.formBuilder.group({
-      nom_article: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
+      nomArticle: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
-      prix_location_base: [0, [Validators.required, Validators.min(0)]],
-      prix_avance_base: [0, [Validators.required, Validators.min(0)]],
+      prixLocationBase: [0, [Validators.required, Validators.min(0)]],
+      prixAvanceBase: [0, [Validators.required, Validators.min(0)]],
       idTaille: ['', []],
       couleur: ['', []],
       photo: ['', []],
       idCategorie: ['', [Validators.required]],
+      idSociete: [1, [Validators.required]], // Valeur par défaut, à ajuster selon votre logique
       actif: [true, [Validators.required]]
     });
   }
@@ -141,14 +142,15 @@ export class FormArticlePage implements OnInit {
     this.articleService.getArticleById(this.articleId).subscribe({
       next: (article) => {
         this.articleForm.patchValue({
-          nom_article: article.nom_article,
+          nomArticle: article.nomArticle,
           description: article.description,
-          prix_location_base: article.prix_location_base,
-          prix_avance_base: article.prix_avance_base,
-          idTaille: article.idTaille || '',
+          prixLocationBase: article.prixLocationBase,
+          prixAvanceBase: article.prixAvanceBase,
+          idTaille: article.idTaille ? article.idTaille.toString() : '',
           couleur: article.couleur || '',
           photo: article.photo || '',
           idCategorie: article.idCategorie,
+          idSociete: article.idSociete,
           actif: article.actif
         });
         loading.then(l => l.dismiss());
@@ -173,14 +175,15 @@ export class FormArticlePage implements OnInit {
 
       const formValue = this.articleForm.value;
       const articleData: Article = {
-        nom_article: formValue.nom_article,
+        nomArticle: formValue.nomArticle,
         description: formValue.description,
-        prix_location_base: parseFloat(formValue.prix_location_base),
-        prix_avance_base: parseFloat(formValue.prix_avance_base),
-        idTaille: formValue.idTaille || undefined,
+        prixLocationBase: parseFloat(formValue.prixLocationBase),
+        prixAvanceBase: parseFloat(formValue.prixAvanceBase),
+        idTaille: formValue.idTaille ? parseInt(formValue.idTaille) : undefined,
         couleur: formValue.couleur || undefined,
         photo: formValue.photo || undefined,
         idCategorie: formValue.idCategorie,
+        idSociete: formValue.idSociete,
         actif: formValue.actif
       };
 
@@ -229,20 +232,20 @@ export class FormArticlePage implements OnInit {
     await toast.present();
   }
 
-  get nom_article() {
-    return this.articleForm.get('nom_article');
+  get nomArticle() {
+    return this.articleForm.get('nomArticle');
   }
 
   get description() {
     return this.articleForm.get('description');
   }
 
-  get prix_location_base() {
-    return this.articleForm.get('prix_location_base');
+  get prixLocationBase() {
+    return this.articleForm.get('prixLocationBase');
   }
 
-  get prix_avance_base() {
-    return this.articleForm.get('prix_avance_base');
+  get prixAvanceBase() {
+    return this.articleForm.get('prixAvanceBase');
   }
 
   get idCategorie() {

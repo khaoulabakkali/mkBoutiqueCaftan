@@ -27,7 +27,7 @@
           <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" 
                     [color]="article.actif ? 'success' : 'danger'"
                     style="margin-right: 8px; vertical-align: middle;"></ion-icon>
-          {{ article.nom_article }}
+          {{ article.nomArticle }}
         </h2>
         <div class="badges-container">
           <ion-badge color="primary">
@@ -42,7 +42,7 @@
           </ion-badge>
         </div>
         <p style="margin-top: 0.5rem; color: var(--ion-color-medium);">
-          Prix location: {{ article.prix_location_base }} MAD/jour | Avance: {{ article.prix_avance_base }} MAD
+          Prix location: {{ article.prixLocationBase }} MAD/jour | Avance: {{ article.prixAvanceBase }} MAD
         </p>
       </ion-label>
       <div slot="end" class="actions-container">

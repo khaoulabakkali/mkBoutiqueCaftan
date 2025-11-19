@@ -70,6 +70,7 @@ export class ListeArticlesPage implements OnInit {
   categories: Categorie[] = [];
   tailles: Taille[] = [];
   searchTerm: string = '';
+  private isLoadingData = false;
 
   constructor(
     private articleService: ArticleService,
@@ -99,6 +100,13 @@ export class ListeArticlesPage implements OnInit {
     this.loadArticles();
   }
 
+  ionViewWillEnter() {
+    // Recharger les données chaque fois que la page est sur le point d'être affichée
+    // Cela garantit que les modifications effectuées ailleurs sont reflétées
+    // Ne pas afficher le loading si on revient juste de la modification
+    this.loadArticles(false);
+  }
+
   async loadCategories() {
     this.categorieService.getAllCategories().subscribe({
       next: (data) => {
@@ -125,23 +133,37 @@ export class ListeArticlesPage implements OnInit {
     });
   }
 
-  async loadArticles() {
-    const loading = await this.loadingController.create({
+  async loadArticles(showLoading = true) {
+    if (this.isLoadingData) return;
+    
+    this.isLoadingData = true;
+    const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
-    });
-    await loading.present();
+    }) : null;
+    
+    if (loading) {
+      await loading.present();
+    }
 
     this.articleService.getAllArticles().subscribe({
       next: (data) => {
-        this.articles = data;
-        this.articlesFiltres = data;
-        loading.dismiss();
+        this.articles = data || [];
+        this.articlesFiltres = data || [];
+        if (loading) {
+          loading.dismiss();
+        }
+        this.isLoadingData = false;
       },
       error: (error) => {
+        if (loading) {
+          loading.dismiss();
+        }
+        this.articles = [];
+        this.articlesFiltres = [];
+        this.isLoadingData = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }
-        loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des articles';
         this.presentToast(errorMessage, 'danger');
       }
@@ -162,7 +184,7 @@ export class ListeArticlesPage implements OnInit {
     const term = this.searchTerm.toLowerCase();
     this.articlesFiltres = this.articles.filter(
       (article) =>
-        article.nom_article.toLowerCase().includes(term) ||
+        article.nomArticle.toLowerCase().includes(term) ||
         article.description.toLowerCase().includes(term)
     );
   }
@@ -172,20 +194,22 @@ export class ListeArticlesPage implements OnInit {
     return categorie ? categorie.nomCategorie : 'N/A';
   }
 
-  getTailleLabel(idTaille?: string): string {
+  getTailleLabel(idTaille?: number): string {
     if (!idTaille) return 'N/A';
-    const taille = this.tailles.find(t => t.taille === idTaille);
-    return taille ? taille.taille : idTaille;
+    const taille = this.tailles.find(t => t.idTaille === idTaille);
+    return taille ? taille.taille : 'N/A';
   }
 
   async editArticle(article: Article) {
-    this.router.navigate(['/articles/edit', article.id_article]);
+    if (article.idArticle) {
+      this.router.navigate(['/articles/edit', article.idArticle]);
+    }
   }
 
   async deleteArticle(article: Article) {
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer l'article "${article.nom_article}" ?`,
+      message: `Êtes-vous sûr de vouloir supprimer l'article "${article.nomArticle}" ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -200,20 +224,21 @@ export class ListeArticlesPage implements OnInit {
             });
             await loading.present();
 
-            this.articleService.deleteArticle(article.id_article!).subscribe({
-              next: () => {
-                loading.dismiss();
-                this.presentToast('Article supprimé avec succès', 'success');
-                // Retirer l'article de la liste localement
-                this.articles = this.articles.filter(a => a.id_article !== article.id_article);
-                this.filterArticles();
-              },
-              error: (error) => {
-                loading.dismiss();
-                const errorMessage = error?.message || 'Erreur lors de la suppression';
-                this.presentToast(errorMessage, 'danger');
-              }
-            });
+            if (article.idArticle) {
+              this.articleService.deleteArticle(article.idArticle).subscribe({
+                next: () => {
+                  loading.dismiss();
+                  this.presentToast('Article supprimé avec succès', 'success');
+                  // Recharger la liste depuis l'API
+                  this.loadArticles(false);
+                },
+                error: (error) => {
+                  loading.dismiss();
+                  const errorMessage = error?.message || 'Erreur lors de la suppression';
+                  this.presentToast(errorMessage, 'danger');
+                }
+              });
+            }
           }
         }
       ]
@@ -228,21 +253,26 @@ export class ListeArticlesPage implements OnInit {
     });
     await loading.present();
 
-    this.articleService.toggleActif(article.id_article!).subscribe({
-      next: (updatedArticle) => {
-        loading.dismiss();
-        article.actif = updatedArticle.actif;
-        this.presentToast(
-          updatedArticle.actif ? 'Article activé' : 'Article désactivé',
-          'success'
-        );
-      },
-      error: (error) => {
-        loading.dismiss();
-        const errorMessage = error?.message || 'Erreur lors de la modification';
-        this.presentToast(errorMessage, 'danger');
-      }
-    });
+    const newActifState = !article.actif;
+    if (article.idArticle) {
+      this.articleService.toggleActif(article.idArticle, newActifState).subscribe({
+        next: () => {
+          loading.dismiss();
+          article.actif = newActifState;
+          this.presentToast(
+            newActifState ? 'Article activé' : 'Article désactivé',
+            'success'
+          );
+          // Recharger la liste depuis l'API pour s'assurer de la synchronisation
+          this.loadArticles(false);
+        },
+        error: (error) => {
+          loading.dismiss();
+          const errorMessage = error?.message || 'Erreur lors de la modification';
+          this.presentToast(errorMessage, 'danger');
+        }
+      });
+    }
   }
 
   async presentToast(message: string, color: string) {

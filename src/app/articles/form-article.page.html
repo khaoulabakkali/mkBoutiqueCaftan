@@ -16,19 +16,19 @@
 <ion-content [fullscreen]="true">
   <form id="articleForm" [formGroup]="articleForm" (ngSubmit)="onSubmit()">
     <!-- Nom article -->
-    <ion-item [class.item-has-error]="nom_article?.invalid && nom_article?.touched">
+    <ion-item [class.item-has-error]="nomArticle?.invalid && nomArticle?.touched">
       <ion-label position="stacked">Nom de l'article *</ion-label>
       <ion-input
         type="text"
-        formControlName="nom_article"
+        formControlName="nomArticle"
         placeholder="Caftan Royal, Tekchita Moderne..."
         maxlength="150">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="nom_article?.invalid && nom_article?.touched">
-      <span *ngIf="nom_article?.errors?.['required']">Le nom est requis</span>
-      <span *ngIf="nom_article?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
-      <span *ngIf="nom_article?.errors?.['maxlength']">Le nom ne doit pas dépasser 150 caractères</span>
+    <div class="error-message" *ngIf="nomArticle?.invalid && nomArticle?.touched">
+      <span *ngIf="nomArticle?.errors?.['required']">Le nom est requis</span>
+      <span *ngIf="nomArticle?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+      <span *ngIf="nomArticle?.errors?.['maxlength']">Le nom ne doit pas dépasser 150 caractères</span>
     </div>
 
     <!-- Description -->
@@ -46,35 +46,35 @@
     </div>
 
     <!-- Prix location base -->
-    <ion-item [class.item-has-error]="prix_location_base?.invalid && prix_location_base?.touched">
+    <ion-item [class.item-has-error]="prixLocationBase?.invalid && prixLocationBase?.touched">
       <ion-label position="stacked">Prix de location (MAD/jour) *</ion-label>
       <ion-input
         type="number"
-        formControlName="prix_location_base"
+        formControlName="prixLocationBase"
         placeholder="0.00"
         step="0.01"
         min="0">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="prix_location_base?.invalid && prix_location_base?.touched">
-      <span *ngIf="prix_location_base?.errors?.['required']">Le prix de location est requis</span>
-      <span *ngIf="prix_location_base?.errors?.['min']">Le prix ne peut pas être négatif</span>
+    <div class="error-message" *ngIf="prixLocationBase?.invalid && prixLocationBase?.touched">
+      <span *ngIf="prixLocationBase?.errors?.['required']">Le prix de location est requis</span>
+      <span *ngIf="prixLocationBase?.errors?.['min']">Le prix ne peut pas être négatif</span>
     </div>
 
     <!-- Prix avance base -->
-    <ion-item [class.item-has-error]="prix_avance_base?.invalid && prix_avance_base?.touched">
+    <ion-item [class.item-has-error]="prixAvanceBase?.invalid && prixAvanceBase?.touched">
       <ion-label position="stacked">Montant de l'avance (MAD) *</ion-label>
       <ion-input
         type="number"
-        formControlName="prix_avance_base"
+        formControlName="prixAvanceBase"
         placeholder="0.00"
         step="0.01"
         min="0">
       </ion-input>
     </ion-item>
-    <div class="error-message" *ngIf="prix_avance_base?.invalid && prix_avance_base?.touched">
-      <span *ngIf="prix_avance_base?.errors?.['required']">Le montant de l'avance est requis</span>
-      <span *ngIf="prix_avance_base?.errors?.['min']">Le montant ne peut pas être négatif</span>
+    <div class="error-message" *ngIf="prixAvanceBase?.invalid && prixAvanceBase?.touched">
+      <span *ngIf="prixAvanceBase?.errors?.['required']">Le montant de l'avance est requis</span>
+      <span *ngIf="prixAvanceBase?.errors?.['min']">Le montant ne peut pas être négatif</span>
     </div>
 
     <!-- Catégorie -->
@@ -95,7 +95,7 @@
       <ion-label position="stacked">Taille</ion-label>
       <ion-select formControlName="idTaille" placeholder="Sélectionner une taille (optionnel)">
         <ion-select-option [value]="">Aucune taille</ion-select-option>
-        <ion-select-option *ngFor="let taille of tailles" [value]="taille.taille">
+        <ion-select-option *ngFor="let taille of tailles" [value]="taille.idTaille">
           {{ taille.taille }}
         </ion-select-option>
       </ion-select>
