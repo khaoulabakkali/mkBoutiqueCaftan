@@ -62,7 +62,7 @@ export class ListeClientsPage implements OnInit {
   clients: Client[] = [];
   clientsFiltres: Client[] = [];
   searchTerm: string = '';
-
+  private isLoadingData = false;
   constructor(
     private clientService: ClientService,
     private router: Router,
@@ -85,23 +85,44 @@ export class ListeClientsPage implements OnInit {
     this.loadClients();
   }
 
-  async loadClients() {
-    const loading = await this.loadingController.create({
+  ionViewWillEnter() {
+    // Recharger les données chaque fois que la page est sur le point d'être affichée
+    // Cela garantit que les modifications effectuées ailleurs sont reflétées
+    // Ne pas afficher le loading si on revient juste de la modification
+    this.loadClients(false);
+  }
+
+  async loadClients(showLoading = true) {
+    if (this.isLoadingData) return;
+    
+    this.isLoadingData = true;
+    const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
-    });
-    await loading.present();
+    }) : null;
+    
+    if (loading) {
+      await loading.present();
+    }
 
     this.clientService.getAllClients().subscribe({
       next: (data) => {
-        this.clients = data;
-        this.clientsFiltres = data;
-        loading.dismiss();
+        this.clients = data || [];
+        this.clientsFiltres = data || [];
+        if (loading) {
+          loading.dismiss();
+        }
+        this.isLoadingData = false;
       },
       error: (error) => {
+        if (loading) {
+          loading.dismiss();
+        }
+        this.clients = [];
+        this.clientsFiltres = [];
+        this.isLoadingData = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }
-        loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des clients';
         this.presentToast(errorMessage, 'danger');
       }
@@ -130,7 +151,9 @@ export class ListeClientsPage implements OnInit {
   }
 
   async editClient(client: Client) {
-    this.router.navigate(['/clients/edit', client.id_client]);
+    if (client.id_client) {
+      this.router.navigate(['/clients/edit', client.id_client]);
+    }
   }
 
   async deleteClient(client: Client) {
@@ -151,20 +174,21 @@ export class ListeClientsPage implements OnInit {
             });
             await loading.present();
 
-            this.clientService.deleteClient(client.id_client!).subscribe({
-              next: () => {
-                loading.dismiss();
-                this.presentToast('Client supprimé avec succès', 'success');
-                // Retirer le client de la liste localement
-                this.clients = this.clients.filter(c => c.id_client !== client.id_client);
-                this.filterClients();
-              },
-              error: (error) => {
-                loading.dismiss();
-                const errorMessage = error?.message || 'Erreur lors de la suppression';
-                this.presentToast(errorMessage, 'danger');
-              }
-            });
+            if (client.id_client) {
+              this.clientService.deleteClient(client.id_client).subscribe({
+                next: () => {
+                  loading.dismiss();
+                  this.presentToast('Client supprimé avec succès', 'success');
+                  // Recharger la liste depuis l'API
+                  this.loadClients(false);
+                },
+                error: (error) => {
+                  loading.dismiss();
+                  const errorMessage = error?.message || 'Erreur lors de la suppression';
+                  this.presentToast(errorMessage, 'danger');
+                }
+              });
+            }
           }
         }
       ]
