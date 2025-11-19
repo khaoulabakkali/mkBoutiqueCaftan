@@ -24,11 +24,20 @@
     <ion-item *ngFor="let paiement of paiementsFiltres">
       <ion-icon name="wallet" slot="start" color="success"></ion-icon>
       <ion-label>
-        <h2>Paiement #{{ paiement.id_paiement || 'N/A' }}</h2>
+        <h2>Paiement #{{ paiement.idPaiement || 'N/A' }}</h2>
         <p>{{ formatMontant(paiement.montant) }}</p>
-        <p *ngIf="paiement.reference_paiement" class="reference-text">
+        <p *ngIf="paiement.methodePaiement">
+          <strong>Méthode:</strong> {{ paiement.methodePaiement }}
+        </p>
+        <p>
+          <strong>Date:</strong> {{ formatDate(paiement.datePaiement) }}
+        </p>
+        <p *ngIf="paiement.reference" class="reference-text">
           <ion-icon name="document-text" style="font-size: 0.9rem; margin-right: 4px; vertical-align: middle;"></ion-icon>
-          {{ paiement.reference_paiement }}
+          {{ paiement.reference }}
+        </p>
+        <p *ngIf="paiement.idReservation">
+          <strong>Réservation:</strong> #{{ paiement.idReservation }}
         </p>
       </ion-label>
       <div slot="end" class="actions-container">

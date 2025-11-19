@@ -12,15 +12,21 @@ import {
   IonButton,
   IonButtons,
   IonIcon,
+  IonSelect,
+  IonSelectOption,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
 import { save, arrowBack, checkmark } from 'ionicons/icons';
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
+import { ReservationService } from '../services/reservation.service';
+import { Reservation } from '../models/reservation.model';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-form-paiement',
@@ -39,7 +45,10 @@ import { Paiement } from '../models/paiement.model';
     IonButton,
     IonButtons,
     IonIcon,
+    IonSelect,
+    IonSelectOption,
     ReactiveFormsModule,
+    FormsModule,
     CommonModule
   ],
 })
@@ -47,10 +56,13 @@ export class FormPaiementPage implements OnInit {
   paiementForm: FormGroup;
   isEditMode = false;
   paiementId?: number;
+  reservations: Reservation[] = [];
+  methodesPaiement: string[] = ['Espèces', 'Carte', 'Chèque', 'Virement', 'Autre'];
 
   constructor(
     private formBuilder: FormBuilder,
     private paiementService: PaiementService,
+    private reservationService: ReservationService,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
@@ -59,18 +71,35 @@ export class FormPaiementPage implements OnInit {
     addIcons({ save, arrowBack, checkmark });
     
     this.paiementForm = this.formBuilder.group({
+      idReservation: ['', [Validators.required]],
       montant: ['', [Validators.required, Validators.min(0.01)]],
-      reference_paiement: ['']
+      datePaiement: [new Date().toISOString().slice(0, 16), [Validators.required]],
+      methodePaiement: [''],
+      reference: ['']
     });
   }
 
   ngOnInit() {
+    this.loadReservations();
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
       this.isEditMode = true;
       this.paiementId = +id;
       this.loadPaiement(this.paiementId);
     }
+  }
+
+  async loadReservations() {
+    this.reservationService.getAllReservations().subscribe({
+      next: (data) => {
+        this.reservations = data || [];
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des réservations:', error);
+        }
+      }
+    });
   }
 
   async loadPaiement(id: number) {
@@ -81,14 +110,21 @@ export class FormPaiementPage implements OnInit {
 
     this.paiementService.getPaiementById(id).subscribe({
       next: (paiement) => {
+        const datePaiement = paiement.datePaiement ? new Date(paiement.datePaiement).toISOString().slice(0, 16) : new Date().toISOString().slice(0, 16);
         this.paiementForm.patchValue({
+          idReservation: paiement.idReservation,
           montant: paiement.montant,
-          reference_paiement: paiement.reference_paiement || ''
+          datePaiement: datePaiement,
+          methodePaiement: paiement.methodePaiement || '',
+          reference: paiement.reference || ''
         });
         loading.dismiss();
       },
       error: (error) => {
         loading.dismiss();
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         const errorMessage = error?.message || 'Erreur lors du chargement';
         this.presentToast(errorMessage, 'danger');
       }
@@ -104,8 +140,11 @@ export class FormPaiementPage implements OnInit {
 
       const formValue = this.paiementForm.value;
       const paiement: Paiement = {
+        idReservation: formValue.idReservation,
         montant: parseFloat(formValue.montant),
-        reference_paiement: formValue.reference_paiement || undefined
+        datePaiement: new Date(formValue.datePaiement).toISOString(),
+        methodePaiement: formValue.methodePaiement || undefined,
+        reference: formValue.reference || undefined
       };
 
       if (this.isEditMode && this.paiementId) {
@@ -118,6 +157,9 @@ export class FormPaiementPage implements OnInit {
           },
           error: (error) => {
             loading.dismiss();
+            if (!environment.production) {
+              console.error('Erreur lors de la mise à jour:', error);
+            }
             const errorMessage = error?.message || 'Erreur lors de la mise à jour';
             this.presentToast(errorMessage, 'danger');
           }
@@ -132,6 +174,9 @@ export class FormPaiementPage implements OnInit {
           },
           error: (error) => {
             loading.dismiss();
+            if (!environment.production) {
+              console.error('Erreur lors de la création:', error);
+            }
             const errorMessage = error?.message || 'Erreur lors de la création';
             this.presentToast(errorMessage, 'danger');
           }
@@ -156,16 +201,36 @@ export class FormPaiementPage implements OnInit {
     await toast.present();
   }
 
+  get idReservation() {
+    return this.paiementForm.get('idReservation');
+  }
+
   get montant() {
     return this.paiementForm.get('montant');
   }
 
-  get reference_paiement() {
-    return this.paiementForm.get('reference_paiement');
+  get datePaiement() {
+    return this.paiementForm.get('datePaiement');
+  }
+
+  get methodePaiement() {
+    return this.paiementForm.get('methodePaiement');
+  }
+
+  get reference() {
+    return this.paiementForm.get('reference');
+  }
+
+  getReservationLabel(reservation: Reservation): string {
+    if (!reservation.id_reservation) return '';
+    return `Réservation #${reservation.id_reservation}`;
+  }
+
+  getReservationId(reservation: Reservation): number | undefined {
+    return reservation.id_reservation;
   }
 
   onCancel() {
     this.router.navigate(['/paiements']);
   }
 }
-

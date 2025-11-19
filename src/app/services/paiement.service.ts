@@ -61,9 +61,17 @@ export class PaiementService {
    * Créer un nouveau paiement
    */
   createPaiement(paiement: Paiement): Observable<Paiement> {
+    const payload = {
+      IdReservation: paiement.idReservation,
+      Montant: paiement.montant,
+      DatePaiement: paiement.datePaiement,
+      MethodePaiement: paiement.methodePaiement || undefined,
+      Reference: paiement.reference || undefined
+    };
+
     return this.http.post<Paiement>(
       `${this.apiUrl}/paiements`,
-      paiement,
+      payload,
       this.getHttpOptions()
     ).pipe(
       catchError(this.handleError<Paiement>('createPaiement'))
@@ -74,10 +82,17 @@ export class PaiementService {
    * Mettre à jour un paiement
    */
   updatePaiement(id: number, paiement: Paiement): Observable<Paiement> {
-    const { id_paiement, ...paiementData } = paiement;
+    const payload = {
+      IdReservation: paiement.idReservation,
+      Montant: paiement.montant,
+      DatePaiement: paiement.datePaiement,
+      MethodePaiement: paiement.methodePaiement || undefined,
+      Reference: paiement.reference || undefined
+    };
+
     return this.http.put<Paiement>(
       `${this.apiUrl}/paiements/${id}`,
-      paiementData,
+      payload,
       this.getHttpOptions()
     ).pipe(
       catchError(this.handleError<Paiement>('updatePaiement'))
@@ -145,4 +160,3 @@ export class PaiementService {
     return 'Une erreur est survenue';
   }
 }
-

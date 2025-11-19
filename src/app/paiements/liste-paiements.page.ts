@@ -30,6 +30,7 @@ import {
 } from 'ionicons/icons';
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-liste-paiements',
@@ -57,6 +58,7 @@ export class ListePaiementsPage implements OnInit {
   paiements: Paiement[] = [];
   paiementsFiltres: Paiement[] = [];
   searchTerm: string = '';
+  private isLoadingData = false;
 
   constructor(
     private paiementService: PaiementService,
@@ -79,22 +81,44 @@ export class ListePaiementsPage implements OnInit {
     this.loadPaiements();
   }
 
-  async loadPaiements() {
-    const loading = await this.loadingController.create({
+  ionViewWillEnter() {
+    // Recharger les données chaque fois que la page est sur le point d'être affichée
+    // Cela garantit que les modifications effectuées ailleurs sont reflétées
+    // Ne pas afficher le loading si on revient juste de la modification
+    this.loadPaiements(false);
+  }
+
+  async loadPaiements(showLoading = true) {
+    if (this.isLoadingData) return;
+    
+    this.isLoadingData = true;
+    const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
-    });
-    await loading.present();
+    }) : null;
+    
+    if (loading) {
+      await loading.present();
+    }
 
     this.paiementService.getAllPaiements().subscribe({
       next: (data) => {
         this.paiements = Array.isArray(data) ? data : [];
         this.paiementsFiltres = Array.isArray(data) ? data : [];
-        loading.dismiss();
+        if (loading) {
+          loading.dismiss();
+        }
+        this.isLoadingData = false;
       },
       error: (error) => {
-        loading.dismiss();
+        if (loading) {
+          loading.dismiss();
+        }
         this.paiements = [];
         this.paiementsFiltres = [];
+        this.isLoadingData = false;
+        if (!environment.production) {
+          console.error('Erreur lors du chargement:', error);
+        }
         const errorMessage = error?.message || 'Erreur lors du chargement des paiements';
         this.presentToast(errorMessage, 'danger');
       }
@@ -126,9 +150,10 @@ export class ListePaiementsPage implements OnInit {
       (paiement) => {
         if (!paiement) return false;
         return (
-          (paiement.id_paiement?.toString() || '').includes(term) ||
+          (paiement.idPaiement?.toString() || '').includes(term) ||
           (paiement.montant?.toString() || '').includes(term) ||
-          (paiement.reference_paiement?.toLowerCase() || '').includes(term)
+          (paiement.reference?.toLowerCase() || '').includes(term) ||
+          (paiement.methodePaiement?.toLowerCase() || '').includes(term)
         );
       }
     );
@@ -142,23 +167,35 @@ export class ListePaiementsPage implements OnInit {
     }).format(montant);
   }
 
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
   async editPaiement(paiement: Paiement) {
-    if (!paiement || !paiement.id_paiement) {
+    if (!paiement || !paiement.idPaiement) {
       this.presentToast('ID paiement manquant', 'danger');
       return;
     }
-    this.router.navigate(['/paiements/edit', paiement.id_paiement]);
+    this.router.navigate(['/paiements/edit', paiement.idPaiement]);
   }
 
   async deletePaiement(paiement: Paiement) {
-    if (!paiement || !paiement.id_paiement) {
+    if (!paiement || !paiement.idPaiement) {
       this.presentToast('ID paiement manquant', 'danger');
       return;
     }
 
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer le paiement #${paiement.id_paiement} (${this.formatMontant(paiement.montant)}) ?`,
+      message: `Êtes-vous sûr de vouloir supprimer le paiement #${paiement.idPaiement} (${this.formatMontant(paiement.montant)}) ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -173,18 +210,21 @@ export class ListePaiementsPage implements OnInit {
             });
             await loading.present();
 
-            this.paiementService.deletePaiement(paiement.id_paiement!).subscribe({
-              next: () => {
-                loading.dismiss();
-                this.presentToast('Paiement supprimé avec succès', 'success');
-                this.loadPaiements();
-              },
-              error: (error) => {
-                loading.dismiss();
-                const errorMessage = error?.message || 'Erreur lors de la suppression';
-                this.presentToast(errorMessage, 'danger');
-              }
-            });
+            if (paiement.idPaiement) {
+              this.paiementService.deletePaiement(paiement.idPaiement).subscribe({
+                next: () => {
+                  loading.dismiss();
+                  this.presentToast('Paiement supprimé avec succès', 'success');
+                  // Recharger la liste depuis l'API
+                  this.loadPaiements(false);
+                },
+                error: (error) => {
+                  loading.dismiss();
+                  const errorMessage = error?.message || 'Erreur lors de la suppression';
+                  this.presentToast(errorMessage, 'danger');
+                }
+              });
+            }
           }
         }
       ]
