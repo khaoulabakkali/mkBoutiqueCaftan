@@ -21,7 +21,7 @@
 
   <!-- Liste des clients -->
   <ion-list *ngIf="clientsFiltres.length > 0">
-    <ion-item *ngFor="let client of clientsFiltres" [button]="true">
+    <ion-item *ngFor="let client of clientsFiltres" [button]="true" (click)="viewClient(client)">
       <ion-label>
         <h2>{{ getFullName(client) }}</h2>
         <p>{{ client.telephone }}</p>
@@ -31,7 +31,7 @@
           </ion-badge>
         </div>
       </ion-label>
-      <div slot="end" class="actions-container">
+      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
         <ion-button
           fill="clear"
           size="small"

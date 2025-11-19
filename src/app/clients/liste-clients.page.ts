@@ -214,5 +214,11 @@ export class ListeClientsPage implements OnInit {
   getFullName(client: Client): string {
     return `${client.prenom_client} ${client.nom_client}`;
   }
+
+  viewClient(client: Client) {
+    if (client.id_client) {
+      this.router.navigate(['/clients/detail', client.id_client]);
+    }
+  }
 }
 
