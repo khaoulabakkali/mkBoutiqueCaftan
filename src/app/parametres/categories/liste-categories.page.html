@@ -21,7 +21,7 @@
 
   <!-- Liste des catégories -->
   <ion-list *ngIf="categoriesFiltres.length > 0">
-    <ion-item *ngFor="let categorie of categoriesFiltres" [button]="true">
+    <ion-item *ngFor="let categorie of categoriesFiltres" [button]="true" (click)="viewCategorie(categorie)">
       <ion-icon name="grid" slot="start" color="primary"></ion-icon>
       <ion-label>
         <h2>{{ categorie.nomCategorie }}</h2>
@@ -29,7 +29,7 @@
           Ordre d'affichage: {{ categorie.ordreAffichage }}
         </p>
       </ion-label>
-      <div slot="end" class="actions-container">
+      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
         <ion-button
           fill="clear"
           size="small"

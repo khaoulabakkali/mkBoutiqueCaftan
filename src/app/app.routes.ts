@@ -137,6 +137,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'parametres/categories/detail/:id',
+    loadComponent: () => import('./parametres/categories/detail-categorie.page').then((m) => m.DetailCategoriePage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'paiements',
     loadComponent: () => import('./paiements/liste-paiements.page').then((m) => m.ListePaiementsPage),
     canActivate: [authGuard],

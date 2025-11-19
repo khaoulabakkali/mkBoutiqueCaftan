@@ -143,8 +143,16 @@ export class ListeCategoriesPage implements OnInit {
     );
   }
 
+  viewCategorie(categorie: Categorie) {
+    if (categorie.idCategorie) {
+      this.router.navigate(['/parametres/categories/detail', categorie.idCategorie]);
+    }
+  }
+
   async editCategorie(categorie: Categorie) {
-    this.router.navigate(['/parametres/categories/edit', categorie.idCategorie]);
+    if (categorie.idCategorie) {
+      this.router.navigate(['/parametres/categories/edit', categorie.idCategorie]);
+    }
   }
 
   async deleteCategorie(categorie: Categorie) {
