@@ -143,7 +143,7 @@ export class FormSocietePage implements OnInit {
           next: () => {
             loading.dismiss();
             this.presentToast('Société modifiée avec succès', 'success');
-            this.router.navigate(['/parametres/societes']);
+            this.router.navigate(['/parametres/societes/detail', this.societeId]);
           },
           error: (error) => {
             loading.dismiss();
@@ -156,10 +156,15 @@ export class FormSocietePage implements OnInit {
         });
       } else {
         this.societeService.createSociete(societe).subscribe({
-          next: () => {
+          next: (createdSociete) => {
             loading.dismiss();
             this.presentToast('Société créée avec succès', 'success');
-            this.router.navigate(['/parametres/societes']);
+            if (createdSociete?.idSociete) {
+              this.router.navigate(['/parametres/societes/detail', createdSociete.idSociete]);
+            } else {
+              // Si pas d'ID, rediriger vers l'accueil
+              this.router.navigate(['/tabs/tab1']);
+            }
           },
           error: (error) => {
             loading.dismiss();
@@ -199,6 +204,14 @@ export class FormSocietePage implements OnInit {
 
   get email() {
     return this.societeForm.get('email');
+  }
+
+  onCancel() {
+    if (this.isEditMode && this.societeId) {
+      this.router.navigate(['/parametres/societes/detail', this.societeId]);
+    } else {
+      this.router.navigate(['/tabs/tab1']);
+    }
   }
 }
 

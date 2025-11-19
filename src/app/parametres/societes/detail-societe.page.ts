@@ -69,7 +69,7 @@ export class DetailSocietePage implements OnInit {
       this.loadSociete(+id);
     } else {
       this.presentToast('ID société manquant', 'danger');
-      this.router.navigate(['/parametres/societes']);
+      this.router.navigate(['/tabs/tab1']);
     }
   }
 
@@ -91,7 +91,7 @@ export class DetailSocietePage implements OnInit {
         }
         const errorMessage = error?.message || 'Erreur lors du chargement de la société';
         await this.presentToast(errorMessage, 'danger');
-        this.router.navigate(['/parametres/societes']);
+        this.router.navigate(['/tabs/tab1']);
       }
     });
   }
@@ -103,7 +103,7 @@ export class DetailSocietePage implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/parametres/societes']);
+    this.router.navigate(['/tabs/tab1']);
   }
 
   formatDate(dateString: string | undefined): string {

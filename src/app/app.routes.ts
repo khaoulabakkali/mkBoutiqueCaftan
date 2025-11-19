@@ -157,23 +157,13 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'parametres/societes',
-    loadComponent: () => import('./parametres/societes/liste-societes.page').then((m) => m.ListeSocietesPage),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'parametres/societes/new',
-    loadComponent: () => import('./parametres/societes/form-societe.page').then((m) => m.FormSocietePage),
+    path: 'parametres/societes/detail/:id',
+    loadComponent: () => import('./parametres/societes/detail-societe.page').then((m) => m.DetailSocietePage),
     canActivate: [authGuard],
   },
   {
     path: 'parametres/societes/edit/:id',
     loadComponent: () => import('./parametres/societes/form-societe.page').then((m) => m.FormSocietePage),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'parametres/societes/detail/:id',
-    loadComponent: () => import('./parametres/societes/detail-societe.page').then((m) => m.DetailSocietePage),
     canActivate: [authGuard],
   },
   {

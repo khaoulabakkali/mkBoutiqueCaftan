@@ -126,13 +126,11 @@
             </ion-item>
             <ion-item 
               button 
-              routerLink="/parametres/societes" 
-              routerDirection="root"
+              (click)="navigateToSociete()"
               [class.menu-item-active]="isRouteActive('/parametres/societes')"
-              routerLinkActive="menu-item-active"
               class="submenu-item">
               <ion-icon name="business" slot="start"></ion-icon>
-              <ion-label>Sociétés</ion-label>
+              <ion-label>Société</ion-label>
             </ion-item>
           </ng-container>
           <ion-item button (click)="logout()">

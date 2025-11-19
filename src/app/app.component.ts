@@ -75,6 +75,16 @@ export class AppComponent {
     this.authService.logout();
   }
 
+  navigateToSociete() {
+    const societeId = this.authService.getSocieteId();
+    if (societeId) {
+      this.router.navigate(['/parametres/societes/detail', societeId]);
+    } else {
+      // Si pas de societeId, afficher un message d'erreur
+      console.error('SocieteId non trouvé dans le token');
+    }
+  }
+
   // Vérifier si une route est active (y compris les routes enfants)
   isRouteActive(route: string): boolean {
     if (route === '/tabs/tab1') {
