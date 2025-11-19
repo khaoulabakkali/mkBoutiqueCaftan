@@ -1,0 +1,147 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>Détails Paiement</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editPaiement()" *ngIf="paiement?.idPaiement">
+        <ion-icon name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div *ngIf="paiement" class="detail-container">
+    <!-- En-tête avec numéro et montant -->
+    <ion-card class="header-card">
+      <ion-card-content>
+        <div class="header-content">
+          <div class="avatar-section">
+            <ion-icon 
+              [name]="getMethodeIcon(paiement.methodePaiement)" 
+              color="success"
+              class="status-icon-large">
+            </ion-icon>
+          </div>
+          <div class="info-section">
+            <h1>Paiement #{{ paiement.idPaiement || 'N/A' }}</h1>
+            <div class="badges-header">
+              <p class="montant-total">{{ formatMontant(paiement.montant) }}</p>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Informations financières -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Informations financières</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none">
+          <ion-icon name="cash" slot="start" color="success"></ion-icon>
+          <ion-label>
+            <h3>Montant</h3>
+            <p class="montant-total">{{ formatMontant(paiement.montant) }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none" *ngIf="paiement.methodePaiement">
+          <ion-icon [name]="getMethodeIcon(paiement.methodePaiement)" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Méthode de paiement</h3>
+            <p>{{ paiement.methodePaiement }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Date de paiement</h3>
+            <p>{{ formatDateTime(paiement.datePaiement) }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none" *ngIf="paiement.reference">
+          <ion-icon name="document-text" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Référence</h3>
+            <p>{{ paiement.reference }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Informations réservation -->
+    <ion-card *ngIf="reservation">
+      <ion-card-header>
+        <ion-card-title>Réservation associée</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none" [button]="true" (click)="viewReservation()">
+          <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Réservation</h3>
+            <p>Réservation #{{ reservation.idReservation }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-icon name="calendar" slot="start" color="success"></ion-icon>
+          <ion-label>
+            <h3>Date de début</h3>
+            <p>{{ formatDate(reservation.dateDebut) }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-icon name="calendar" slot="start" color="danger"></ion-icon>
+          <ion-label>
+            <h3>Date de fin</h3>
+            <p>{{ formatDate(reservation.dateFin) }}</p>
+          </ion-label>
+        </ion-item>
+
+        <ion-item lines="none">
+          <ion-icon name="cash" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Montant total</h3>
+            <p>{{ formatMontant(reservation.montantTotal) }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Informations client -->
+    <ion-card *ngIf="client">
+      <ion-card-header>
+        <ion-card-title>Client</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item lines="none" [button]="true" (click)="viewClient()">
+          <ion-icon name="person" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>Nom du client</h3>
+            <p>{{ getClientName() }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Actions -->
+    <ion-card>
+      <ion-card-content>
+        <ion-button expand="block" (click)="editPaiement()" *ngIf="paiement?.idPaiement">
+          <ion-icon name="create" slot="start"></ion-icon>
+          Modifier le paiement
+        </ion-button>
+        <ion-button expand="block" fill="outline" (click)="goBack()">
+          <ion-icon name="arrow-back" slot="start"></ion-icon>
+          Retour à la liste
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+

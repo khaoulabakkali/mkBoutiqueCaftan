@@ -246,5 +246,11 @@ export class ListePaiementsPage implements OnInit {
   addNewPaiement() {
     this.router.navigate(['/paiements/new']);
   }
+
+  viewPaiement(paiement: Paiement) {
+    if (paiement.idPaiement) {
+      this.router.navigate(['/paiements/detail', paiement.idPaiement]);
+    }
+  }
 }
 

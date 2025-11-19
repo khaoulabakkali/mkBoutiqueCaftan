@@ -182,6 +182,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'paiements/detail/:id',
+    loadComponent: () => import('./paiements/detail-paiement.page').then((m) => m.DetailPaiementPage),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: '/tabs/tab1',
     pathMatch: 'full',
