@@ -76,14 +76,14 @@ export class FormReservationPage implements OnInit, OnDestroy {
     addIcons({ save, arrowBack, add, chevronDown, checkmark });
     
     this.reservationForm = this.formBuilder.group({
-      id_client: ['', [Validators.required]],
-      date_reservation: [new Date().toISOString().slice(0, 16), [Validators.required]],
-      date_debut: ['', [Validators.required]],
-      date_fin: ['', [Validators.required]],
-      montant_total: [0, [Validators.required, Validators.min(0)]],
-      statut_reservation: ['En attente', [Validators.required]],
-      id_paiement: ['', []],
-      remise_appliquee: [0, [Validators.required, Validators.min(0)]]
+      idClient: ['', [Validators.required]],
+      dateReservation: [new Date().toISOString().slice(0, 16), [Validators.required]],
+      dateDebut: ['', [Validators.required]],
+      dateFin: ['', [Validators.required]],
+      montantTotal: [0, [Validators.required, Validators.min(0)]],
+      statutReservation: ['En attente', [Validators.required]],
+      idPaiement: ['', []],
+      remiseAppliquee: [0, [Validators.required, Validators.min(0)]]
     });
   }
 
@@ -104,7 +104,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
           this.loadClients();
           // Sélectionner le nouveau client après le chargement
           setTimeout(() => {
-            this.reservationForm.patchValue({ id_client: +clientId });
+            this.reservationForm.patchValue({ idClient: +clientId });
           }, 500);
         }
       });
@@ -124,7 +124,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
         this.clients = data;
         // Si un clientId a été passé en paramètre, ne pas sélectionner automatiquement
         const clientId = this.route.snapshot.queryParams['clientId'];
-        if (!clientId && !this.reservationForm.get('id_client')?.value && data.length > 0) {
+        if (!clientId && !this.reservationForm.get('idClient')?.value && data.length > 0) {
           // Ne pas sélectionner automatiquement le premier client
         }
       },
@@ -137,7 +137,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
   }
 
   getSelectedClientName(): string {
-    const clientId = this.reservationForm.get('id_client')?.value;
+    const clientId = this.reservationForm.get('idClient')?.value;
     if (!clientId) return '';
     
     const client = this.clients.find(c => c.idClient === clientId);
@@ -172,7 +172,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
     modal.onDidDismiss().then((data) => {
       if (data.data) {
         if (data.data.action === 'select' && data.data.clientId) {
-          this.reservationForm.patchValue({ id_client: data.data.clientId });
+          this.reservationForm.patchValue({ idClient: data.data.clientId });
         } else if (data.data.action === 'new') {
           this.addNewClient();
         }
@@ -211,17 +211,17 @@ export class FormReservationPage implements OnInit, OnDestroy {
     this.reservationService.getReservationById(this.reservationId).subscribe({
       next: (reservation) => {
         // Formater les dates pour les inputs
-        const dateReservation = reservation.date_reservation ? new Date(reservation.date_reservation).toISOString().slice(0, 16) : '';
+        const dateReservation = reservation.dateReservation ? new Date(reservation.dateReservation).toISOString().slice(0, 16) : '';
         
         this.reservationForm.patchValue({
-          id_client: reservation.id_client,
-          date_reservation: dateReservation,
-          date_debut: reservation.date_debut,
-          date_fin: reservation.date_fin,
-          montant_total: reservation.montant_total,
-          statut_reservation: reservation.statut_reservation,
-          id_paiement: reservation.id_paiement || '',
-          remise_appliquee: reservation.remise_appliquee || 0
+          idClient: reservation.idClient,
+          dateReservation: dateReservation,
+          dateDebut: reservation.dateDebut,
+          dateFin: reservation.dateFin,
+          montantTotal: reservation.montantTotal,
+          statutReservation: reservation.statutReservation,
+          idPaiement: reservation.idPaiement || '',
+          remiseAppliquee: reservation.remiseAppliquee || 0
         });
         loading.then(l => l.dismiss());
       },
@@ -245,14 +245,14 @@ export class FormReservationPage implements OnInit, OnDestroy {
 
       const formValue = this.reservationForm.value;
       const reservationData: Reservation = {
-        id_client: formValue.id_client,
-        date_reservation: formValue.date_reservation,
-        date_debut: formValue.date_debut,
-        date_fin: formValue.date_fin,
-        montant_total: parseFloat(formValue.montant_total),
-        statut_reservation: formValue.statut_reservation,
-        id_paiement: formValue.id_paiement || undefined,
-        remise_appliquee: parseFloat(formValue.remise_appliquee) || 0
+        idClient: formValue.idClient,
+        dateReservation: formValue.dateReservation,
+        dateDebut: formValue.dateDebut,
+        dateFin: formValue.dateFin,
+        montantTotal: parseFloat(formValue.montantTotal),
+        statutReservation: formValue.statutReservation,
+        idPaiement: formValue.idPaiement || undefined,
+        remiseAppliquee: parseFloat(formValue.remiseAppliquee) || 0
       };
 
       if (this.isEditMode && this.reservationId) {
@@ -300,32 +300,32 @@ export class FormReservationPage implements OnInit, OnDestroy {
     await toast.present();
   }
 
-  get id_client() {
-    return this.reservationForm.get('id_client');
+  get idClient() {
+    return this.reservationForm.get('idClient');
   }
 
-  get date_reservation() {
-    return this.reservationForm.get('date_reservation');
+  get dateReservation() {
+    return this.reservationForm.get('dateReservation');
   }
 
-  get date_debut() {
-    return this.reservationForm.get('date_debut');
+  get dateDebut() {
+    return this.reservationForm.get('dateDebut');
   }
 
-  get date_fin() {
-    return this.reservationForm.get('date_fin');
+  get dateFin() {
+    return this.reservationForm.get('dateFin');
   }
 
-  get montant_total() {
-    return this.reservationForm.get('montant_total');
+  get montantTotal() {
+    return this.reservationForm.get('montantTotal');
   }
 
-  get statut_reservation() {
-    return this.reservationForm.get('statut_reservation');
+  get statutReservation() {
+    return this.reservationForm.get('statutReservation');
   }
 
-  get remise_appliquee() {
-    return this.reservationForm.get('remise_appliquee');
+  get remiseAppliquee() {
+    return this.reservationForm.get('remiseAppliquee');
   }
 
   onCancel() {

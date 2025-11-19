@@ -24,21 +24,21 @@
     <ion-item *ngFor="let reservation of reservationsFiltres" [button]="true" (click)="viewReservation(reservation)">
       <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
       <ion-label>
-        <h2>Réservation #{{ reservation.id_reservation }}</h2>
-        <p><strong>Client:</strong> {{ getClientName(reservation.id_client) }}</p>
+        <h2>Réservation #{{ reservation.idReservation }}</h2>
+        <p><strong>Client:</strong> {{ getClientName(reservation.idClient) }}</p>
         <p>
           <ion-icon name="time-outline" style="margin-right: 4px;"></ion-icon>
-          Du {{ formatDate(reservation.date_debut) }} au {{ formatDate(reservation.date_fin) }}
+          Du {{ formatDate(reservation.dateDebut) }} au {{ formatDate(reservation.dateFin) }}
         </p>
         <div class="badges-container">
-          <ion-badge [color]="getStatutColor(reservation.statut_reservation)">
-            {{ reservation.statut_reservation }}
+          <ion-badge [color]="getStatutColor(reservation.statutReservation)">
+            {{ reservation.statutReservation }}
           </ion-badge>
           <ion-badge color="primary">
-            {{ reservation.montant_total }} MAD
+            {{ reservation.montantTotal }} MAD
           </ion-badge>
-          <ion-badge *ngIf="reservation.remise_appliquee > 0" color="success">
-            Remise: {{ reservation.remise_appliquee }} MAD
+          <ion-badge *ngIf="reservation.remiseAppliquee > 0" color="success">
+            Remise: {{ reservation.remiseAppliquee }} MAD
           </ion-badge>
         </div>
       </ion-label>

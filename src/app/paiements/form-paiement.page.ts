@@ -222,12 +222,12 @@ export class FormPaiementPage implements OnInit {
   }
 
   getReservationLabel(reservation: Reservation): string {
-    if (!reservation.id_reservation) return '';
-    return `Réservation #${reservation.id_reservation}`;
+    if (!reservation.idReservation) return '';
+    return `Réservation #${reservation.idReservation}`;
   }
 
   getReservationId(reservation: Reservation): number | undefined {
-    return reservation.id_reservation;
+    return reservation.idReservation;
   }
 
   onCancel() {

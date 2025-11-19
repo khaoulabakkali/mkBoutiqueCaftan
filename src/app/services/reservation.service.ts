@@ -34,13 +34,32 @@ export class ReservationService {
   }
 
   /**
+   * Mapper les données de l'API (PascalCase) vers le modèle (camelCase)
+   */
+  private mapApiToModel(data: any): Reservation {
+    return {
+      idReservation: data.IdReservation || data.idReservation,
+      idClient: data.IdClient || data.idClient,
+      dateReservation: data.DateReservation || data.dateReservation,
+      dateDebut: data.DateDebut || data.dateDebut,
+      dateFin: data.DateFin || data.dateFin,
+      montantTotal: data.MontantTotal || data.montantTotal,
+      statutReservation: data.StatutReservation || data.statutReservation,
+      idPaiement: data.IdPaiement || data.idPaiement,
+      remiseAppliquee: data.RemiseAppliquee || data.remiseAppliquee,
+      client: data.Client || data.client
+    };
+  }
+
+  /**
    * Récupérer toutes les réservations
    */
   getAllReservations(): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(
+    return this.http.get<any[]>(
       `${this.apiUrl}/reservations`,
       this.getHttpOptions()
     ).pipe(
+      map(data => Array.isArray(data) ? data.map(item => this.mapApiToModel(item)) : []),
       catchError(this.handleError<Reservation[]>('getAllReservations', []))
     );
   }
@@ -49,10 +68,11 @@ export class ReservationService {
    * Récupérer une réservation par ID
    */
   getReservationById(id: number): Observable<Reservation> {
-    return this.http.get<Reservation>(
+    return this.http.get<any>(
       `${this.apiUrl}/reservations/${id}`,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Reservation>('getReservationById'))
     );
   }
@@ -62,21 +82,22 @@ export class ReservationService {
    */
   createReservation(reservation: Reservation): Observable<Reservation> {
     const payload = {
-      id_client: reservation.id_client,
-      date_reservation: reservation.date_reservation,
-      date_debut: reservation.date_debut,
-      date_fin: reservation.date_fin,
-      montant_total: reservation.montant_total,
-      statut_reservation: reservation.statut_reservation,
-      id_paiement: reservation.id_paiement || undefined,
-      remise_appliquee: reservation.remise_appliquee || 0.00
+      IdClient: reservation.idClient,
+      DateReservation: reservation.dateReservation,
+      DateDebut: reservation.dateDebut,
+      DateFin: reservation.dateFin,
+      MontantTotal: reservation.montantTotal,
+      StatutReservation: reservation.statutReservation,
+      IdPaiement: reservation.idPaiement || undefined,
+      RemiseAppliquee: reservation.remiseAppliquee || 0.00
     };
 
-    return this.http.post<Reservation>(
+    return this.http.post<any>(
       `${this.apiUrl}/reservations`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Reservation>('createReservation'))
     );
   }
@@ -86,21 +107,22 @@ export class ReservationService {
    */
   updateReservation(id: number, reservation: Reservation): Observable<Reservation> {
     const payload = {
-      id_client: reservation.id_client,
-      date_reservation: reservation.date_reservation,
-      date_debut: reservation.date_debut,
-      date_fin: reservation.date_fin,
-      montant_total: reservation.montant_total,
-      statut_reservation: reservation.statut_reservation,
-      id_paiement: reservation.id_paiement || undefined,
-      remise_appliquee: reservation.remise_appliquee || 0.00
+      IdClient: reservation.idClient,
+      DateReservation: reservation.dateReservation,
+      DateDebut: reservation.dateDebut,
+      DateFin: reservation.dateFin,
+      MontantTotal: reservation.montantTotal,
+      StatutReservation: reservation.statutReservation,
+      IdPaiement: reservation.idPaiement || undefined,
+      RemiseAppliquee: reservation.remiseAppliquee || 0.00
     };
 
-    return this.http.put<Reservation>(
+    return this.http.put<any>(
       `${this.apiUrl}/reservations/${id}`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map(data => this.mapApiToModel(data)),
       catchError(this.handleError<Reservation>('updateReservation'))
     );
   }

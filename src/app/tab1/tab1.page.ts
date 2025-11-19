@@ -184,10 +184,10 @@ export class Tab1Page implements OnInit {
         const reservations = Array.isArray(data) ? data : [];
         this.statistiques.totalReservations = reservations.length;
         this.statistiques.reservationsEnAttente = reservations.filter(
-          r => r.statut_reservation === 'En attente'
+          r => r.statutReservation === 'En attente'
         ).length;
         this.statistiques.reservationsConfirmees = reservations.filter(
-          r => r.statut_reservation === 'Confirmée'
+          r => r.statutReservation === 'Confirmée'
         ).length;
       },
       error: (error) => {

@@ -164,11 +164,11 @@ export class ListeReservationsPage implements OnInit {
     const term = this.searchTerm.toLowerCase();
     this.reservationsFiltres = this.reservations.filter(
       (reservation) => {
-        const client = this.getClient(reservation.id_client);
+        const client = this.getClient(reservation.idClient);
         return (
           client?.nomClient.toLowerCase().includes(term) ||
           client?.prenomClient.toLowerCase().includes(term) ||
-          reservation.statut_reservation.toLowerCase().includes(term)
+          reservation.statutReservation.toLowerCase().includes(term)
         );
       }
     );
@@ -206,15 +206,15 @@ export class ListeReservationsPage implements OnInit {
   }
 
   async editReservation(reservation: Reservation) {
-    if (reservation.id_reservation) {
-      this.router.navigate(['/reservations/edit', reservation.id_reservation]);
+    if (reservation.idReservation) {
+      this.router.navigate(['/reservations/edit', reservation.idReservation]);
     }
   }
 
   async deleteReservation(reservation: Reservation) {
     const alert = await this.alertController.create({
       header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer la réservation #${reservation.id_reservation} ?`,
+      message: `Êtes-vous sûr de vouloir supprimer la réservation #${reservation.idReservation} ?`,
       buttons: [
         {
           text: 'Annuler',
@@ -229,8 +229,8 @@ export class ListeReservationsPage implements OnInit {
             });
             await loading.present();
 
-            if (reservation.id_reservation) {
-              this.reservationService.deleteReservation(reservation.id_reservation).subscribe({
+            if (reservation.idReservation) {
+              this.reservationService.deleteReservation(reservation.idReservation).subscribe({
                 next: () => {
                   loading.dismiss();
                   this.presentToast('Réservation supprimée avec succès', 'success');
@@ -267,8 +267,8 @@ export class ListeReservationsPage implements OnInit {
   }
 
   viewReservation(reservation: Reservation) {
-    if (reservation.id_reservation) {
-      this.router.navigate(['/reservations/detail', reservation.id_reservation]);
+    if (reservation.idReservation) {
+      this.router.navigate(['/reservations/detail', reservation.idReservation]);
     }
   }
 }

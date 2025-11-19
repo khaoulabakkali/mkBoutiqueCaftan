@@ -86,8 +86,8 @@ export class DetailReservationPage implements OnInit {
     this.reservationService.getReservationById(id).subscribe({
       next: async (data) => {
         this.reservation = data || null;
-        if (this.reservation?.id_client) {
-          await this.loadClient(this.reservation.id_client);
+        if (this.reservation?.idClient) {
+          await this.loadClient(this.reservation.idClient);
         }
         loading.dismiss();
       },
@@ -117,8 +117,8 @@ export class DetailReservationPage implements OnInit {
   }
 
   editReservation() {
-    if (this.reservation?.id_reservation) {
-      this.router.navigate(['/reservations/edit', this.reservation.id_reservation]);
+    if (this.reservation?.idReservation) {
+      this.router.navigate(['/reservations/edit', this.reservation.idReservation]);
     }
   }
 
