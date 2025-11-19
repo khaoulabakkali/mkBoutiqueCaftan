@@ -66,6 +66,7 @@ export class ListeReservationsPage implements OnInit {
   reservationsFiltres: Reservation[] = [];
   clients: Client[] = [];
   searchTerm: string = '';
+  private isLoadingData = false;
 
   constructor(
     private reservationService: ReservationService,
@@ -92,6 +93,13 @@ export class ListeReservationsPage implements OnInit {
     this.loadReservations();
   }
 
+  ionViewWillEnter() {
+    // Recharger les données chaque fois que la page est sur le point d'être affichée
+    // Cela garantit que les modifications effectuées ailleurs sont reflétées
+    // Ne pas afficher le loading si on revient juste de la modification
+    this.loadReservations(false);
+  }
+
   async loadClients() {
     this.clientService.getAllClients().subscribe({
       next: (data) => {
@@ -105,23 +113,37 @@ export class ListeReservationsPage implements OnInit {
     });
   }
 
-  async loadReservations() {
-    const loading = await this.loadingController.create({
+  async loadReservations(showLoading = true) {
+    if (this.isLoadingData) return;
+    
+    this.isLoadingData = true;
+    const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
-    });
-    await loading.present();
+    }) : null;
+    
+    if (loading) {
+      await loading.present();
+    }
 
     this.reservationService.getAllReservations().subscribe({
       next: (data) => {
-        this.reservations = data;
-        this.reservationsFiltres = data;
-        loading.dismiss();
+        this.reservations = data || [];
+        this.reservationsFiltres = data || [];
+        if (loading) {
+          loading.dismiss();
+        }
+        this.isLoadingData = false;
       },
       error: (error) => {
+        if (loading) {
+          loading.dismiss();
+        }
+        this.reservations = [];
+        this.reservationsFiltres = [];
+        this.isLoadingData = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }
-        loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement des réservations';
         this.presentToast(errorMessage, 'danger');
       }
@@ -184,7 +206,9 @@ export class ListeReservationsPage implements OnInit {
   }
 
   async editReservation(reservation: Reservation) {
-    this.router.navigate(['/reservations/edit', reservation.id_reservation]);
+    if (reservation.id_reservation) {
+      this.router.navigate(['/reservations/edit', reservation.id_reservation]);
+    }
   }
 
   async deleteReservation(reservation: Reservation) {
@@ -205,20 +229,21 @@ export class ListeReservationsPage implements OnInit {
             });
             await loading.present();
 
-            this.reservationService.deleteReservation(reservation.id_reservation!).subscribe({
-              next: () => {
-                loading.dismiss();
-                this.presentToast('Réservation supprimée avec succès', 'success');
-                // Retirer la réservation de la liste localement
-                this.reservations = this.reservations.filter(r => r.id_reservation !== reservation.id_reservation);
-                this.filterReservations();
-              },
-              error: (error) => {
-                loading.dismiss();
-                const errorMessage = error?.message || 'Erreur lors de la suppression';
-                this.presentToast(errorMessage, 'danger');
-              }
-            });
+            if (reservation.id_reservation) {
+              this.reservationService.deleteReservation(reservation.id_reservation).subscribe({
+                next: () => {
+                  loading.dismiss();
+                  this.presentToast('Réservation supprimée avec succès', 'success');
+                  // Recharger la liste depuis l'API
+                  this.loadReservations(false);
+                },
+                error: (error) => {
+                  loading.dismiss();
+                  const errorMessage = error?.message || 'Erreur lors de la suppression';
+                  this.presentToast(errorMessage, 'danger');
+                }
+              });
+            }
           }
         }
       ]

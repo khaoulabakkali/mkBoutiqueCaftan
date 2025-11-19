@@ -1,161 +1,168 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError, of, delay } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Reservation } from '../models/reservation.model';
+import { environment } from '../../environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
-  private readonly STORAGE_KEY = 'local_reservations';
+  private apiUrl = environment.apiUrl || 'http://localhost:5000/api';
 
-  constructor() {
-    // Initialiser le stockage local avec des données de démonstration si vide
-    this.initializeLocalStorage();
-  }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
   /**
-   * Initialise le stockage local avec des données de démonstration
+   * Récupère les options HTTP avec le token d'authentification
    */
-  private initializeLocalStorage(): void {
-    const existing = localStorage.getItem(this.STORAGE_KEY);
-    if (!existing) {
-      const today = new Date();
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      const nextWeek = new Date(today);
-      nextWeek.setDate(nextWeek.getDate() + 7);
-      
-      const defaultReservations: Reservation[] = [
-        {
-          id_reservation: 1,
-          id_client: 1,
-          date_reservation: today.toISOString(),
-          date_debut: tomorrow.toISOString().split('T')[0],
-          date_fin: nextWeek.toISOString().split('T')[0],
-          montant_total: 3500.00,
-          statut_reservation: 'Confirmée',
-          remise_appliquee: 0.00
-        },
-        {
-          id_reservation: 2,
-          id_client: 2,
-          date_reservation: today.toISOString(),
-          date_debut: tomorrow.toISOString().split('T')[0],
-          date_fin: nextWeek.toISOString().split('T')[0],
-          montant_total: 2100.00,
-          statut_reservation: 'En attente',
-          remise_appliquee: 100.00
-        }
-      ];
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(defaultReservations));
+  private getHttpOptions(): { headers: HttpHeaders } {
+    const token = this.authService.getToken();
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
     }
+
+    return { headers };
   }
 
   /**
-   * Récupère toutes les réservations du stockage local
-   */
-  private getLocalReservations(): Reservation[] {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
-  }
-
-  /**
-   * Sauvegarde les réservations dans le stockage local
-   */
-  private saveLocalReservations(reservations: Reservation[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(reservations));
-  }
-
-  /**
-   * Génère un nouvel ID pour une réservation
-   */
-  private getNextId(): number {
-    const reservations = this.getLocalReservations();
-    if (reservations.length === 0) return 1;
-    return Math.max(...reservations.map(r => r.id_reservation || 0)) + 1;
-  }
-
-  /**
-   * Récupérer toutes les réservations (local)
+   * Récupérer toutes les réservations
    */
   getAllReservations(): Observable<Reservation[]> {
-    const reservations = this.getLocalReservations();
-    return of(reservations).pipe(delay(300));
+    return this.http.get<Reservation[]>(
+      `${this.apiUrl}/reservations`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Reservation[]>('getAllReservations', []))
+    );
   }
 
   /**
-   * Récupérer une réservation par ID (local)
+   * Récupérer une réservation par ID
    */
   getReservationById(id: number): Observable<Reservation> {
-    const reservations = this.getLocalReservations();
-    const reservation = reservations.find(r => r.id_reservation === id);
-    
-    if (!reservation) {
-      return throwError(() => new Error(`Réservation avec l'ID ${id} non trouvée`));
-    }
-    
-    return of({ ...reservation }).pipe(delay(200));
+    return this.http.get<Reservation>(
+      `${this.apiUrl}/reservations/${id}`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Reservation>('getReservationById'))
+    );
   }
 
   /**
-   * Créer une nouvelle réservation (local)
+   * Créer une nouvelle réservation
    */
   createReservation(reservation: Reservation): Observable<Reservation> {
-    const reservations = this.getLocalReservations();
-    
-    // Créer la nouvelle réservation
-    const newReservation: Reservation = {
-      ...reservation,
-      id_reservation: this.getNextId(),
-      date_reservation: reservation.date_reservation || new Date().toISOString(),
+    const payload = {
+      id_client: reservation.id_client,
+      date_reservation: reservation.date_reservation,
+      date_debut: reservation.date_debut,
+      date_fin: reservation.date_fin,
+      montant_total: reservation.montant_total,
+      statut_reservation: reservation.statut_reservation,
+      id_paiement: reservation.id_paiement || undefined,
       remise_appliquee: reservation.remise_appliquee || 0.00
     };
-    
-    reservations.push(newReservation);
-    this.saveLocalReservations(reservations);
-    
-    return of({ ...newReservation }).pipe(delay(300));
+
+    return this.http.post<Reservation>(
+      `${this.apiUrl}/reservations`,
+      payload,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Reservation>('createReservation'))
+    );
   }
 
   /**
-   * Mettre à jour une réservation (local)
+   * Mettre à jour une réservation
    */
   updateReservation(id: number, reservation: Reservation): Observable<Reservation> {
-    const reservations = this.getLocalReservations();
-    const index = reservations.findIndex(r => r.id_reservation === id);
-    
-    if (index === -1) {
-      return throwError(() => new Error(`Réservation avec l'ID ${id} non trouvée`));
-    }
-    
-    // Mettre à jour la réservation
-    const updatedReservation: Reservation = {
-      ...reservations[index],
-      ...reservation,
-      id_reservation: id // S'assurer que l'ID ne change pas
+    const payload = {
+      id_client: reservation.id_client,
+      date_reservation: reservation.date_reservation,
+      date_debut: reservation.date_debut,
+      date_fin: reservation.date_fin,
+      montant_total: reservation.montant_total,
+      statut_reservation: reservation.statut_reservation,
+      id_paiement: reservation.id_paiement || undefined,
+      remise_appliquee: reservation.remise_appliquee || 0.00
     };
-    
-    reservations[index] = updatedReservation;
-    this.saveLocalReservations(reservations);
-    
-    return of({ ...updatedReservation }).pipe(delay(300));
+
+    return this.http.put<Reservation>(
+      `${this.apiUrl}/reservations/${id}`,
+      payload,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(this.handleError<Reservation>('updateReservation'))
+    );
   }
 
   /**
-   * Supprimer une réservation (local)
+   * Supprimer une réservation
    */
   deleteReservation(id: number): Observable<boolean> {
-    const reservations = this.getLocalReservations();
-    const index = reservations.findIndex(r => r.id_reservation === id);
-    
-    if (index === -1) {
-      return throwError(() => new Error(`Réservation avec l'ID ${id} non trouvée`));
+    return this.http.delete<{ success: boolean }>(
+      `${this.apiUrl}/reservations/${id}`,
+      this.getHttpOptions()
+    ).pipe(
+      map(() => true),
+      catchError(this.handleError<boolean>('deleteReservation', false))
+    );
+  }
+
+  /**
+   * Gestion des erreurs HTTP
+   */
+  private handleError<T>(operation = 'operation', result?: T) {
+    return (error: HttpErrorResponse): Observable<T> => {
+      if (!environment.production) {
+        console.error(`${operation} failed:`, error);
+      }
+      
+      const errorMessage = this.extractErrorMessage(error);
+      return throwError(() => new Error(errorMessage));
+    };
+  }
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    if (error.error instanceof ErrorEvent) {
+      return `Erreur: ${error.error.message}`;
     }
-    
-    reservations.splice(index, 1);
-    this.saveLocalReservations(reservations);
-    
-    return of(true).pipe(delay(300));
+
+    const statusMessages: { [key: number]: string } = {
+      401: 'Non autorisé. Veuillez vous reconnecter.',
+      403: 'Accès interdit.',
+      404: 'Ressource non trouvée.',
+      500: 'Erreur serveur. Veuillez réessayer plus tard.'
+    };
+
+    if (error.status && statusMessages[error.status]) {
+      return statusMessages[error.status];
+    }
+
+    if (error.error) {
+      if (error.error.message) {
+        return error.error.message;
+      }
+      if (error.error.error) {
+        return error.error.error;
+      }
+      if (typeof error.error === 'string') {
+        return error.error;
+      }
+      if (Array.isArray(error.error.errors)) {
+        return error.error.errors.map((e: any) => e.message || e).join(', ');
+      }
+    }
+
+    return 'Une erreur est survenue';
   }
 }
-
