@@ -26,6 +26,7 @@ export class AuthService {
 
   private readonly AUTH_TOKEN_KEY = 'auth_token';
   private readonly USER_KEY = 'user_data';
+  private readonly SOCIETE_ID_KEY = 'societe_id';
   private apiUrl = environment.apiUrl || 'http://localhost:5000/api';
 
   constructor(
@@ -93,6 +94,13 @@ export class AuthService {
         // Stocker le token et les données utilisateur
         localStorage.setItem(this.AUTH_TOKEN_KEY, token);
         localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+        
+        // Extraire et stocker le societeId depuis le token
+        const societeId = this.extractSocieteIdFromToken(token);
+        if (societeId !== null) {
+          localStorage.setItem(this.SOCIETE_ID_KEY, societeId.toString());
+        }
+        
         this.isAuthenticatedSubject.next(true);
         
         return response;
@@ -116,6 +124,13 @@ export class AuthService {
     if (userData) {
       localStorage.setItem(this.USER_KEY, JSON.stringify(userData));
     }
+    
+    // Extraire et stocker le societeId depuis le token
+    const societeId = this.extractSocieteIdFromToken(token);
+    if (societeId !== null) {
+      localStorage.setItem(this.SOCIETE_ID_KEY, societeId.toString());
+    }
+    
     this.isAuthenticatedSubject.next(true);
   }
 
@@ -125,6 +140,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(this.AUTH_TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
+    localStorage.removeItem(this.SOCIETE_ID_KEY);
     this.isAuthenticatedSubject.next(false);
     this.router.navigate(['/login']);
   }
@@ -170,9 +186,71 @@ export class AuthService {
   }
 
   /**
-   * Récupère le societeId depuis le token JWT
+   * Extrait le societeId depuis un token JWT
+   */
+  private extractSocieteIdFromToken(token: string): number | null {
+    const decodedToken = this.decodeToken(token);
+    if (!decodedToken) {
+      return null;
+    }
+
+    // Essayer différentes variantes possibles du nom de la propriété
+    const societeId = decodedToken.societeId || 
+                      decodedToken.SocieteId || 
+                      decodedToken.idSociete || 
+                      decodedToken.IdSociete ||
+                      decodedToken.societe_id ||
+                      decodedToken.societe_Id ||
+                      null;
+
+    return societeId !== null ? Number(societeId) : null;
+  }
+
+  /**
+   * Récupère le societeId depuis le token JWT ou le localStorage
    */
   getSocieteId(): number | null {
+    // D'abord essayer de récupérer depuis le localStorage (plus rapide)
+    const storedSocieteId = localStorage.getItem(this.SOCIETE_ID_KEY);
+    if (storedSocieteId) {
+      const id = Number(storedSocieteId);
+      if (!isNaN(id)) {
+        return id;
+      }
+    }
+
+    // Sinon, extraire depuis le token
+    const token = this.getToken();
+    if (!token) {
+      return null;
+    }
+
+    const societeId = this.extractSocieteIdFromToken(token);
+    if (societeId !== null) {
+      // Mettre en cache dans le localStorage pour les prochaines fois
+      localStorage.setItem(this.SOCIETE_ID_KEY, societeId.toString());
+    }
+
+    return societeId;
+  }
+
+  /**
+   * Récupère le nom de l'utilisateur connecté depuis le token JWT ou les données utilisateur
+   */
+  getUserName(): string | null {
+    // D'abord essayer de récupérer depuis les données utilisateur stockées
+    const userData = this.getUserData();
+    if (userData?.nomComplet) {
+      return userData.nomComplet;
+    }
+    if (userData?.nom_complet) {
+      return userData.nom_complet;
+    }
+    if (userData?.name) {
+      return userData.name;
+    }
+
+    // Sinon, extraire depuis le token
     const token = this.getToken();
     if (!token) {
       return null;
@@ -184,12 +262,15 @@ export class AuthService {
     }
 
     // Essayer différentes variantes possibles du nom de la propriété
-    return decodedToken.societeId || 
-           decodedToken.SocieteId || 
-           decodedToken.idSociete || 
-           decodedToken.IdSociete ||
-           decodedToken.societe_id ||
-           decodedToken.societe_Id ||
+    return decodedToken.nomComplet || 
+           decodedToken.NomComplet || 
+           decodedToken.nom_complet ||
+           decodedToken.name ||
+           decodedToken.Name ||
+           decodedToken.username ||
+           decodedToken.Username ||
+           decodedToken.login ||
+           decodedToken.Login ||
            null;
   }
 

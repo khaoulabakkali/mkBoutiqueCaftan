@@ -32,6 +32,7 @@ import { filter } from 'rxjs/operators';
 export class AppComponent {
   currentUrl: string = '';
   parametresExpanded: boolean = false;
+  userName: string | null = null;
 
   constructor(
     private authService: AuthService,
@@ -42,6 +43,9 @@ export class AppComponent {
     // Initialiser l'URL actuelle
     this.currentUrl = this.router.url;
     
+    // Charger le nom de l'utilisateur
+    this.loadUserName();
+    
     // Écouter les changements de route pour mettre à jour l'URL actuelle
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -49,10 +53,16 @@ export class AppComponent {
         this.currentUrl = event.url;
         // Garder le menu paramètres ouvert si on est sur une route paramètres
         this.parametresExpanded = this.currentUrl.startsWith('/parametres');
+        // Recharger le nom de l'utilisateur au cas où il aurait changé
+        this.loadUserName();
       });
     
     // Initialiser l'état du menu paramètres
     this.parametresExpanded = this.currentUrl.startsWith('/parametres');
+  }
+
+  loadUserName() {
+    this.userName = this.authService.getUserName();
   }
   
   toggleParametres(event: Event) {

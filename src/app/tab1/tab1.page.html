@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>
-      Tab 1
+      Accueil
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -10,9 +10,168 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Accueil</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div class="statistics-container" *ngIf="!isLoading">
+    <!-- Statistiques principales -->
+    <ion-grid>
+      <ion-row>
+        <!-- Utilisateurs -->
+        <ion-col size="12" size-md="6" size-lg="3">
+          <ion-card class="stat-card stat-card-primary">
+            <ion-card-content>
+              <div class="stat-content">
+                <div class="stat-icon">
+                  <ion-icon name="people" color="primary"></ion-icon>
+                </div>
+                <div class="stat-info">
+                  <h2>{{ statistiques.totalUtilisateurs }}</h2>
+                  <p>Utilisateurs</p>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Clients -->
+        <ion-col size="12" size-md="6" size-lg="3">
+          <ion-card class="stat-card stat-card-success">
+            <ion-card-content>
+              <div class="stat-content">
+                <div class="stat-icon">
+                  <ion-icon name="person" color="success"></ion-icon>
+                </div>
+                <div class="stat-info">
+                  <h2>{{ statistiques.totalClients }}</h2>
+                  <p>Clients</p>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Articles -->
+        <ion-col size="12" size-md="6" size-lg="3">
+          <ion-card class="stat-card stat-card-warning">
+            <ion-card-content>
+              <div class="stat-content">
+                <div class="stat-icon">
+                  <ion-icon name="cube" color="warning"></ion-icon>
+                </div>
+                <div class="stat-info">
+                  <h2>{{ statistiques.totalArticles }}</h2>
+                  <p>Articles</p>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Réservations -->
+        <ion-col size="12" size-md="6" size-lg="3">
+          <ion-card class="stat-card stat-card-info">
+            <ion-card-content>
+              <div class="stat-content">
+                <div class="stat-icon">
+                  <ion-icon name="calendar" color="tertiary"></ion-icon>
+                </div>
+                <div class="stat-info">
+                  <h2>{{ statistiques.totalReservations }}</h2>
+                  <p>Réservations</p>
+                </div>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <!-- Statistiques détaillées -->
+      <ion-row>
+        <!-- Articles actifs -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                Articles actifs
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-stat">
+                <h1>{{ statistiques.articlesActifs }}</h1>
+                <p>sur {{ statistiques.totalArticles }} articles</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Réservations en attente -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="time-outline" color="warning"></ion-icon>
+                Réservations en attente
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-stat">
+                <h1>{{ statistiques.reservationsEnAttente }}</h1>
+                <p>en attente de confirmation</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Réservations confirmées -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="checkmark-circle" color="success"></ion-icon>
+                Réservations confirmées
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-stat">
+                <h1>{{ statistiques.reservationsConfirmees }}</h1>
+                <p>confirmées</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+
+      <!-- Paiements -->
+      <ion-row>
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="wallet" color="success"></ion-icon>
+                Paiements
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-stat">
+                <h1>{{ statistiques.totalPaiements }}</h1>
+                <p>paiements enregistrés</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-card>
+      <ion-card-content>
+        <p>Chargement des statistiques...</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

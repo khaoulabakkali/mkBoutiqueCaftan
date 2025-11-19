@@ -6,6 +6,17 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <!-- Informations utilisateur -->
+      <div class="user-info" *ngIf="userName">
+        <ion-item lines="none" class="user-item">
+          <ion-icon name="person" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ userName }}</h2>
+            <p>Utilisateur connecté</p>
+          </ion-label>
+        </ion-item>
+      </div>
+      
       <ion-list>
         <ion-menu-toggle auto-hide="false">
           <ion-item 
