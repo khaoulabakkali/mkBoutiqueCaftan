@@ -21,7 +21,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, checkmark } from 'ionicons/icons';
+import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
 import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur, CreateUserRequest } from '../models/utilisateur.model';
 import { RoleService } from '../services/role.service';
@@ -66,7 +66,7 @@ export class FormUtilisateurPage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack, checkmark });
+    addIcons({ save, arrowBack, checkmark, closeOutline });
     
     this.utilisateurForm = this.formBuilder.group({
       nomComplet: ['', [Validators.required, Validators.minLength(3)]],

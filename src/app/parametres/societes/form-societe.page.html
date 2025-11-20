@@ -4,6 +4,12 @@
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Société</ion-title>
     <ion-buttons slot="end">
       <ion-button
+        type="button"
+        fill="clear"
+        (click)="onCancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+      <ion-button
         type="submit"
         form="societeForm"
         [disabled]="societeForm.invalid">
@@ -104,17 +110,6 @@
       <ion-checkbox formControlName="actif" slot="end"></ion-checkbox>
     </ion-item>
 
-    <!-- Bouton Annuler -->
-    <div class="form-actions">
-      <ion-button
-        type="button"
-        fill="outline"
-        expand="block"
-        (click)="onCancel()">
-        <ion-icon name="arrow-back" slot="start"></ion-icon>
-        Annuler
-      </ion-button>
-    </div>
   </form>
 </ion-content>
 

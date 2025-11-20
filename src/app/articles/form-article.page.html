@@ -4,6 +4,12 @@
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Article</ion-title>
     <ion-buttons slot="end">
       <ion-button
+        type="button"
+        fill="clear"
+        (click)="onCancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+      <ion-button
         type="submit"
         form="articleForm"
         [disabled]="articleForm.invalid">
@@ -128,17 +134,6 @@
       <ion-checkbox slot="end" formControlName="actif"></ion-checkbox>
     </ion-item>
 
-    <!-- Bouton Annuler -->
-    <div class="form-actions">
-      <ion-button
-        type="button"
-        fill="outline"
-        expand="block"
-        (click)="onCancel()">
-        <ion-icon name="arrow-back" slot="start"></ion-icon>
-        Annuler
-      </ion-button>
-    </div>
   </form>
 </ion-content>
 

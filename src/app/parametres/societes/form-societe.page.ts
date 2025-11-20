@@ -20,7 +20,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, checkmark } from 'ionicons/icons';
+import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
 import { SocieteService } from '../../services/societe.service';
 import { Societe } from '../../models/societe.model';
 import { environment } from '../../../environments/environment';
@@ -63,7 +63,7 @@ export class FormSocietePage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack, checkmark });
+    addIcons({ save, arrowBack, checkmark, closeOutline });
     
     this.societeForm = this.formBuilder.group({
       nomSociete: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],

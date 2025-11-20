@@ -23,7 +23,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, add, chevronDown, checkmark } from 'ionicons/icons';
+import { save, arrowBack, add, chevronDown, checkmark, closeOutline } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation, StatutReservation } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
@@ -73,7 +73,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private modalController: ModalController
   ) {
-    addIcons({ save, arrowBack, add, chevronDown, checkmark });
+    addIcons({ save, arrowBack, add, chevronDown, checkmark, closeOutline });
     
     this.reservationForm = this.formBuilder.group({
       idClient: ['', [Validators.required]],

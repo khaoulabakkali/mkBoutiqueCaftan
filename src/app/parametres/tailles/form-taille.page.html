@@ -4,6 +4,12 @@
     <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Taille</ion-title>
     <ion-buttons slot="end">
       <ion-button
+        type="button"
+        fill="clear"
+        (click)="onCancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+      <ion-button
         type="submit"
         form="tailleForm"
         [disabled]="tailleForm.invalid">
@@ -31,17 +37,6 @@
       <span *ngIf="taille?.errors?.['maxlength']">La taille ne doit pas dépasser 20 caractères</span>
     </div>
 
-    <!-- Bouton Annuler -->
-    <div class="form-actions">
-      <ion-button
-        type="button"
-        fill="outline"
-        expand="block"
-        (click)="router.navigate(['/parametres/tailles'])">
-        <ion-icon name="arrow-back" slot="start"></ion-icon>
-        Annuler
-      </ion-button>
-    </div>
   </form>
 </ion-content>
 

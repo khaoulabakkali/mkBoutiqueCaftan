@@ -20,7 +20,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, checkmark } from 'ionicons/icons';
+import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
 import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.model';
 import { environment } from '../../../environments/environment';
@@ -64,7 +64,7 @@ export class FormRolePage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack, checkmark });
+    addIcons({ save, arrowBack, checkmark, closeOutline });
     
     this.roleForm = this.formBuilder.group({
       nomRole: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
@@ -174,6 +174,10 @@ export class FormRolePage implements OnInit {
 
   get actif() {
     return this.roleForm.get('actif');
+  }
+
+  onCancel() {
+    this.routerInstance.navigate(['/parametres/roles']);
   }
 }
 

@@ -238,25 +238,21 @@ export class AuthService {
    * Récupère le nom de l'utilisateur connecté depuis le token JWT ou les données utilisateur
    */
   getUserName(): string | null {
+    
     // D'abord essayer de récupérer depuis les données utilisateur stockées
     const userData = this.getUserData();
-    if (userData?.nomComplet) {
-      return userData.nomComplet;
-    }
-    if (userData?.nom_complet) {
-      return userData.nom_complet;
-    }
-    if (userData?.name) {
-      return userData.name;
-    }
+    console.log(userData)
+
 
     // Sinon, extraire depuis le token
     const token = this.getToken();
+    console.log(token)
     if (!token) {
       return null;
     }
 
     const decodedToken = this.decodeToken(token);
+    console.log(decodedToken)
     if (!decodedToken) {
       return null;
     }

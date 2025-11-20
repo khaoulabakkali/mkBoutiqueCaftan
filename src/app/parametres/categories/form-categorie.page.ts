@@ -19,7 +19,7 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, checkmark } from 'ionicons/icons';
+import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
 import { CategorieService } from '../../services/categorie.service';
 import { Categorie } from '../../models/categorie.model';
 import { environment } from '../../../environments/environment';
@@ -62,7 +62,7 @@ export class FormCategoriePage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack, checkmark });
+    addIcons({ save, arrowBack, checkmark, closeOutline });
     
     this.categorieForm = this.formBuilder.group({
       nomCategorie: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(50)]],
@@ -175,6 +175,10 @@ export class FormCategoriePage implements OnInit {
 
   get ordreAffichage() {
     return this.categorieForm.get('ordreAffichage');
+  }
+
+  onCancel() {
+    this.routerInstance.navigate(['/parametres/categories']);
   }
 }
 

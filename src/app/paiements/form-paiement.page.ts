@@ -21,7 +21,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, checkmark } from 'ionicons/icons';
+import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
 import { ReservationService } from '../services/reservation.service';
@@ -68,7 +68,7 @@ export class FormPaiementPage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack, checkmark });
+    addIcons({ save, arrowBack, checkmark, closeOutline });
     
     this.paiementForm = this.formBuilder.group({
       idReservation: ['', [Validators.required]],
