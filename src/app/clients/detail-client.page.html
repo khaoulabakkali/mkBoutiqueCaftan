@@ -6,6 +6,9 @@
       <ion-button (click)="editClient()" *ngIf="client?.idClient">
         <ion-icon name="create"></ion-icon>
       </ion-button>
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
@@ -116,19 +119,6 @@
       </ion-card-content>
     </ion-card>
 
-    <!-- Actions -->
-    <ion-card>
-      <ion-card-content>
-        <ion-button expand="block" (click)="editClient()" *ngIf="client?.idClient">
-          <ion-icon name="create" slot="start"></ion-icon>
-          Modifier le client
-        </ion-button>
-        <ion-button expand="block" fill="outline" (click)="goBack()">
-          <ion-icon name="arrow-back" slot="start"></ion-icon>
-          Retour à la liste
-        </ion-button>
-      </ion-card-content>
-    </ion-card>
   </div>
 </ion-content>
 
