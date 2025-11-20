@@ -16,6 +16,7 @@ import {
   IonCardTitle,
   IonCardContent,
   IonBadge,
+  IonSpinner,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
@@ -49,12 +50,14 @@ import { environment } from '../../environments/environment';
     IonCardTitle,
     IonCardContent,
     IonBadge,
+    IonSpinner,
     CommonModule
   ],
 })
 export class DetailReservationPage implements OnInit {
   reservation: Reservation | null = null;
   client: Client | null = null;
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -78,6 +81,7 @@ export class DetailReservationPage implements OnInit {
   }
 
   async loadReservation(id: number) {
+    this.isLoading = true;
     const loading = await this.loadingController.create({
       message: 'Chargement...'
     });
@@ -89,9 +93,11 @@ export class DetailReservationPage implements OnInit {
         if (this.reservation?.idClient) {
           await this.loadClient(this.reservation.idClient);
         }
+        this.isLoading = false;
         loading.dismiss();
       },
       error: async (error) => {
+        this.isLoading = false;
         loading.dismiss();
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);

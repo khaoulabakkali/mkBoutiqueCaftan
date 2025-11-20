@@ -14,6 +14,7 @@ import {
   IonSearchbar,
   IonBadge,
   IonButtons,
+  IonSpinner,
   IonAlert,
   AlertController,
   ToastController,
@@ -56,6 +57,7 @@ import { environment } from '../../../environments/environment';
     IonSearchbar,
     IonBadge,
     IonButtons,
+    IonSpinner,
     CommonModule,
     FormsModule
   ],
@@ -64,6 +66,7 @@ export class ListeRolesPage implements OnInit {
   roles: Role[] = [];
   rolesFiltres: Role[] = [];
   searchTerm: string = '';
+  isLoading = false;
   private isLoadingData = false;
 
   constructor(
@@ -101,6 +104,7 @@ export class ListeRolesPage implements OnInit {
     if (this.isLoadingData) return;
     
     this.isLoadingData = true;
+    this.isLoading = true;
     const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
     }) : null;
@@ -117,6 +121,7 @@ export class ListeRolesPage implements OnInit {
           loading.dismiss();
         }
         this.isLoadingData = false;
+        this.isLoading = false;
       },
       error: (error) => {
         if (loading) {
@@ -125,6 +130,7 @@ export class ListeRolesPage implements OnInit {
         this.roles = [];
         this.rolesFiltres = [];
         this.isLoadingData = false;
+        this.isLoading = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }

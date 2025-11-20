@@ -14,6 +14,7 @@ import {
   IonSearchbar,
   IonBadge,
   IonButtons,
+  IonSpinner,
   IonAlert,
   AlertController,
   ToastController,
@@ -60,6 +61,7 @@ import { Role  } from '../models/role.model';
     IonSearchbar,
     IonBadge,
     IonButtons,
+    IonSpinner,
     CommonModule,
     FormsModule
   ],
@@ -69,6 +71,7 @@ export class ListeUtilisateursPage implements OnInit {
   utilisateursFiltres: Utilisateur[] = [];
   searchTerm: string = '';
   roles: Role[] = [];
+  isLoading = false;
   private isLoadingData = false;
 
   constructor(
@@ -122,6 +125,7 @@ export class ListeUtilisateursPage implements OnInit {
     if (this.isLoadingData) return;
     
     this.isLoadingData = true;
+    this.isLoading = true;
     const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
     }) : null;
@@ -138,6 +142,7 @@ export class ListeUtilisateursPage implements OnInit {
           loading.dismiss();
         }
         this.isLoadingData = false;
+        this.isLoading = false;
       },
       error: (error) => {
         if (loading) {
@@ -146,6 +151,7 @@ export class ListeUtilisateursPage implements OnInit {
         this.utilisateurs = [];
         this.utilisateursFiltres = [];
         this.isLoadingData = false;
+        this.isLoading = false;
         const errorMessage = error?.message || 'Erreur lors du chargement des utilisateurs';
         this.presentToast(errorMessage, 'danger');
       }

@@ -19,8 +19,14 @@
     debounce="300">
   </ion-searchbar>
 
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+
   <!-- Liste des réservations -->
-  <ion-list *ngIf="reservationsFiltres.length > 0">
+  <ion-list *ngIf="!isLoading && reservationsFiltres.length > 0">
     <ion-item *ngFor="let reservation of reservationsFiltres" [button]="true" (click)="viewReservation(reservation)">
       <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
       <ion-label>
@@ -61,7 +67,7 @@
   </ion-list>
 
   <!-- Message si aucun résultat -->
-  <div *ngIf="reservationsFiltres.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && reservationsFiltres.length === 0" class="empty-state">
     <ion-icon name="calendar-outline"></ion-icon>
     <p>Aucune réservation trouvée</p>
   </div>

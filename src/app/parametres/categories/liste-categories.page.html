@@ -19,8 +19,14 @@
     debounce="300">
   </ion-searchbar>
 
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+
   <!-- Liste des catégories -->
-  <ion-list *ngIf="categoriesFiltres.length > 0">
+  <ion-list *ngIf="!isLoading && categoriesFiltres.length > 0">
     <ion-item *ngFor="let categorie of categoriesFiltres" [button]="true" (click)="viewCategorie(categorie)">
       <ion-icon name="grid" slot="start" color="primary"></ion-icon>
       <ion-label>
@@ -48,7 +54,7 @@
   </ion-list>
 
   <!-- Message si aucun résultat -->
-  <div *ngIf="categoriesFiltres.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && categoriesFiltres.length === 0" class="empty-state">
     <ion-icon name="grid"></ion-icon>
     <p>Aucune catégorie trouvée</p>
   </div>

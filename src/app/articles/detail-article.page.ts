@@ -17,6 +17,7 @@ import {
   IonCardContent,
   IonBadge,
   IonImg,
+  IonSpinner,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
@@ -53,6 +54,7 @@ import { environment } from '../../environments/environment';
     IonCardContent,
     IonBadge,
     IonImg,
+    IonSpinner,
     CommonModule
   ],
 })
@@ -60,6 +62,7 @@ export class DetailArticlePage implements OnInit {
   article: Article | null = null;
   categorie: Categorie | null = null;
   taille: Taille | null = null;
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -84,6 +87,7 @@ export class DetailArticlePage implements OnInit {
   }
 
   async loadArticle(id: number) {
+    this.isLoading = true;
     const loading = await this.loadingController.create({
       message: 'Chargement...'
     });
@@ -102,9 +106,11 @@ export class DetailArticlePage implements OnInit {
             await this.loadTaille(this.article.idTaille);
           }
         }
+        this.isLoading = false;
         loading.dismiss();
       },
       error: async (error) => {
+        this.isLoading = false;
         loading.dismiss();
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);

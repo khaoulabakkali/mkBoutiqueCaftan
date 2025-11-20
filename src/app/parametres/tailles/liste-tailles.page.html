@@ -19,8 +19,14 @@
     debounce="300">
   </ion-searchbar>
 
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+
   <!-- Liste des tailles -->
-  <ion-list *ngIf="taillesFiltres.length > 0">
+  <ion-list *ngIf="!isLoading && taillesFiltres.length > 0">
     <ion-item *ngFor="let taille of taillesFiltres" [button]="true" (click)="viewTaille(taille)">
       <ion-icon name="resize" slot="start" color="primary"></ion-icon>
       <ion-label>
@@ -45,7 +51,7 @@
   </ion-list>
 
   <!-- Message si aucun résultat -->
-  <div *ngIf="taillesFiltres.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && taillesFiltres.length === 0" class="empty-state">
     <ion-icon name="resize"></ion-icon>
     <p>Aucune taille trouvée</p>
   </div>

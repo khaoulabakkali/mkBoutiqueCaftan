@@ -15,6 +15,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
+  IonSpinner,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
@@ -45,11 +46,13 @@ import { environment } from '../../../environments/environment';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
+    IonSpinner,
     CommonModule
   ],
 })
 export class DetailTaillePage implements OnInit {
   taille: Taille | null = null;
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,

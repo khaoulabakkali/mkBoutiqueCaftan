@@ -19,8 +19,14 @@
     debounce="300">
   </ion-searchbar>
 
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+
   <!-- Liste des utilisateurs -->
-  <ion-list *ngIf="utilisateursFiltres.length > 0">
+  <ion-list *ngIf="!isLoading && utilisateursFiltres.length > 0">
     <ion-item *ngFor="let utilisateur of utilisateursFiltres" [button]="true" (click)="viewDetail(utilisateur)">
       <ion-label>
         <h2>
@@ -66,7 +72,7 @@
   </ion-list>
 
   <!-- Message si aucun résultat -->
-  <div *ngIf="utilisateursFiltres.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && utilisateursFiltres.length === 0" class="empty-state">
     <ion-icon name="people-outline"></ion-icon>
     <p>Aucun utilisateur trouvé</p>
   </div>

@@ -16,6 +16,7 @@ import {
   IonCardTitle,
   IonCardContent,
   IonBadge,
+  IonSpinner,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
@@ -48,12 +49,14 @@ import { Role } from '../models/role.model';
     IonCardTitle,
     IonCardContent,
     IonBadge,
+    IonSpinner,
     CommonModule
   ],
 })
 export class DetailUtilisateurPage implements OnInit {
   utilisateur: Utilisateur | null = null;
   roles: Role[] = [];
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -89,6 +92,7 @@ export class DetailUtilisateurPage implements OnInit {
   }
 
   async loadUtilisateur(id: number) {
+    this.isLoading = true;
     const loading = await this.loadingController.create({
       message: 'Chargement...'
     });
@@ -97,9 +101,11 @@ export class DetailUtilisateurPage implements OnInit {
     this.utilisateurService.getUtilisateurById(id).subscribe({
       next: (data) => {
         this.utilisateur = data || null;
+        this.isLoading = false;
         loading.dismiss();
       },
       error: async (error) => {
+        this.isLoading = false;
         loading.dismiss();
         const errorMessage = error?.message || 'Erreur lors du chargement de l\'utilisateur';
         await this.presentToast(errorMessage, 'danger');

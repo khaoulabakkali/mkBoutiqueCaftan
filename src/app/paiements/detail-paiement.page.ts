@@ -15,6 +15,7 @@ import {
   IonCardHeader,
   IonCardTitle,
   IonCardContent,
+  IonSpinner,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
@@ -49,6 +50,7 @@ import { environment } from '../../environments/environment';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
+    IonSpinner,
     CommonModule
   ],
 })
@@ -56,6 +58,7 @@ export class DetailPaiementPage implements OnInit {
   paiement: Paiement | null = null;
   reservation: Reservation | null = null;
   client: Client | null = null;
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,6 +83,7 @@ export class DetailPaiementPage implements OnInit {
   }
 
   async loadPaiement(id: number) {
+    this.isLoading = true;
     const loading = await this.loadingController.create({
       message: 'Chargement...'
     });
@@ -91,9 +95,11 @@ export class DetailPaiementPage implements OnInit {
         if (this.paiement?.idReservation) {
           await this.loadReservation(this.paiement.idReservation);
         }
+        this.isLoading = false;
         loading.dismiss();
       },
       error: async (error) => {
+        this.isLoading = false;
         loading.dismiss();
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);

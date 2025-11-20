@@ -16,6 +16,7 @@ import {
   IonCardTitle,
   IonCardContent,
   IonBadge,
+  IonSpinner,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
@@ -47,11 +48,13 @@ import { environment } from '../../../environments/environment';
     IonCardTitle,
     IonCardContent,
     IonBadge,
+    IonSpinner,
     CommonModule
   ],
 })
 export class DetailSocietePage implements OnInit {
   societe: Societe | null = null;
+  isLoading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -64,16 +67,34 @@ export class DetailSocietePage implements OnInit {
   }
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadSociete(+id);
-    } else {
+    const idParam = this.route.snapshot.paramMap.get('id');
+    if (!idParam) {
+      if (!environment.production) {
+        console.error('ID société manquant dans les paramètres de route');
+      }
       this.presentToast('ID société manquant', 'danger');
       this.router.navigate(['/tabs/tab1']);
+      return;
     }
+    
+    const id = Number(idParam);
+    if (isNaN(id)) {
+      if (!environment.production) {
+        console.error('ID société invalide:', idParam);
+      }
+      this.presentToast('ID société invalide', 'danger');
+      this.router.navigate(['/tabs/tab1']);
+      return;
+    }
+    
+    if (!environment.production) {
+      console.log('Chargement de la société avec ID:', id);
+    }
+    this.loadSociete(id);
   }
 
   async loadSociete(id: number) {
+    this.isLoading = true;
     const loading = await this.loadingController.create({
       message: 'Chargement...'
     });
@@ -81,17 +102,36 @@ export class DetailSocietePage implements OnInit {
 
     this.societeService.getSocieteById(id).subscribe({
       next: (data) => {
+        if (!environment.production) {
+          console.log('Données reçues de l\'API:', data);
+        }
         this.societe = data || null;
+        if (!this.societe) {
+          if (!environment.production) {
+            console.error('Aucune donnée reçue pour la société');
+          }
+          this.presentToast('Aucune donnée trouvée pour cette société', 'warning');
+        }
+        this.isLoading = false;
         loading.dismiss();
       },
       error: async (error) => {
+        this.isLoading = false;
         loading.dismiss();
         if (!environment.production) {
           console.error('Erreur lors du chargement de la société:', error);
           console.error('ID utilisé:', id);
+          console.error('Type de l\'ID:', typeof id);
           console.error('Erreur complète:', JSON.stringify(error, null, 2));
         }
-        const errorMessage = error?.message || 'Erreur lors du chargement de la société';
+        let errorMessage = 'Erreur lors du chargement de la société';
+        if (error?.message) {
+          errorMessage = error.message;
+        } else if (error?.error?.message) {
+          errorMessage = error.error.message;
+        } else if (typeof error?.error === 'string') {
+          errorMessage = error.error;
+        }
         await this.presentToast(errorMessage, 'danger');
         this.router.navigate(['/tabs/tab1']);
       }

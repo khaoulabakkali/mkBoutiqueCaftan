@@ -11,7 +11,11 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div *ngIf="categorie" class="detail-container">
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+  <div *ngIf="!isLoading && categorie" class="detail-container">
     <!-- En-tête avec nom -->
     <ion-card class="header-card">
       <ion-card-content>

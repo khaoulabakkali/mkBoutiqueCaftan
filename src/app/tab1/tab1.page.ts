@@ -13,6 +13,7 @@ import {
   IonRow,
   IonCol,
   IonIcon,
+  IonSpinner,
   LoadingController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
@@ -64,6 +65,7 @@ interface Statistiques {
     IonRow,
     IonCol,
     IonIcon,
+    IonSpinner,
     CommonModule
   ],
 })

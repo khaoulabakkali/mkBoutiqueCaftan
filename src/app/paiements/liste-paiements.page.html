@@ -19,8 +19,14 @@
     debounce="300">
   </ion-searchbar>
 
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+
   <!-- Liste des paiements -->
-  <ion-list *ngIf="paiementsFiltres.length > 0">
+  <ion-list *ngIf="!isLoading && paiementsFiltres.length > 0">
     <ion-item *ngFor="let paiement of paiementsFiltres" (click)="viewPaiement(paiement)">
       <ion-icon name="wallet" slot="start" color="success"></ion-icon>
       <ion-label>
@@ -59,7 +65,7 @@
   </ion-list>
 
   <!-- Message si aucun résultat -->
-  <div *ngIf="paiementsFiltres.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && paiementsFiltres.length === 0" class="empty-state">
     <ion-icon name="wallet"></ion-icon>
     <p>Aucun paiement trouvé</p>
   </div>

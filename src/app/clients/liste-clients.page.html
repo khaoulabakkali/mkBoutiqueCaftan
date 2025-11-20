@@ -19,8 +19,14 @@
     debounce="300">
   </ion-searchbar>
 
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+
   <!-- Liste des clients -->
-  <ion-list *ngIf="clientsFiltres.length > 0">
+  <ion-list *ngIf="!isLoading && clientsFiltres.length > 0">
     <ion-item *ngFor="let client of clientsFiltres" [button]="true" (click)="viewClient(client)">
       <ion-label>
         <h2>{{ getFullName(client) }}</h2>
@@ -50,7 +56,7 @@
   </ion-list>
 
   <!-- Message si aucun résultat -->
-  <div *ngIf="clientsFiltres.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && clientsFiltres.length === 0" class="empty-state">
     <ion-icon name="person-outline"></ion-icon>
     <p>Aucun client trouvé</p>
   </div>

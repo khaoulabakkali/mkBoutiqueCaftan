@@ -11,6 +11,10 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <div *ngIf="!societe" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
   <div *ngIf="societe" class="detail-container">
     <!-- En-tête avec nom -->
     <ion-card class="header-card">

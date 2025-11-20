@@ -13,6 +13,7 @@ import {
   IonIcon,
   IonSearchbar,
   IonButtons,
+  IonSpinner,
   AlertController,
   ToastController,
   LoadingController
@@ -50,6 +51,7 @@ import { environment } from '../../environments/environment';
     IonIcon,
     IonSearchbar,
     IonButtons,
+    IonSpinner,
     CommonModule,
     FormsModule
   ],
@@ -58,6 +60,7 @@ export class ListePaiementsPage implements OnInit {
   paiements: Paiement[] = [];
   paiementsFiltres: Paiement[] = [];
   searchTerm: string = '';
+  isLoading = false;
   private isLoadingData = false;
 
   constructor(
@@ -92,6 +95,7 @@ export class ListePaiementsPage implements OnInit {
     if (this.isLoadingData) return;
     
     this.isLoadingData = true;
+    this.isLoading = true;
     const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
     }) : null;
@@ -108,6 +112,7 @@ export class ListePaiementsPage implements OnInit {
           loading.dismiss();
         }
         this.isLoadingData = false;
+        this.isLoading = false;
       },
       error: (error) => {
         if (loading) {
@@ -116,6 +121,7 @@ export class ListePaiementsPage implements OnInit {
         this.paiements = [];
         this.paiementsFiltres = [];
         this.isLoadingData = false;
+        this.isLoading = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }

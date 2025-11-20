@@ -19,8 +19,14 @@
     debounce="300">
   </ion-searchbar>
 
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Chargement...</p>
+  </div>
+
   <!-- Liste des rôles -->
-  <ion-list *ngIf="rolesFiltres.length > 0">
+  <ion-list *ngIf="!isLoading && rolesFiltres.length > 0">
     <ion-item *ngFor="let role of rolesFiltres" [button]="true" (click)="viewRole(role)">
       <ion-label>
         <h2>
@@ -62,7 +68,7 @@
   </ion-list>
 
   <!-- Message si aucun résultat -->
-  <div *ngIf="rolesFiltres.length === 0" class="empty-state">
+  <div *ngIf="!isLoading && rolesFiltres.length === 0" class="empty-state">
     <ion-icon name="shield-outline"></ion-icon>
     <p>Aucun rôle trouvé</p>
   </div>

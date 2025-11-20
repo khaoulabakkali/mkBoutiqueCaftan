@@ -68,11 +68,23 @@ export class SocieteService {
    * Récupérer une société par ID
    */
   getSocieteById(id: number): Observable<Societe> {
+    if (!environment.production) {
+      console.log('Appel API getSocieteById avec ID:', id);
+    }
     return this.http.get<any>(
       `${this.apiUrl}/societes/${id}`,
       this.getHttpOptions()
     ).pipe(
-      map(data => this.mapApiToModel(data)),
+      map(data => {
+        if (!environment.production) {
+          console.log('Réponse brute de l\'API:', data);
+        }
+        const mapped = this.mapApiToModel(data);
+        if (!environment.production) {
+          console.log('Données mappées:', mapped);
+        }
+        return mapped;
+      }),
       catchError(this.handleError<Societe>('getSocieteById'))
     );
   }

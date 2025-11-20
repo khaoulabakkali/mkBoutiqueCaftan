@@ -14,6 +14,7 @@ import {
   IonSearchbar,
   IonBadge,
   IonButtons,
+  IonSpinner,
   IonAlert,
   AlertController,
   ToastController,
@@ -57,6 +58,7 @@ import { environment } from '../../environments/environment';
     IonSearchbar,
     IonBadge,
     IonButtons,
+    IonSpinner,
     CommonModule,
     FormsModule
   ],
@@ -66,6 +68,7 @@ export class ListeReservationsPage implements OnInit {
   reservationsFiltres: Reservation[] = [];
   clients: Client[] = [];
   searchTerm: string = '';
+  isLoading = false;
   private isLoadingData = false;
 
   constructor(
@@ -117,6 +120,7 @@ export class ListeReservationsPage implements OnInit {
     if (this.isLoadingData) return;
     
     this.isLoadingData = true;
+    this.isLoading = true;
     const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
     }) : null;
@@ -133,6 +137,7 @@ export class ListeReservationsPage implements OnInit {
           loading.dismiss();
         }
         this.isLoadingData = false;
+        this.isLoading = false;
       },
       error: (error) => {
         if (loading) {
@@ -141,6 +146,7 @@ export class ListeReservationsPage implements OnInit {
         this.reservations = [];
         this.reservationsFiltres = [];
         this.isLoadingData = false;
+        this.isLoading = false;
         if (!environment.production) {
           console.error('Erreur lors du chargement:', error);
         }

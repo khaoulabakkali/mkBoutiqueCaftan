@@ -13,6 +13,7 @@ import {
   IonIcon,
   IonSearchbar,
   IonButtons,
+  IonSpinner,
   IonAlert,
   AlertController,
   ToastController,
@@ -50,6 +51,7 @@ import { environment } from '../../../environments/environment';
     IonIcon,
     IonSearchbar,
     IonButtons,
+    IonSpinner,
     CommonModule,
     FormsModule
   ],
@@ -58,6 +60,7 @@ export class ListeCategoriesPage implements OnInit {
   categories: Categorie[] = [];
   categoriesFiltres: Categorie[] = [];
   searchTerm: string = '';
+  isLoading = false;
   private isLoadingData = false;
 
   constructor(
@@ -91,6 +94,7 @@ export class ListeCategoriesPage implements OnInit {
     if (this.isLoadingData) return;
     
     this.isLoadingData = true;
+    this.isLoading = true;
     const loading = showLoading ? await this.loadingController.create({
       message: 'Chargement...'
     }) : null;
@@ -107,6 +111,7 @@ export class ListeCategoriesPage implements OnInit {
           loading.dismiss();
         }
         this.isLoadingData = false;
+        this.isLoading = false;
       },
       error: (error) => {
         if (loading) {
