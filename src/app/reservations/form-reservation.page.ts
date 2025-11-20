@@ -15,6 +15,11 @@ import {
   IonIcon,
   IonSelect,
   IonSelectOption,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonBadge,
   ToastController,
   LoadingController,
   ModalController
@@ -23,11 +28,13 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, add, chevronDown, checkmark, closeOutline } from 'ionicons/icons';
+import { save, arrowBack, add, chevronDown, checkmark, closeOutline, trash } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
-import { Reservation, StatutReservation } from '../models/reservation.model';
+import { Reservation, StatutReservation, ReservationArticle } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
+import { ArticleService } from '../services/article.service';
+import { Article } from '../models/article.model';
 import { ClientSelectionModalComponent } from './client-selection-modal.component';
 import { environment } from '../../environments/environment';
 
@@ -48,11 +55,16 @@ import { environment } from '../../environments/environment';
     IonButton,
     IonButtons,
     IonIcon,
-    IonSelect,
-    IonSelectOption,
-    ReactiveFormsModule,
-    FormsModule,
-    CommonModule
+  IonSelect,
+  IonSelectOption,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonBadge,
+  ReactiveFormsModule,
+  FormsModule,
+  CommonModule
   ],
 })
 export class FormReservationPage implements OnInit, OnDestroy {
@@ -60,6 +72,8 @@ export class FormReservationPage implements OnInit, OnDestroy {
   isEditMode = false;
   reservationId?: number;
   clients: Client[] = [];
+  articles: Article[] = [];
+  selectedArticles: Array<{ article: Article; quantite: number }> = [];
   statuts: StatutReservation[] = ['En attente', 'Confirmée', 'En cours', 'Terminée', 'Annulée'];
   private queryParamsSubscription?: Subscription;
 
@@ -67,13 +81,14 @@ export class FormReservationPage implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     private reservationService: ReservationService,
     private clientService: ClientService,
+    private articleService: ArticleService,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
     private loadingController: LoadingController,
     private modalController: ModalController
   ) {
-    addIcons({ save, arrowBack, add, chevronDown, checkmark, closeOutline });
+    addIcons({ save, arrowBack, add, chevronDown, checkmark, closeOutline, trash });
     
     this.reservationForm = this.formBuilder.group({
       idClient: ['', [Validators.required]],
@@ -89,6 +104,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loadClients();
+    this.loadArticles();
     
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
@@ -131,6 +147,20 @@ export class FormReservationPage implements OnInit, OnDestroy {
       error: (error) => {
         if (!environment.production) {
           console.error('Erreur lors du chargement des clients:', error);
+        }
+      }
+    });
+  }
+
+  loadArticles() {
+    this.articleService.getAllArticles().subscribe({
+      next: (data) => {
+        // Filtrer uniquement les articles actifs
+        this.articles = data.filter(article => article.actif);
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des articles:', error);
         }
       }
     });
@@ -247,6 +277,13 @@ export class FormReservationPage implements OnInit, OnDestroy {
       await loading.present();
 
       const formValue = this.reservationForm.value;
+      
+      // Préparer les articles pour l'API
+      const articles: ReservationArticle[] = this.selectedArticles.map(item => ({
+        idArticle: item.article.idArticle!,
+        quantite: item.quantite
+      }));
+      
       const reservationData: Reservation = {
         idClient: formValue.idClient,
         dateReservation: formValue.dateReservation,
@@ -255,7 +292,8 @@ export class FormReservationPage implements OnInit, OnDestroy {
         montantTotal: parseFloat(formValue.montantTotal),
         statutReservation: formValue.statutReservation,
         idPaiement: formValue.idPaiement || undefined,
-        remiseAppliquee: parseFloat(formValue.remiseAppliquee) || 0
+        remiseAppliquee: parseFloat(formValue.remiseAppliquee) || 0,
+        articles: articles.length > 0 ? articles : undefined
       };
 
       if (this.isEditMode && this.reservationId) {
@@ -333,6 +371,107 @@ export class FormReservationPage implements OnInit, OnDestroy {
 
   onCancel() {
     this.router.navigate(['/reservations']);
+  }
+
+  /**
+   * Obtenir les articles disponibles (non encore sélectionnés)
+   */
+  getAvailableArticles(): Article[] {
+    return this.articles.filter(article => 
+      !this.selectedArticles.some(selected => selected.article.idArticle === article.idArticle)
+    );
+  }
+
+  /**
+   * Ajouter un article à la réservation
+   */
+  addArticle(articleId?: number) {
+    let articleToAdd: Article | undefined;
+    
+    if (articleId) {
+      // Si un ID est fourni, utiliser cet article
+      articleToAdd = this.articles.find(a => a.idArticle === articleId);
+    } else {
+      // Sinon, prendre le premier article disponible
+      articleToAdd = this.getAvailableArticles()[0];
+    }
+    
+    if (articleToAdd && !this.selectedArticles.some(selected => selected.article.idArticle === articleToAdd!.idArticle)) {
+      this.selectedArticles.push({
+        article: articleToAdd,
+        quantite: 1
+      });
+      this.calculateTotal();
+    } else if (!articleToAdd) {
+      this.showToast('Aucun article disponible', 'warning');
+    } else {
+      this.showToast('Cet article est déjà ajouté', 'warning');
+    }
+  }
+
+  /**
+   * Supprimer un article de la réservation
+   */
+  removeArticle(index: number) {
+    if (index >= 0 && index < this.selectedArticles.length) {
+      this.selectedArticles.splice(index, 1);
+      this.calculateTotal();
+    }
+  }
+
+  /**
+   * Mettre à jour la quantité d'un article
+   */
+  updateQuantite(index: number, quantite: string | number) {
+    if (index < 0 || index >= this.selectedArticles.length) {
+      return;
+    }
+    
+    const qty = typeof quantite === 'string' ? parseInt(quantite) : quantite;
+    if (qty > 0 && !isNaN(qty)) {
+      this.selectedArticles[index].quantite = qty;
+      this.calculateTotal();
+    }
+  }
+
+  /**
+   * Calculer le montant total basé sur les articles sélectionnés
+   */
+  calculateTotal() {
+    let total = 0;
+    const dateDebut = this.reservationForm.get('dateDebut')?.value;
+    const dateFin = this.reservationForm.get('dateFin')?.value;
+    
+    if (dateDebut && dateFin) {
+      const debut = new Date(dateDebut);
+      const fin = new Date(dateFin);
+      const jours = Math.ceil((fin.getTime() - debut.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (jours > 0) {
+        this.selectedArticles.forEach(item => {
+          total += item.article.prixLocationBase * item.quantite * jours;
+        });
+      }
+    }
+    
+    // Appliquer la remise
+    const remise = parseFloat(this.reservationForm.get('remiseAppliquee')?.value || '0') || 0;
+    total = total - remise;
+    
+    if (total < 0) total = 0;
+    
+    // Convertir en nombre avec 2 décimales
+    const totalNumber = parseFloat(total.toFixed(2));
+    this.reservationForm.patchValue({ montantTotal: totalNumber });
+  }
+
+  /**
+   * Obtenir le nom d'un article
+   */
+  getArticleName(idArticle?: number): string {
+    if (!idArticle) return '';
+    const article = this.articles.find(a => a.idArticle === idArticle);
+    return article ? article.nomArticle : '';
   }
 }
 

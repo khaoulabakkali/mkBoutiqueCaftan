@@ -112,7 +112,7 @@ export class ReservationService {
    * Créer une nouvelle réservation
    */
   createReservation(reservation: Reservation): Observable<Reservation> {
-    const payload = {
+    const payload: any = {
       idClient: reservation.idClient,
       dateReservation: reservation.dateReservation,
       dateDebut: reservation.dateDebut,
@@ -122,6 +122,14 @@ export class ReservationService {
       idPaiement: reservation.idPaiement || undefined,
       remiseAppliquee: reservation.remiseAppliquee || 0.00
     };
+
+    // Ajouter les articles si présents
+    if (reservation.articles && reservation.articles.length > 0) {
+      payload.articles = reservation.articles.map(article => ({
+        idArticle: article.idArticle,
+        quantite: article.quantite
+      }));
+    }
 
     return this.http.post<any>(
       `${this.apiUrl}/reservations`,

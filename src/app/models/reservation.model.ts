@@ -41,6 +41,17 @@ export const StatutReservationReverseMapping: { [key: string]: StatutReservation
   'Annulée': StatutReservationEnum.Annulee
 };
 
+/**
+ * Interface pour un article dans une réservation
+ */
+export interface ReservationArticle {
+  /** INTEGER - ID de l'article */
+  idArticle: number;
+  
+  /** INTEGER - Quantité de l'article */
+  quantite: number;
+}
+
 export interface Reservation {
   /** INTEGER - Clé primaire, auto-increment */
   idReservation?: number;
@@ -68,6 +79,9 @@ export interface Reservation {
   
   /** DECIMAL(10, 2) - Montant ou pourcentage de la remise de fidélité appliquée (défaut: 0.00) */
   remiseAppliquee: number;
+  
+  /** Array - Liste des articles de la réservation */
+  articles?: ReservationArticle[];
   
   /** Navigation property */
   client?: any;

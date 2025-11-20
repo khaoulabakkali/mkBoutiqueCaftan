@@ -24,3 +24,21 @@ ion-item {
   margin-top: 1rem;
 }
 
+// Styles pour les articles
+.articles-list {
+  margin-bottom: 1rem;
+}
+
+.article-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 1rem;
+  color: var(--ion-color-medium);
+  font-style: italic;
+}
+

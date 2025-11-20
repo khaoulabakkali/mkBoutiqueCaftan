@@ -52,7 +52,8 @@
       <ion-label position="stacked">Date de début (prise en charge) *</ion-label>
       <ion-input
         type="date"
-        formControlName="dateDebut">
+        formControlName="dateDebut"
+        (ionInput)="calculateTotal()">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="dateDebut?.invalid && dateDebut?.touched">
@@ -64,7 +65,8 @@
       <ion-label position="stacked">Date de fin (retour) *</ion-label>
       <ion-input
         type="date"
-        formControlName="dateFin">
+        formControlName="dateFin"
+        (ionInput)="calculateTotal()">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="dateFin?.invalid && dateFin?.touched">
@@ -95,7 +97,8 @@
         formControlName="remiseAppliquee"
         placeholder="0.00"
         step="0.01"
-        min="0">
+        min="0"
+        (ionInput)="calculateTotal()">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="remiseAppliquee?.invalid && remiseAppliquee?.touched">
@@ -125,6 +128,67 @@
         placeholder="ID du paiement associé">
       </ion-input>
     </ion-item>
+
+    <!-- Articles de la réservation -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Articles de la réservation</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <!-- Liste des articles sélectionnés -->
+        <div *ngIf="selectedArticles.length > 0" class="articles-list">
+          <ion-item *ngFor="let item of selectedArticles; let i = index" lines="full">
+            <ion-label>
+              <h3>{{ item.article.nomArticle }}</h3>
+              <p>{{ item.article.prixLocationBase }} MAD/jour</p>
+            </ion-label>
+            <div slot="end" class="article-controls">
+              <ion-input
+                type="number"
+                [value]="item.quantite"
+                (ionInput)="updateQuantite(i, $event.detail.value)"
+                min="1"
+                style="width: 60px; text-align: center; margin-right: 8px;">
+              </ion-input>
+              <ion-button
+                fill="clear"
+                color="danger"
+                size="small"
+                (click)="removeArticle(i)">
+                <ion-icon name="trash" slot="icon-only"></ion-icon>
+              </ion-button>
+            </div>
+          </ion-item>
+        </div>
+
+        <!-- Message si aucun article -->
+        <div *ngIf="selectedArticles.length === 0" class="empty-state">
+          <p>Aucun article sélectionné</p>
+        </div>
+
+        <!-- Sélection d'article à ajouter -->
+        <ion-item *ngIf="getAvailableArticles().length > 0">
+          <ion-label position="stacked">Ajouter un article</ion-label>
+          <ion-select
+            placeholder="Sélectionner un article"
+            (ionChange)="addArticle($event.detail.value)">
+            <ion-select-option *ngFor="let article of getAvailableArticles()" [value]="article.idArticle">
+              {{ article.nomArticle }} - {{ article.prixLocationBase }} MAD/jour
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        
+        <!-- Message si tous les articles sont sélectionnés -->
+        <div *ngIf="getAvailableArticles().length === 0 && articles.length > 0" class="empty-state">
+          <p>Tous les articles sont déjà ajoutés</p>
+        </div>
+        
+        <!-- Message si aucun article disponible -->
+        <div *ngIf="articles.length === 0" class="empty-state">
+          <p>Aucun article actif disponible</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
 
   </form>
 </ion-content>
