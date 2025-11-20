@@ -16,19 +16,21 @@ import {
   IonSelect,
   IonSelectOption,
   IonCheckbox,
+  IonImg,
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
+import { save, arrowBack, checkmark, closeOutline, image, camera, trash } from 'ionicons/icons';
 import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
 import { CategorieService } from '../services/categorie.service';
 import { Categorie } from '../models/categorie.model';
 import { TailleService } from '../services/taille.service';
 import { Taille } from '../models/taille.model';
+import { ImageService } from '../services/image.service';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -49,11 +51,12 @@ import { environment } from '../../environments/environment';
     IonButton,
     IonButtons,
     IonIcon,
-    IonSelect,
-    IonSelectOption,
-    IonCheckbox,
-    ReactiveFormsModule,
-    CommonModule
+  IonSelect,
+  IonSelectOption,
+  IonCheckbox,
+  IonImg,
+  ReactiveFormsModule,
+  CommonModule
   ],
 })
 export class FormArticlePage implements OnInit {
@@ -62,18 +65,21 @@ export class FormArticlePage implements OnInit {
   articleId?: number;
   categories: Categorie[] = [];
   tailles: Taille[] = [];
+  imagePreview: string | null = null;
+  isUploadingImage = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private articleService: ArticleService,
     private categorieService: CategorieService,
     private tailleService: TailleService,
+    private imageService: ImageService,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack, checkmark, closeOutline });
+    addIcons({ save, arrowBack, checkmark, closeOutline, image, camera, trash });
     
     this.articleForm = this.formBuilder.group({
       nomArticle: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(150)]],
@@ -151,6 +157,11 @@ export class FormArticlePage implements OnInit {
           idCategorie: article.idCategorie,
           actif: article.actif
         });
+        
+        // Afficher l'aperçu de l'image si elle existe
+        if (article.photo) {
+          this.imagePreview = article.photo;
+        }
         loading.then(l => l.dismiss());
       },
       error: (error) => {
@@ -251,6 +262,79 @@ export class FormArticlePage implements OnInit {
 
   onCancel() {
     this.router.navigate(['/articles']);
+  }
+
+  /**
+   * Sélectionne et upload une image depuis la galerie
+   */
+  async selectImage() {
+    try {
+      this.isUploadingImage = true;
+      const file = await this.imageService.triggerFileInput('image/*');
+      
+      if (!file) {
+        this.isUploadingImage = false;
+        return;
+      }
+
+      const loading = await this.loadingController.create({
+        message: 'Traitement de l\'image...'
+      });
+      await loading.present();
+
+      const result = await this.imageService.processImageFile(file);
+      
+      // Mettre à jour le formulaire avec le base64
+      this.articleForm.patchValue({ photo: result.base64 });
+      this.imagePreview = result.base64;
+      
+      await loading.dismiss();
+      this.isUploadingImage = false;
+      this.showToast('Image ajoutée avec succès', 'success');
+    } catch (error: any) {
+      this.isUploadingImage = false;
+      const errorMessage = error?.message || 'Erreur lors de l\'upload de l\'image';
+      this.showToast(errorMessage, 'danger');
+    }
+  }
+
+  /**
+   * Supprime l'image sélectionnée
+   */
+  removeImage() {
+    this.articleForm.patchValue({ photo: '' });
+    this.imagePreview = null;
+    this.showToast('Image supprimée', 'success');
+  }
+
+  /**
+   * Vérifie si l'image actuelle est une URL
+   */
+  isImageUrl(): boolean {
+    const photo = this.articleForm.get('photo')?.value;
+    return photo && this.imageService.isUrl(photo);
+  }
+
+  /**
+   * Vérifie si l'image actuelle est en base64
+   */
+  isImageBase64(): boolean {
+    const photo = this.articleForm.get('photo')?.value;
+    return photo && this.imageService.isBase64(photo);
+  }
+
+  /**
+   * Gère le changement de l'URL de l'image
+   */
+  onPhotoUrlChange(event: any) {
+    const url = event.detail.value;
+    if (url && this.imageService.isUrl(url)) {
+      this.imagePreview = url;
+    } else if (url && this.imageService.isBase64(url)) {
+      this.imagePreview = url;
+    } else if (!url) {
+      this.imagePreview = null;
+    }
   }
 }
 

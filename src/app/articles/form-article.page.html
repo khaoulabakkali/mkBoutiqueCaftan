@@ -120,11 +120,43 @@
 
     <!-- Photo -->
     <ion-item>
-      <ion-label position="stacked">Photo (URL ou base64)</ion-label>
+      <ion-label position="stacked">Photo de l'article</ion-label>
+    </ion-item>
+
+    <!-- Aperçu de l'image -->
+    <div class="image-preview-container" *ngIf="imagePreview">
+      <div class="image-preview-wrapper">
+        <ion-img [src]="imagePreview" alt="Aperçu de l'article" class="image-preview"></ion-img>
+        <ion-button
+          fill="clear"
+          color="danger"
+          class="remove-image-btn"
+          (click)="removeImage()">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Boutons d'upload -->
+    <div class="image-upload-actions">
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="selectImage()"
+        [disabled]="isUploadingImage">
+        <ion-icon name="image" slot="start"></ion-icon>
+        {{ imagePreview ? 'Changer l\'image' : 'Ajouter une image' }}
+      </ion-button>
+    </div>
+
+    <!-- Option manuelle pour URL -->
+    <ion-item>
+      <ion-label position="stacked">Ou entrer une URL d'image</ion-label>
       <ion-input
         type="text"
         formControlName="photo"
-        placeholder="URL de l'image ou données base64">
+        placeholder="https://exemple.com/image.jpg"
+        (ionInput)="onPhotoUrlChange($event)">
       </ion-input>
     </ion-item>
 
