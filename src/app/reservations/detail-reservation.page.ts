@@ -22,11 +22,13 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { arrowBack, create, calendar, person, wallet, checkmarkCircle, closeCircle, timeOutline, cash } from 'ionicons/icons';
+import { arrowBack, create, calendar, person, wallet, checkmarkCircle, closeCircle, timeOutline, cash, cube } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
-import { Reservation, StatutReservation } from '../models/reservation.model';
+import { Reservation, StatutReservation, ReservationArticle } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
+import { ArticleService } from '../services/article.service';
+import { Article } from '../models/article.model';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -57,6 +59,7 @@ import { environment } from '../../environments/environment';
 export class DetailReservationPage implements OnInit {
   reservation: Reservation | null = null;
   client: Client | null = null;
+  articles: Array<{ article: Article; quantite: number }> = [];
   isLoading = false;
 
   constructor(
@@ -64,10 +67,11 @@ export class DetailReservationPage implements OnInit {
     private router: Router,
     private reservationService: ReservationService,
     private clientService: ClientService,
+    private articleService: ArticleService,
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ arrowBack, create, calendar, person, wallet, checkmarkCircle, closeCircle, timeOutline, cash });
+    addIcons({ arrowBack, create, calendar, person, wallet, checkmarkCircle, closeCircle, timeOutline, cash, cube });
   }
 
   ngOnInit() {
@@ -90,8 +94,15 @@ export class DetailReservationPage implements OnInit {
     this.reservationService.getReservationById(id).subscribe({
       next: async (data) => {
         this.reservation = data || null;
+
+        console.log(this.reservation);
         if (this.reservation?.idClient) {
           await this.loadClient(this.reservation.idClient);
+        }
+
+        if (this.reservation?.articles && this.reservation.articles.length > 0) {
+          this.articles = this.reservation.articles as any;
+          console.log(this.articles);
         }
         this.isLoading = false;
         loading.dismiss();
@@ -99,9 +110,6 @@ export class DetailReservationPage implements OnInit {
       error: async (error) => {
         this.isLoading = false;
         loading.dismiss();
-        if (!environment.production) {
-          console.error('Erreur lors du chargement:', error);
-        }
         const errorMessage = error?.message || 'Erreur lors du chargement de la réservation';
         await this.presentToast(errorMessage, 'danger');
         this.router.navigate(['/reservations']);
@@ -135,6 +143,12 @@ export class DetailReservationPage implements OnInit {
   viewClient() {
     if (this.client?.idClient) {
       this.router.navigate(['/clients/detail', this.client.idClient]);
+    }
+  }
+
+  viewArticle(article: Article | null | undefined) {
+    if (article?.idArticle) {
+      this.router.navigate(['/articles/detail', article.idArticle]);
     }
   }
 

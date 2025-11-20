@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Reservation, StatutReservation, StatutReservationEnum, StatutReservationMapping, StatutReservationReverseMapping } from '../models/reservation.model';
+import { Reservation, ReservationArticle, StatutReservation, StatutReservationEnum, StatutReservationMapping, StatutReservationReverseMapping } from '../models/reservation.model';
 import { environment } from '../../environments/environment';
 import { AuthService } from './auth.service';
 
@@ -78,6 +78,7 @@ export class ReservationService {
       statutReservation: this.mapStatutFromApi(statutValue),
       idPaiement: data.idPaiement,
       remiseAppliquee: data.remiseAppliquee,
+      articles: data.articles,
       client: data.client
     };
   }
