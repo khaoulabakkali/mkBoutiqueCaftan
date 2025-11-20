@@ -98,6 +98,34 @@
       </ion-card-content>
     </ion-card>
 
+    <!-- Articles de la réservation -->
+    <ion-card *ngIf="articles && articles.length > 0">
+      <ion-card-header>
+        <ion-card-title>Articles de la réservation ({{ articles.length }})</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item *ngFor="let item of articles" lines="full" [button]="true" (click)="viewArticle(item.article)">
+          <ion-icon name="cube" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h3>{{ item.article.nomArticle || 'Article non défini' }}</h3>
+            <p>{{ item.article.prixLocationBase || 0 }} MAD/jour</p>
+          </ion-label>
+          <ion-badge slot="end" color="primary">
+            Quantité: {{ item.quantite || 0 }}
+          </ion-badge>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Message de débogage si aucun article (uniquement en développement) -->
+    <ion-card *ngIf="!isLoading && reservation && (!articles || articles.length === 0)" class="debug-info">
+      <ion-card-content>
+        <p style="color: var(--ion-color-medium); font-style: italic; text-align: center;">
+          Aucun article associé à cette réservation
+        </p>
+      </ion-card-content>
+    </ion-card>
+
     <!-- Informations financières -->
     <ion-card>
       <ion-card-header>
