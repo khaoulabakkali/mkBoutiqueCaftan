@@ -146,7 +146,7 @@
               <ion-input
                 type="number"
                 [value]="item.quantite"
-                (ionInput)="updateQuantite(i, $event.detail.value)"
+                (ionInput)="updateQuantite(i, $event.detail.value ?? '1')"
                 min="1"
                 style="width: 60px; text-align: center; margin-right: 8px;">
               </ion-input>

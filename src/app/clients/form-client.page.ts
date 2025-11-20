@@ -16,7 +16,7 @@ import {
   ToastController,
   LoadingController
 } from '@ionic/angular/standalone';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
 import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
@@ -63,14 +63,29 @@ export class FormClientPage implements OnInit {
     addIcons({ save, arrowBack, checkmark, closeOutline });
     
     this.clientForm = this.formBuilder.group({
-      nomClient: ['', [Validators.required, Validators.minLength(2)]],
-      prenomClient: ['', [Validators.required, Validators.minLength(2)]],
+      nomClient: ['', [Validators.required, this.trimmedMinLengthValidator(2)]],
+      prenomClient: ['', [this.trimmedMinLengthValidator(2)]],
       telephone: ['', [Validators.required, Validators.pattern(/^\+?[0-9\s-]+$/)]],
       email: ['', [Validators.email]],
       adressePrincipale: ['', []],
-      totalCommandes: [0, [Validators.required, Validators.min(0)]],
       actif: [true, [Validators.required]]
     });
+  }
+
+  /**
+   * Validateur personnalisé pour vérifier la longueur après trim
+   */
+  trimmedMinLengthValidator(minLength: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) {
+        return null; // Laisser Validators.required gérer les valeurs vides
+      }
+      const trimmedValue = typeof control.value === 'string' ? control.value.trim() : '';
+      if (trimmedValue.length < minLength && trimmedValue.length > 0) {
+        return { minlength: { requiredLength: minLength, actualLength: trimmedValue.length } };
+      }
+      return null;
+    };
   }
 
   ngOnInit() {
@@ -106,11 +121,10 @@ export class FormClientPage implements OnInit {
       next: (client) => {
         this.clientForm.patchValue({
           nomClient: client.nomClient,
-          prenomClient: client.prenomClient,
+          prenomClient: client.prenomClient || '',
           telephone: client.telephone,
           email: client.email || '',
           adressePrincipale: client.adressePrincipale || '',
-          totalCommandes: client.totalCommandes || 0,
           actif: client.actif !== undefined ? client.actif : true
         });
         loading.then(l => l.dismiss());
@@ -133,7 +147,26 @@ export class FormClientPage implements OnInit {
       });
       await loading.present();
 
-      const clientData: Client = this.clientForm.value;
+      const formValue = this.clientForm.value;
+      
+      // Vérifier que le nom n'est pas vide après trim
+      const nomClientTrimmed = formValue.nomClient?.trim() || '';
+      if (!nomClientTrimmed || nomClientTrimmed.length < 2) {
+        this.clientForm.get('nomClient')?.setErrors({ required: true });
+        this.clientForm.get('nomClient')?.markAsTouched();
+        this.showToast('Le nom est requis et doit contenir au moins 2 caractères', 'warning');
+        return;
+      }
+      
+      const clientData: Client = {
+        nomClient: nomClientTrimmed,
+        prenomClient: formValue.prenomClient?.trim() || '',
+        telephone: formValue.telephone?.trim() || '',
+        email: formValue.email?.trim() || undefined,
+        adressePrincipale: formValue.adressePrincipale?.trim() || undefined,
+        totalCommandes: 0, // Valeur par défaut, sera calculé côté backend
+        actif: formValue.actif !== undefined ? formValue.actif : true
+      };
 
       if (this.isEditMode && this.clientId) {
         this.clientService.updateClient(this.clientId, clientData).subscribe({
@@ -208,10 +241,6 @@ export class FormClientPage implements OnInit {
 
   get adressePrincipale() {
     return this.clientForm.get('adressePrincipale');
-  }
-
-  get totalCommandes() {
-    return this.clientForm.get('totalCommandes');
   }
 
   get actif() {

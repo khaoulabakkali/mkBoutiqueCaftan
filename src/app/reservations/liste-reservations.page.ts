@@ -173,7 +173,7 @@ export class ListeReservationsPage implements OnInit {
         const client = this.getClient(reservation.idClient);
         return (
           client?.nomClient.toLowerCase().includes(term) ||
-          client?.prenomClient.toLowerCase().includes(term) ||
+          (client?.prenomClient && client.prenomClient.toLowerCase().includes(term)) ||
           reservation.statutReservation.toLowerCase().includes(term)
         );
       }

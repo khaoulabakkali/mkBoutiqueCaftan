@@ -27,17 +27,18 @@
       <ion-input
         type="text"
         formControlName="nomClient"
-        placeholder="Nom du client">
+        placeholder="Nom du client"
+        (ionBlur)="nomClient?.markAsTouched()">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="nomClient?.invalid && nomClient?.touched">
       <span *ngIf="nomClient?.errors?.['required']">Le nom est requis</span>
-      <span *ngIf="nomClient?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
+      <span *ngIf="nomClient?.errors?.['minlength'] && !nomClient?.errors?.['required']">Le nom doit contenir au moins 2 caractères</span>
     </div>
 
     <!-- Prénom -->
     <ion-item [class.item-has-error]="prenomClient?.invalid && prenomClient?.touched">
-      <ion-label position="stacked">Prénom *</ion-label>
+      <ion-label position="stacked">Prénom</ion-label>
       <ion-input
         type="text"
         formControlName="prenomClient"
@@ -45,7 +46,6 @@
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="prenomClient?.invalid && prenomClient?.touched">
-      <span *ngIf="prenomClient?.errors?.['required']">Le prénom est requis</span>
       <span *ngIf="prenomClient?.errors?.['minlength']">Le prénom doit contenir au moins 2 caractères</span>
     </div>
 
@@ -85,21 +85,6 @@
         rows="3">
       </ion-textarea>
     </ion-item>
-
-    <!-- Total commandes -->
-    <ion-item [class.item-has-error]="totalCommandes?.invalid && totalCommandes?.touched">
-      <ion-label position="stacked">Total commandes *</ion-label>
-      <ion-input
-        type="number"
-        formControlName="totalCommandes"
-        placeholder="0"
-        min="0">
-      </ion-input>
-    </ion-item>
-    <div class="error-message" *ngIf="totalCommandes?.invalid && totalCommandes?.touched">
-      <span *ngIf="totalCommandes?.errors?.['required']">Le total des commandes est requis</span>
-      <span *ngIf="totalCommandes?.errors?.['min']">Le total ne peut pas être négatif</span>
-    </div>
 
   </form>
 </ion-content>

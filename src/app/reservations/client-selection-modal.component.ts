@@ -72,7 +72,7 @@ export class ClientSelectionModalComponent implements OnInit {
     this.clientsFiltres = this.clients.filter(
       (client) =>
         client.nomClient.toLowerCase().includes(term) ||
-        client.prenomClient.toLowerCase().includes(term) ||
+        (client.prenomClient && client.prenomClient.toLowerCase().includes(term)) ||
         client.telephone.toLowerCase().includes(term)
     );
   }

@@ -422,12 +422,17 @@ export class FormReservationPage implements OnInit, OnDestroy {
   /**
    * Mettre à jour la quantité d'un article
    */
-  updateQuantite(index: number, quantite: string | number) {
+  updateQuantite(index: number, quantite: string | number | null | undefined) {
     if (index < 0 || index >= this.selectedArticles.length) {
       return;
     }
     
-    const qty = typeof quantite === 'string' ? parseInt(quantite) : quantite;
+    // Gérer les valeurs null ou undefined
+    if (quantite === null || quantite === undefined) {
+      return;
+    }
+    
+    const qty = typeof quantite === 'string' ? parseInt(quantite, 10) : quantite;
     if (qty > 0 && !isNaN(qty)) {
       this.selectedArticles[index].quantite = qty;
       this.calculateTotal();

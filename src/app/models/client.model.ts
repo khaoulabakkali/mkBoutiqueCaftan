@@ -9,8 +9,8 @@ export interface Client {
   /** VARCHAR(100) - Nom du client */
   nomClient: string;
   
-  /** VARCHAR(100) - Prénom du client */
-  prenomClient: string;
+  /** VARCHAR(100) - Prénom du client (optionnel) */
+  prenomClient?: string;
   
   /** VARCHAR(20) - Numéro de téléphone (unique) */
   telephone: string;

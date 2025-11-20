@@ -1,0 +1,419 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-menu-button slot="start"></ion-menu-button>
+    <ion-title>
+      Tableau de bord
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Tableau de bord</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Loading state -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner></ion-spinner>
+    <p>Chargement des statistiques...</p>
+  </div>
+
+  <!-- Onglets principaux -->
+  <div class="dashboard-container" *ngIf="!isLoading">
+    <ion-segment [value]="selectedTab" (ionChange)="onTabChange($event)" class="main-tabs-segment">
+      <ion-segment-button value="revenus">
+        <ion-icon name="wallet"></ion-icon>
+        <ion-label>Revenus</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="articles">
+        <ion-icon name="cube"></ion-icon>
+        <ion-label>Articles</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="entrants">
+        <ion-icon name="arrow-up"></ion-icon>
+        <ion-label>Entrants</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="sortants">
+        <ion-icon name="arrow-down"></ion-icon>
+        <ion-label>Sortants</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- Onglet: Revenus -->
+    <div class="tab-content" *ngIf="selectedTab === 'revenus'">
+      <!-- Filtres -->
+      <ion-card class="filter-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="search" slot="start"></ion-icon>
+            Filtrer les revenus
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- Type de filtre -->
+          <ion-segment [value]="filterType" (ionChange)="onFilterTypeChange($event)" class="filter-segment">
+            <ion-segment-button value="jour">
+              <ion-icon name="calendar"></ion-icon>
+              <ion-label>Jour unique</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="periode">
+              <ion-icon name="bar-chart"></ion-icon>
+              <ion-label>Période</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+
+          <!-- Filtre par jour unique -->
+          <div class="filter-content" *ngIf="filterType === 'jour'">
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Sélectionner une date</ion-label>
+              <ion-input
+                type="date"
+                [value]="selectedDate"
+                (ionInput)="selectedDate = $event.detail.value ?? selectedDate; onDateChange()"
+                placeholder="Sélectionner une date">
+              </ion-input>
+            </ion-item>
+            <p class="filter-hint">Revenus générés le {{ formatDate(selectedDate) }}</p>
+          </div>
+
+          <!-- Filtre par période -->
+          <div class="filter-content" *ngIf="filterType === 'periode'">
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Date de début</ion-label>
+              <ion-input
+                type="date"
+                [value]="dateDebut"
+                (ionInput)="dateDebut = $event.detail.value ?? dateDebut; onPeriodeChange()"
+                placeholder="Date de début">
+              </ion-input>
+            </ion-item>
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Date de fin</ion-label>
+              <ion-input
+                type="date"
+                [value]="dateFin"
+                (ionInput)="dateFin = $event.detail.value ?? dateFin; onPeriodeChange()"
+                placeholder="Date de fin">
+              </ion-input>
+            </ion-item>
+            <p class="filter-hint">
+              Revenus générés du {{ formatDateShort(dateDebut) }} au {{ formatDateShort(dateFin) }}
+            </p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Statistiques financières -->
+      <ion-card class="stat-card stat-card-primary">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="wallet" slot="start"></ion-icon>
+            <span *ngIf="filterType === 'jour'">Revenus du {{ formatDate(selectedDate) }}</span>
+            <span *ngIf="filterType === 'periode'">Revenus de la période</span>
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="stat-content-large">
+            <div class="stat-value">
+              <h1>{{ formatMontant(revenus) }}</h1>
+              <p class="stat-description" *ngIf="filterType === 'jour'">
+                {{ nombrePaiements }} paiement(s) enregistré(s) ce jour
+              </p>
+              <p class="stat-description" *ngIf="filterType === 'periode'">
+                {{ nombrePaiements }} paiement(s) enregistré(s) sur cette période
+              </p>
+              <p class="stat-date-range" *ngIf="filterType === 'periode'">
+                Du {{ formatDateShort(dateDebut) }} au {{ formatDateShort(dateFin) }}
+              </p>
+              <p class="stat-date-range" *ngIf="filterType === 'jour'">
+                {{ formatDate(selectedDate) }}
+              </p>
+            </div>
+            <div class="stat-icon-large">
+              <ion-icon name="wallet" color="primary"></ion-icon>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Meilleur jour de la semaine -->
+      <ion-card class="stat-card stat-card-info">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="star" slot="start"></ion-icon>
+            Meilleur jour de la semaine
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="stat-content-large">
+            <div class="stat-value">
+              <h2 class="jour-nom">{{ meilleurJour.jour }}</h2>
+              <h1>{{ formatMontant(meilleurJour.moyenne) }}</h1>
+              <p class="stat-description">
+                Jour le plus rentable : {{ meilleurJour.jour }} — Moyenne : {{ formatMontant(meilleurJour.moyenne) }}
+              </p>
+            </div>
+            <div class="stat-icon-large">
+              <ion-icon name="star" color="tertiary"></ion-icon>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Onglet: Articles -->
+    <div class="tab-content" *ngIf="selectedTab === 'articles'">
+      <!-- Articles les plus loués -->
+      <ion-card class="stat-card stat-card-success">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="cube" slot="start"></ion-icon>
+            Articles les plus loués
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none" class="articles-list" *ngIf="articlesPlusLoues.length > 0">
+            <ion-item *ngFor="let item of articlesPlusLoues" class="article-item">
+              <ion-label>
+                <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
+                <p>{{ item.nombreLocations }} location(s)</p>
+              </ion-label>
+              <ion-badge color="success" slot="end">{{ item.nombreLocations }}</ion-badge>
+            </ion-item>
+          </ion-list>
+          <div class="no-data" *ngIf="articlesPlusLoues.length === 0">
+            <p>Aucun article loué pour le moment</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Article le plus rentable -->
+      <ion-card class="stat-card stat-card-warning">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="trending-up" slot="start"></ion-icon>
+            Article le plus rentable
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="stat-content-large">
+            <div class="stat-value">
+              <h2 class="article-nom">{{ articlePlusRentable.article.nomArticle }}{{ articlePlusRentable.article.couleur ? ' ' + articlePlusRentable.article.couleur : '' }}</h2>
+              <h1>{{ formatMontant(articlePlusRentable.revenus) }}</h1>
+              <p class="stat-description">
+                {{ articlePlusRentable.article.nomArticle }}{{ articlePlusRentable.article.couleur ? ' ' + articlePlusRentable.article.couleur : '' }} : {{ formatMontant(articlePlusRentable.revenus) }} ce mois
+              </p>
+            </div>
+            <div class="stat-icon-large">
+              <ion-icon name="trending-up" color="warning"></ion-icon>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Catégorie la plus demandée -->
+      <ion-card class="stat-card stat-card-secondary">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="grid" slot="start"></ion-icon>
+            Catégorie la plus demandée
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="stat-content-large">
+            <div class="stat-value">
+              <h2 class="categorie-nom">{{ categoriePlusDemandee.nomCategorie }}</h2>
+              <h1>{{ categoriePlusDemandee.nombreReservations }}</h1>
+              <p class="stat-description">
+                {{ categoriePlusDemandee.nombreReservations }} réservation(s) dans cette catégorie
+              </p>
+            </div>
+            <div class="stat-icon-large">
+              <ion-icon name="grid" color="medium"></ion-icon>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Onglet: Articles Entrants -->
+    <div class="tab-content" *ngIf="selectedTab === 'entrants'">
+      <!-- Filtres pour les articles entrants -->
+      <ion-card class="filter-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="calendar" slot="start"></ion-icon>
+            Filtrer les articles entrants
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- Type de filtre -->
+          <ion-segment [value]="filterTypeEntrants" (ionChange)="onFilterTypeEntrantsChange($event)" class="filter-segment">
+            <ion-segment-button value="jour">
+              <ion-icon name="calendar"></ion-icon>
+              <ion-label>Jour unique</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="periode">
+              <ion-icon name="bar-chart"></ion-icon>
+              <ion-label>Période</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+
+          <!-- Filtre par jour unique -->
+          <div class="filter-content" *ngIf="filterTypeEntrants === 'jour'">
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Sélectionner une date</ion-label>
+              <ion-input
+                type="date"
+                [value]="selectedDateEntrants"
+                (ionInput)="selectedDateEntrants = $event.detail.value ?? selectedDateEntrants; onEntrantsDateChange()"
+                placeholder="Sélectionner une date">
+              </ion-input>
+            </ion-item>
+            <p class="filter-hint">Articles entrants le {{ formatDate(selectedDateEntrants) }}</p>
+          </div>
+
+          <!-- Filtre par période -->
+          <div class="filter-content" *ngIf="filterTypeEntrants === 'periode'">
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Date de début</ion-label>
+              <ion-input
+                type="date"
+                [value]="dateDebutEntrants"
+                (ionInput)="dateDebutEntrants = $event.detail.value ?? dateDebutEntrants; onEntrantsPeriodeChange()"
+                placeholder="Date de début">
+              </ion-input>
+            </ion-item>
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Date de fin</ion-label>
+              <ion-input
+                type="date"
+                [value]="dateFinEntrants"
+                (ionInput)="dateFinEntrants = $event.detail.value ?? dateFinEntrants; onEntrantsPeriodeChange()"
+                placeholder="Date de fin">
+              </ion-input>
+            </ion-item>
+            <p class="filter-hint">
+              Articles entrants du {{ formatDateShort(dateDebutEntrants) }} au {{ formatDateShort(dateFinEntrants) }}
+            </p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Articles entrants -->
+      <ion-card class="stat-card stat-card-success">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="arrow-up" slot="start"></ion-icon>
+            Articles entrants
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none" class="articles-list" *ngIf="articlesEntrants.length > 0">
+            <ion-item *ngFor="let item of articlesEntrants" class="article-item">
+              <ion-label>
+                <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
+                <p>Quantité: {{ item.quantite }} — Retour le {{ formatDateShort(item.dateRetour) }}</p>
+              </ion-label>
+              <ion-badge color="success" slot="end">{{ item.quantite }}</ion-badge>
+            </ion-item>
+          </ion-list>
+          <div class="no-data" *ngIf="articlesEntrants.length === 0">
+            <p>Aucun article entrant pour cette période</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Onglet: Articles Sortants -->
+    <div class="tab-content" *ngIf="selectedTab === 'sortants'">
+      <!-- Filtres pour les articles sortants -->
+      <ion-card class="filter-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="calendar" slot="start"></ion-icon>
+            Filtrer les articles sortants
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- Type de filtre -->
+          <ion-segment [value]="filterTypeSortants" (ionChange)="onFilterTypeSortantsChange($event)" class="filter-segment">
+            <ion-segment-button value="jour">
+              <ion-icon name="calendar"></ion-icon>
+              <ion-label>Jour unique</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="periode">
+              <ion-icon name="bar-chart"></ion-icon>
+              <ion-label>Période</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+
+          <!-- Filtre par jour unique -->
+          <div class="filter-content" *ngIf="filterTypeSortants === 'jour'">
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Sélectionner une date</ion-label>
+              <ion-input
+                type="date"
+                [value]="selectedDateSortants"
+                (ionInput)="selectedDateSortants = $event.detail.value ?? selectedDateSortants; onSortantsDateChange()"
+                placeholder="Sélectionner une date">
+              </ion-input>
+            </ion-item>
+            <p class="filter-hint">Articles sortants le {{ formatDate(selectedDateSortants) }}</p>
+          </div>
+
+          <!-- Filtre par période -->
+          <div class="filter-content" *ngIf="filterTypeSortants === 'periode'">
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Date de début</ion-label>
+              <ion-input
+                type="date"
+                [value]="dateDebutSortants"
+                (ionInput)="dateDebutSortants = $event.detail.value ?? dateDebutSortants; onSortantsPeriodeChange()"
+                placeholder="Date de début">
+              </ion-input>
+            </ion-item>
+            <ion-item lines="full" class="filter-item">
+              <ion-label position="stacked">Date de fin</ion-label>
+              <ion-input
+                type="date"
+                [value]="dateFinSortants"
+                (ionInput)="dateFinSortants = $event.detail.value ?? dateFinSortants; onSortantsPeriodeChange()"
+                placeholder="Date de fin">
+              </ion-input>
+            </ion-item>
+            <p class="filter-hint">
+              Articles sortants du {{ formatDateShort(dateDebutSortants) }} au {{ formatDateShort(dateFinSortants) }}
+            </p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Articles sortants -->
+      <ion-card class="stat-card stat-card-danger">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="arrow-down" slot="start"></ion-icon>
+            Articles sortants
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none" class="articles-list" *ngIf="articlesSortants.length > 0">
+            <ion-item *ngFor="let item of articlesSortants" class="article-item">
+              <ion-label>
+                <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
+                <p>Quantité: {{ item.quantite }} — Sortie le {{ formatDateShort(item.dateSortie) }}</p>
+              </ion-label>
+              <ion-badge color="danger" slot="end">{{ item.quantite }}</ion-badge>
+            </ion-item>
+          </ion-list>
+          <div class="no-data" *ngIf="articlesSortants.length === 0">
+            <p>Aucun article sortant pour cette période</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

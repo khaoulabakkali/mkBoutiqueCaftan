@@ -3,7 +3,7 @@ import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonC
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business } from 'ionicons/icons';
+import { home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business, barChart } from 'ionicons/icons';
 import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs/operators';
 import { environment } from '../environments/environment';
@@ -39,7 +39,7 @@ export class AppComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    addIcons({ home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business });
+    addIcons({ home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business, barChart });
     
     // Initialiser l'URL actuelle
     this.currentUrl = this.router.url;
@@ -95,6 +95,9 @@ export class AppComponent {
   isRouteActive(route: string): boolean {
     if (route === '/tabs/tab1') {
       return this.currentUrl.startsWith('/tabs');
+    }
+    if (route === '/dashboard') {
+      return this.currentUrl.startsWith('/dashboard');
     }
     if (route === '/utilisateurs') {
       return this.currentUrl.startsWith('/utilisateurs');

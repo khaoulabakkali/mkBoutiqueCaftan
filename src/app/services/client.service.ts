@@ -62,9 +62,9 @@ export class ClientService {
    */
   createClient(client: Client): Observable<Client> {
     const payload = {
-      nomClient: client.nomClient.trim(),
-      prenomClient: client.prenomClient.trim(),
-      telephone: client.telephone.trim(),
+      nomClient: client.nomClient?.trim() || '',
+      prenomClient: client.prenomClient?.trim() || '',
+      telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
       totalCommandes: client.totalCommandes || 0,
@@ -85,9 +85,9 @@ export class ClientService {
    */
   updateClient(id: number, client: Client): Observable<Client> {
     const payload = {
-      nomClient: client.nomClient.trim(),
-      prenomClient: client.prenomClient.trim(),
-      telephone: client.telephone.trim(),
+      nomClient: client.nomClient?.trim() || '',
+      prenomClient: client.prenomClient?.trim() || '',
+      telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
       totalCommandes: client.totalCommandes || 0,

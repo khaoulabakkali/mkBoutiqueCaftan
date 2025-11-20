@@ -187,6 +187,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'dashboard',
+    loadComponent: () => import('./dashboard/dashboard.page').then((m) => m.DashboardPage),
+    canActivate: [authGuard],
+  },
+  {
     path: '',
     redirectTo: '/tabs/tab1',
     pathMatch: 'full',
