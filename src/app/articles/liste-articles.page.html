@@ -28,6 +28,21 @@
   <!-- Liste des articles -->
   <ion-list *ngIf="!isLoading && articlesFiltres.length > 0">
     <ion-item *ngFor="let article of articlesFiltres" [button]="true" (click)="viewArticle(article)">
+      <!-- Image de l'article à gauche -->
+      <img 
+        *ngIf="article.photo" 
+        [src]="article.photo" 
+        [alt]="article.nomArticle"
+        slot="start"
+        class="article-image"
+        (error)="$event.target.src='assets/icon/placeholder-image.png'">
+      <ion-icon 
+        *ngIf="!article.photo" 
+        name="image-outline" 
+        slot="start" 
+        class="article-placeholder-icon">
+      </ion-icon>
+      
       <ion-label>
         <h2>
           <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" 

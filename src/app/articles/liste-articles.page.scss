@@ -41,6 +41,28 @@ ion-item {
   --padding-end: 1rem;
   --min-height: 90px;
 
+  .article-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 12px;
+    border: 1px solid var(--ion-color-light);
+  }
+
+  .article-placeholder-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 32px;
+    color: var(--ion-color-medium);
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ion-color-light);
+    border-radius: 8px;
+  }
+
   ion-label {
     h2 {
       font-weight: 600;

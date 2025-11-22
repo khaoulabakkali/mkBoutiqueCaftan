@@ -32,7 +32,8 @@ import {
   checkmarkCircle,
   closeCircle,
   eye,
-  eyeOff
+  eyeOff,
+  imageOutline
 } from 'ionicons/icons';
 import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
@@ -93,7 +94,8 @@ export class ListeArticlesPage implements OnInit {
       checkmarkCircle,
       closeCircle,
       eye,
-      eyeOff
+      eyeOff,
+      imageOutline
     });
   }
 
