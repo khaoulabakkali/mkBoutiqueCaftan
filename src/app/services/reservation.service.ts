@@ -129,8 +129,9 @@ export class ReservationService {
     // Ajouter les articles si présents - format PascalCase pour correspondre au backend
     if (reservation.articles && reservation.articles.length > 0) {
       payload.Articles = reservation.articles.map(article => ({
-        IdArticle: article.idArticle,
-        Quantite: article.quantite
+        IdArticle: article.article.idArticle,
+        Quantite: article.quantite,
+        NomArticle: article.article.nomArticle
       }));
     } else {
       // S'assurer que le tableau Articles est vide si aucun article n'est présent
@@ -169,8 +170,9 @@ export class ReservationService {
     // Ajouter les articles si présents - format PascalCase pour correspondre au backend
     if (reservation.articles && reservation.articles.length > 0) {
       payload.Articles = reservation.articles.map(article => ({
-        IdArticle: article.idArticle,
-        Quantite: article.quantite
+        IdArticle: article.article.idArticle,
+        Quantite: article.quantite,
+        NomArticle: article.article.nomArticle
       }));
     } else {
       // S'assurer que le tableau Articles est vide si aucun article n'est présent

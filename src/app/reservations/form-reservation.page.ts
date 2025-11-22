@@ -278,7 +278,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
         if (reservation.articles && reservation.articles.length > 0) {
           this.selectedArticles = [];
           reservation.articles.forEach(resArticle => {
-            const article = this.articles.find(a => a.idArticle === resArticle.idArticle);
+            const article = this.articles.find(a => a.idArticle === resArticle.article?.idArticle);
             if (article) {
               this.selectedArticles.push({
                 article: article,
@@ -317,8 +317,9 @@ export class FormReservationPage implements OnInit, OnDestroy {
       
       // Préparer les articles pour l'API
       const articles: ReservationArticle[] = this.selectedArticles.map(item => ({
-        idArticle: item.article.idArticle!,
-        quantite: item.quantite
+        article: item.article,
+        quantite: item.quantite,
+        nomArticle: item.article.nomArticle
       }));
       
       const reservationData: Reservation = {

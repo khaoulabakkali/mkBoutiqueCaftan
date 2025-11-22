@@ -27,68 +27,68 @@
 
   <!-- Liste des articles -->
   <ion-list *ngIf="!isLoading && articlesFiltres.length > 0">
-    <ion-item *ngFor="let article of articlesFiltres" [button]="true" (click)="viewArticle(article)">
-      <!-- Image de l'article à gauche -->
-      <img 
-        *ngIf="article.photo" 
-        [src]="article.photo" 
-        [alt]="article.nomArticle"
-        slot="start"
-        class="article-image"
-        (error)="$event.target.src='assets/icon/placeholder-image.png'">
-      <ion-icon 
-        *ngIf="!article.photo" 
-        name="image-outline" 
-        slot="start" 
-        class="article-placeholder-icon">
-      </ion-icon>
+    <ion-item-sliding *ngFor="let article of articlesFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewArticle(article)">
+        <!-- Image de l'article à gauche -->
+        <img 
+          *ngIf="article.photo" 
+          [src]="article.photo" 
+          [alt]="article.nomArticle"
+          slot="start"
+          class="article-image"
+          (error)="$event.target.src='assets/icon/placeholder-image.png'">
+        <ion-icon 
+          *ngIf="!article.photo" 
+          name="image-outline" 
+          slot="start" 
+          class="article-placeholder-icon">
+        </ion-icon>
+        
+        <ion-label>
+          <h2 class="article-title">
+            <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" 
+                      [color]="article.actif ? 'success' : 'danger'"
+                      class="status-icon"></ion-icon>
+            <span class="article-name">{{ article.nomArticle }}</span>
+          </h2>
+          <div class="badges-container">
+            <ion-badge color="primary" class="full-badge">
+              {{ getCategorieName(article.idCategorie) }}
+            </ion-badge>
+            <ion-badge *ngIf="article.idTaille" color="secondary" class="full-badge">
+              Taille: {{ getTailleLabel(article.idTaille) }}
+            </ion-badge>
+            <ion-badge [color]="article.actif ? 'success' : 'danger'" class="full-badge">
+              <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" class="badge-icon"></ion-icon>
+              {{ article.actif ? 'Actif' : 'Inactif' }}
+            </ion-badge>
+          </div>
+          <p class="price-info">
+            Prix location: {{ article.prixLocationBase }} MAD/jour | Avance: {{ article.prixAvanceBase }} MAD
+          </p>
+        </ion-label>
+      </ion-item>
       
-      <ion-label>
-        <h2>
-          <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" 
-                    [color]="article.actif ? 'success' : 'danger'"
-                    style="margin-right: 8px; vertical-align: middle;"></ion-icon>
-          {{ article.nomArticle }}
-        </h2>
-        <div class="badges-container">
-          <ion-badge color="primary">
-            {{ getCategorieName(article.idCategorie) }}
-          </ion-badge>
-          <ion-badge *ngIf="article.idTaille" color="secondary">
-            Taille: {{ getTailleLabel(article.idTaille) }}
-          </ion-badge>
-          <ion-badge [color]="article.actif ? 'success' : 'danger'">
-            <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-            {{ article.actif ? 'Actif' : 'Inactif' }}
-          </ion-badge>
-        </div>
-        <p style="margin-top: 0.5rem; color: var(--ion-color-medium);">
-          Prix location: {{ article.prixLocationBase }} MAD/jour | Avance: {{ article.prixAvanceBase }} MAD
-        </p>
-      </ion-label>
-      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editArticle(article)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deleteArticle(article)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          [color]="article.actif ? 'warning' : 'success'"
-          (click)="toggleActif(article)">
-          <ion-icon [name]="article.actif ? 'eye-off' : 'eye'"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewArticle(article); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editArticle(article); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option [color]="article.actif ? 'warning' : 'success'" (click)="toggleActif(article); slidingItem.close()">
+          <ion-icon slot="icon-only" [name]="article.actif ? 'eye-off' : 'eye'"></ion-icon>
+          <span>{{ article.actif ? 'Désactiver' : 'Activer' }}</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteArticle(article); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

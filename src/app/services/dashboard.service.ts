@@ -378,7 +378,7 @@ export class DashboardService {
   /**
    * Récupère les articles les plus loués
    */
-  getArticlesPlusLoues(limit: number = 5): Observable<Array<{ article: Article; nombreLocations: number }>> {
+  getArticlesPlusLoues(limit: number = 5): Observable<Array<{ article: Article; nombreLocations: number; nomArticle: string }>> {
     return forkJoin({
       reservations: this.reservationService.getAllReservations(),
       articles: this.articleService.getAllArticles()
@@ -390,7 +390,10 @@ export class DashboardService {
         reservations.forEach(reservation => {
           if (reservation.articles && reservation.articles.length > 0) {
             reservation.articles.forEach(resArticle => {
-              const articleId = resArticle.idArticle;
+              const articleId = resArticle.article?.idArticle;
+              if (!articleId) return;
+              
+              const articleNom = resArticle.nomArticle;
               const quantite = resArticle.quantite || 1;
               
               if (!locationsParArticle[articleId]) {
@@ -405,9 +408,11 @@ export class DashboardService {
         const result = Object.keys(locationsParArticle).map(articleIdStr => {
           const articleId = parseInt(articleIdStr, 10);
           const article = articles.find(a => a.idArticle === articleId);
+          const articleFound = article || { nomArticle: `Article #${articleId}`, prixLocationBase: 0, prixAvanceBase: 0, description: '', idCategorie: 0, actif: true } as Article;
           return {
-            article: article || { nomArticle: `Article #${articleId}`, prixLocationBase: 0, prixAvanceBase: 0, description: '', idCategorie: 0, actif: true } as Article,
-            nombreLocations: locationsParArticle[articleId]
+            article: articleFound,
+            nombreLocations: locationsParArticle[articleId],
+            nomArticle: articleFound.nomArticle || `Article #${articleId}`
           };
         });
 
@@ -416,7 +421,7 @@ export class DashboardService {
           .sort((a, b) => b.nombreLocations - a.nombreLocations)
           .slice(0, limit);
       }),
-      catchError(this.handleError<Array<{ article: Article; nombreLocations: number }>>('getArticlesPlusLoues', []))
+      catchError(this.handleError<Array<{ article: Article; nombreLocations: number; nomArticle: string }>>('getArticlesPlusLoues', []))
     );
   }
 
@@ -458,7 +463,9 @@ export class DashboardService {
             const prixUnitaire = totalQuantite > 0 ? montantReservation / totalQuantite : 0;
 
             reservation.articles.forEach(resArticle => {
-              const articleId = resArticle.idArticle;
+              const articleId = resArticle.article?.idArticle;
+              if (!articleId) return;
+              
               const quantite = resArticle.quantite || 1;
               const revenuArticle = prixUnitaire * quantite;
               
@@ -513,7 +520,7 @@ export class DashboardService {
         reservations.forEach(reservation => {
           if (reservation.articles && reservation.articles.length > 0) {
             reservation.articles.forEach(resArticle => {
-              const article = articles.find(a => a.idArticle === resArticle.idArticle);
+              const article = articles.find(a => a.idArticle === resArticle.article.idArticle);
               if (article && article.idCategorie) {
                 if (!reservationsParCategorie[article.idCategorie]) {
                   reservationsParCategorie[article.idCategorie] = 0;
@@ -586,7 +593,7 @@ export class DashboardService {
           // Articles sortants (dateDebut dans la période)
           if (dateDebutReservation >= debut && dateDebutReservation <= fin) {
             reservation.articles.forEach(resArticle => {
-              const article = articles.find(a => a.idArticle === resArticle.idArticle);
+              const article = articles.find(a => a.idArticle === resArticle.article.idArticle);
               if (article) {
                 sortants.push({
                   article,
@@ -601,7 +608,7 @@ export class DashboardService {
           // Articles entrants (dateFin dans la période)
           if (dateFinReservation >= debut && dateFinReservation <= fin) {
             reservation.articles.forEach(resArticle => {
-              const article = articles.find(a => a.idArticle === resArticle.idArticle);
+              const article = articles.find(a => a.idArticle === resArticle.article.idArticle);
               if (article) {
                 entrants.push({
                   article,

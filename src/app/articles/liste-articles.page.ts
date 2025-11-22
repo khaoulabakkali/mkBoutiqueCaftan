@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -33,7 +36,8 @@ import {
   closeCircle,
   eye,
   eyeOff,
-  imageOutline
+  imageOutline,
+  informationCircle
 } from 'ionicons/icons';
 import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
@@ -56,6 +60,9 @@ import { environment } from '../../environments/environment';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -95,7 +102,8 @@ export class ListeArticlesPage implements OnInit {
       closeCircle,
       eye,
       eyeOff,
-      imageOutline
+      imageOutline,
+      informationCircle
     });
   }
 

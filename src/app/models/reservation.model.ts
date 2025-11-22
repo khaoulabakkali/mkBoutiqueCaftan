@@ -3,6 +3,8 @@
  * Correspond à la structure C# du backend
  */
 
+import { Article } from "./article.model";
+
 /**
  * Enum StatutReservation correspondant à l'enum C# du backend
  */
@@ -46,10 +48,11 @@ export const StatutReservationReverseMapping: { [key: string]: StatutReservation
  */
 export interface ReservationArticle {
   /** INTEGER - ID de l'article */
-  idArticle: number;
+  article: Article;
   
   /** INTEGER - Quantité de l'article */
   quantite: number;
+  nomArticle: string;
 }
 
 export interface Reservation {
