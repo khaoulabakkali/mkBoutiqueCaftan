@@ -64,7 +64,7 @@ export class FormClientPage implements OnInit {
     
     this.clientForm = this.formBuilder.group({
       nomClient: ['', [Validators.required, this.trimmedMinLengthValidator(2)]],
-      prenomClient: ['', [this.trimmedMinLengthValidator(2)]],
+      prenomClient: ['', [this.optionalTrimmedMinLengthValidator(2)]],
       telephone: ['', [Validators.required, Validators.pattern(/^\+?[0-9\s-]+$/)]],
       email: ['', [Validators.email]],
       adressePrincipale: ['', []],
@@ -73,7 +73,7 @@ export class FormClientPage implements OnInit {
   }
 
   /**
-   * Validateur personnalisé pour vérifier la longueur après trim
+   * Validateur personnalisé pour vérifier la longueur après trim (pour les champs requis)
    */
   trimmedMinLengthValidator(minLength: number) {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -82,6 +82,23 @@ export class FormClientPage implements OnInit {
       }
       const trimmedValue = typeof control.value === 'string' ? control.value.trim() : '';
       if (trimmedValue.length < minLength && trimmedValue.length > 0) {
+        return { minlength: { requiredLength: minLength, actualLength: trimmedValue.length } };
+      }
+      return null;
+    };
+  }
+
+  /**
+   * Validateur personnalisé pour vérifier la longueur après trim (pour les champs optionnels)
+   * Ne retourne pas d'erreur si le champ est vide
+   */
+  optionalTrimmedMinLengthValidator(minLength: number) {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value || (typeof control.value === 'string' && control.value.trim() === '')) {
+        return null; // Champ optionnel, pas d'erreur si vide
+      }
+      const trimmedValue = typeof control.value === 'string' ? control.value.trim() : '';
+      if (trimmedValue.length < minLength) {
         return { minlength: { requiredLength: minLength, actualLength: trimmedValue.length } };
       }
       return null;
@@ -158,9 +175,11 @@ export class FormClientPage implements OnInit {
         return;
       }
       
+      const prenomClientTrimmed = formValue.prenomClient?.trim() || '';
+      
       const clientData: Client = {
         nomClient: nomClientTrimmed,
-        prenomClient: formValue.prenomClient?.trim() || '',
+        prenomClient: prenomClientTrimmed || undefined,
         telephone: formValue.telephone?.trim() || '',
         email: formValue.email?.trim() || undefined,
         adressePrincipale: formValue.adressePrincipale?.trim() || undefined,

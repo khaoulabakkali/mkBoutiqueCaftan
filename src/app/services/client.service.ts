@@ -63,13 +63,18 @@ export class ClientService {
   createClient(client: Client): Observable<Client> {
     const payload = {
       nomClient: client.nomClient?.trim() || '',
-      prenomClient: client.prenomClient?.trim() || '',
+      prenomClient: client.prenomClient?.trim() || undefined,
       telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
       totalCommandes: client.totalCommandes || 0,
       actif: client.actif !== undefined ? client.actif : true
     };
+    
+    // Retirer prenomClient du payload s'il est vide
+    if (!payload.prenomClient || payload.prenomClient === '') {
+      delete (payload as any).prenomClient;
+    }
 
     return this.http.post<Client>(
       `${this.apiUrl}/clients`,
@@ -86,13 +91,18 @@ export class ClientService {
   updateClient(id: number, client: Client): Observable<Client> {
     const payload = {
       nomClient: client.nomClient?.trim() || '',
-      prenomClient: client.prenomClient?.trim() || '',
+      prenomClient: client.prenomClient?.trim() || undefined,
       telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
       totalCommandes: client.totalCommandes || 0,
       actif: client.actif !== undefined ? client.actif : true
     };
+    
+    // Retirer prenomClient du payload s'il est vide
+    if (!payload.prenomClient || payload.prenomClient === '') {
+      delete (payload as any).prenomClient;
+    }
 
     return this.http.put<Client>(
       `${this.apiUrl}/clients/${id}`,
