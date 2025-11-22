@@ -28,7 +28,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, add, chevronDown, checkmark, closeOutline, trash, image, camera, refresh, checkmarkCircle } from 'ionicons/icons';
+import { save, arrowBack, add, chevronDown, checkmark, closeOutline, trash, image, camera, refresh, checkmarkCircle, imageOutline } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation, StatutReservation, ReservationArticle } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
@@ -37,6 +37,7 @@ import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
 import { ImageService } from '../services/image.service';
 import { ClientSelectionModalComponent } from './client-selection-modal.component';
+import { ArticleSelectionModalComponent } from './article-selection-modal.component';
 import { IonImg } from '@ionic/angular/standalone';
 import { environment } from '../../environments/environment';
 
@@ -76,6 +77,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
   reservationId?: number;
   clients: Client[] = [];
   articles: Article[] = [];
+  reservations: Reservation[] = []; // Toutes les réservations pour vérifier les conflits
   selectedArticles: Array<{ article: Article; quantite: number }> = [];
   statuts: StatutReservation[] = ['En attente', 'Confirmée', 'En cours', 'Terminée', 'Annulée'];
   private queryParamsSubscription?: Subscription;
@@ -96,7 +98,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
     private loadingController: LoadingController,
     private modalController: ModalController
   ) {
-    addIcons({ save, arrowBack, add, chevronDown, checkmark, closeOutline, trash, image, camera, refresh, checkmarkCircle });
+    addIcons({ save, arrowBack, add, chevronDown, checkmark, closeOutline, trash, image, camera, refresh, checkmarkCircle, imageOutline });
     
     this.reservationForm = this.formBuilder.group({
       idClient: ['', [Validators.required]],
@@ -114,6 +116,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadClients();
     this.loadArticles();
+    this.loadReservations(); // Charger toutes les réservations pour vérifier les conflits
     
     const id = this.route.snapshot.paramMap.get('id');
     if (id && id !== 'new') {
@@ -175,6 +178,26 @@ export class FormReservationPage implements OnInit, OnDestroy {
     });
   }
 
+  loadReservations() {
+    this.reservationService.getAllReservations().subscribe({
+      next: (data) => {
+        this.reservations = data || [];
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des réservations:', error);
+        }
+        this.reservations = [];
+      }
+    });
+  }
+
+  onDatesChange() {
+    // Recharger les réservations pour avoir les données à jour
+    // Cela permet de vérifier la disponibilité avec les dernières données
+    this.loadReservations();
+  }
+
   getSelectedClientName(): string {
     const clientId = this.reservationForm.get('idClient')?.value;
     if (!clientId) return '';
@@ -222,6 +245,60 @@ export class FormReservationPage implements OnInit, OnDestroy {
     await modal.present();
   }
 
+  async openArticleModal() {
+    const dateDebut = this.reservationForm.get('dateDebut')?.value;
+    const dateFin = this.reservationForm.get('dateFin')?.value;
+
+    if (!dateDebut || !dateFin) {
+      this.showToast('Veuillez d\'abord sélectionner les dates de début et de fin', 'warning');
+      return;
+    }
+
+    // Vérifier que la date de début est avant la date de fin
+    const debut = new Date(dateDebut);
+    const fin = new Date(dateFin);
+    if (debut > fin) {
+      this.showToast('La date de début doit être avant la date de fin', 'warning');
+      return;
+    }
+
+    // Passer tous les articles (disponibles et non disponibles) au modal pour affichage
+    const allArticles = this.articles.filter(article => 
+      !this.selectedArticles.some(selected => selected.article.idArticle === article.idArticle)
+    );
+
+    if (allArticles.length === 0) {
+      this.showToast('Aucun article disponible', 'warning');
+      return;
+    }
+
+    const modal = await this.modalController.create({
+      component: ArticleSelectionModalComponent,
+      componentProps: {
+        articles: allArticles,
+        searchTerm: '',
+        dateDebut: dateDebut,
+        dateFin: dateFin,
+        reservations: this.reservations,
+        excludeReservationId: this.reservationId
+      }
+    });
+
+    modal.onDidDismiss().then((data) => {
+      if (data.data && data.data.action === 'select' && data.data.articleId) {
+        // Vérifier à nouveau la disponibilité avant d'ajouter
+        const availability = this.isArticleAvailable(data.data.articleId, dateDebut, dateFin, this.reservationId);
+        if (availability.available) {
+          this.addArticle(data.data.articleId);
+        } else {
+          this.showToast('Cet article n\'est plus disponible pour cette période', 'danger');
+        }
+      }
+    });
+
+    await modal.present();
+  }
+
   addNewClient() {
     // Le modal est déjà fermé à ce stade (appelé depuis onDidDismiss)
     // Construire le chemin de base à partir des segments d'URL (non encodés)
@@ -247,6 +324,9 @@ export class FormReservationPage implements OnInit, OnDestroy {
       message: 'Chargement...'
     });
     loading.then(l => l.present());
+
+    // Recharger les réservations pour avoir les données à jour
+    this.loadReservations();
 
     this.reservationService.getReservationById(this.reservationId).subscribe({
       next: (reservation) => {
@@ -413,12 +493,76 @@ export class FormReservationPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtenir les articles disponibles (non encore sélectionnés)
+   * Vérifie si un article est disponible pour une période donnée
+   */
+  isArticleAvailable(articleId: number | undefined, dateDebut: string, dateFin: string, excludeReservationId?: number): { available: boolean; conflictingReservation?: Reservation } {
+    if (!articleId || !dateDebut || !dateFin) {
+      return { available: false };
+    }
+
+    const debut = new Date(dateDebut);
+    debut.setHours(0, 0, 0, 0);
+    const fin = new Date(dateFin);
+    fin.setHours(23, 59, 59, 999);
+
+    // Vérifier dans toutes les réservations (sauf celle en cours d'édition)
+    for (const reservation of this.reservations) {
+      // Ignorer la réservation en cours d'édition
+      if (excludeReservationId && reservation.idReservation === excludeReservationId) {
+        continue;
+      }
+
+      // Ignorer les réservations annulées ou terminées
+      if (reservation.statutReservation === 'Annulée' || reservation.statutReservation === 'Terminée') {
+        continue;
+      }
+
+      // Vérifier si la réservation contient l'article
+      if (reservation.articles && reservation.articles.length > 0) {
+        const hasArticle = reservation.articles.some(resArticle => 
+          resArticle.article?.idArticle === articleId
+        );
+
+        if (hasArticle) {
+          // Vérifier si les périodes se chevauchent
+          const resDebut = new Date(reservation.dateDebut);
+          resDebut.setHours(0, 0, 0, 0);
+          const resFin = new Date(reservation.dateFin);
+          resFin.setHours(23, 59, 59, 999);
+
+          // Vérifier le chevauchement : les dates se chevauchent si
+          // (debut <= resFin && fin >= resDebut)
+          if (debut <= resFin && fin >= resDebut) {
+            return { available: false, conflictingReservation: reservation };
+          }
+        }
+      }
+    }
+
+    return { available: true };
+  }
+
+  /**
+   * Obtenir les articles disponibles (non encore sélectionnés et disponibles pour la période)
    */
   getAvailableArticles(): Article[] {
-    return this.articles.filter(article => 
-      !this.selectedArticles.some(selected => selected.article.idArticle === article.idArticle)
-    );
+    const dateDebut = this.reservationForm.get('dateDebut')?.value;
+    const dateFin = this.reservationForm.get('dateFin')?.value;
+
+    return this.articles.filter(article => {
+      // Vérifier si l'article n'est pas déjà sélectionné
+      const notSelected = !this.selectedArticles.some(selected => selected.article.idArticle === article.idArticle);
+      
+      // Si les dates ne sont pas définies, retourner seulement les articles non sélectionnés
+      if (!dateDebut || !dateFin) {
+        return notSelected;
+      }
+
+      // Vérifier la disponibilité pour la période
+      const availability = this.isArticleAvailable(article.idArticle, dateDebut, dateFin, this.reservationId);
+      
+      return notSelected && availability.available;
+    });
   }
 
   /**

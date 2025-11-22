@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -35,7 +38,8 @@ import {
   briefcase,
   person,
   checkmarkCircle,
-  closeCircle
+  closeCircle,
+  informationCircle
 } from 'ionicons/icons';
 import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur } from '../models/utilisateur.model';
@@ -55,6 +59,9 @@ import { Role  } from '../models/role.model';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -94,7 +101,8 @@ export class ListeUtilisateursPage implements OnInit {
       briefcase,
       person,
       checkmarkCircle,
-      closeCircle
+      closeCircle,
+      informationCircle
     });
   }
 

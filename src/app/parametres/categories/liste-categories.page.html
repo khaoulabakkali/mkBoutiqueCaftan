@@ -27,30 +27,33 @@
 
   <!-- Liste des catégories -->
   <ion-list *ngIf="!isLoading && categoriesFiltres.length > 0">
-    <ion-item *ngFor="let categorie of categoriesFiltres" [button]="true" (click)="viewCategorie(categorie)">
-      <ion-icon name="grid" slot="start" color="primary"></ion-icon>
-      <ion-label>
-        <h2>{{ categorie.nomCategorie }}</h2>
-        <p *ngIf="categorie.ordreAffichage" style="color: var(--ion-color-medium); font-size: 0.8rem;">
-          Ordre d'affichage: {{ categorie.ordreAffichage }}
-        </p>
-      </ion-label>
-      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editCategorie(categorie)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deleteCategorie(categorie)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let categorie of categoriesFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewCategorie(categorie)">
+        <ion-icon name="grid" slot="start" color="primary"></ion-icon>
+        <ion-label>
+          <h2>{{ categorie.nomCategorie }}</h2>
+          <p *ngIf="categorie.ordreAffichage" style="color: var(--ion-color-medium); font-size: 0.8rem;">
+            Ordre d'affichage: {{ categorie.ordreAffichage }}
+          </p>
+        </ion-label>
+      </ion-item>
+      
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewCategorie(categorie); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editCategorie(categorie); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteCategorie(categorie); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

@@ -388,6 +388,20 @@
         <ion-card-content>
           <ion-list lines="none" class="articles-list" *ngIf="articlesEntrants.length > 0">
             <ion-item *ngFor="let item of articlesEntrants" class="article-item">
+              <!-- Photo de l'article -->
+              <img 
+                *ngIf="item.article.photo" 
+                [src]="item.article.photo" 
+                [alt]="item.article.nomArticle"
+                slot="start"
+                class="article-image"
+                (error)="$event.target.src='assets/icon/placeholder-image.png'">
+              <ion-icon 
+                *ngIf="!item.article.photo" 
+                name="image-outline" 
+                slot="start" 
+                class="article-placeholder-icon">
+              </ion-icon>
               <ion-label>
                 <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
                 <p>Quantité: {{ item.quantite }} — Retour le {{ formatDateShort(item.dateRetour) }}</p>
@@ -477,6 +491,20 @@
         <ion-card-content>
           <ion-list lines="none" class="articles-list" *ngIf="articlesSortants.length > 0">
             <ion-item *ngFor="let item of articlesSortants" class="article-item">
+              <!-- Photo de l'article -->
+              <img 
+                *ngIf="item.article.photo" 
+                [src]="item.article.photo" 
+                [alt]="item.article.nomArticle"
+                slot="start"
+                class="article-image"
+                (error)="$event.target.src='assets/icon/placeholder-image.png'">
+              <ion-icon 
+                *ngIf="!item.article.photo" 
+                name="image-outline" 
+                slot="start" 
+                class="article-placeholder-icon">
+              </ion-icon>
               <ion-label>
                 <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
                 <p>Quantité: {{ item.quantite }} — Sortie le {{ formatDateShort(item.dateSortie) }}</p>

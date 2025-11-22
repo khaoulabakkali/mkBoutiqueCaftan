@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -27,7 +30,8 @@ import {
   trash, 
   search,
   wallet,
-  documentText
+  documentText,
+  informationCircle
 } from 'ionicons/icons';
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
@@ -46,6 +50,9 @@ import { environment } from '../../environments/environment';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -76,7 +83,8 @@ export class ListePaiementsPage implements OnInit {
       trash, 
       search,
       wallet,
-      documentText
+      documentText,
+      informationCircle
     });
   }
 

@@ -27,32 +27,35 @@
 
   <!-- Liste des clients -->
   <ion-list *ngIf="!isLoading && clientsFiltres.length > 0">
-    <ion-item *ngFor="let client of clientsFiltres" [button]="true" (click)="viewClient(client)">
-      <ion-label>
-        <h2>{{ getFullName(client) }}</h2>
-        <p>{{ client.telephone }}</p>
-        <div class="badges-container">
-          <ion-badge color="primary">
-            {{ client.totalCommandes }} commande{{ client.totalCommandes > 1 ? 's' : '' }}
-          </ion-badge>
-        </div>
-      </ion-label>
-      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editClient(client)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deleteClient(client)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let client of clientsFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewClient(client)">
+        <ion-label>
+          <h2>{{ getFullName(client) }}</h2>
+          <p>{{ client.telephone }}</p>
+          <div class="badges-container">
+            <ion-badge color="primary">
+              {{ client.totalCommandes }} commande{{ client.totalCommandes > 1 ? 's' : '' }}
+            </ion-badge>
+          </div>
+        </ion-label>
+      </ion-item>
+      
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewClient(client); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editClient(client); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteClient(client); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

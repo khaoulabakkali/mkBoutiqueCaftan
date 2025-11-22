@@ -131,8 +131,8 @@ export class DashboardPage implements OnInit {
   dateFinSortants: string = new Date().toISOString().slice(0, 10);
   
   // Mouvements d'articles
-  articlesSortants: Array<{ article: { nomArticle: string; couleur?: string }; quantite: number; dateSortie: string }> = [];
-  articlesEntrants: Array<{ article: { nomArticle: string; couleur?: string }; quantite: number; dateRetour: string }> = [];
+  articlesSortants: Array<{ article: { nomArticle: string; couleur?: string; photo?: string }; quantite: number; dateSortie: string }> = [];
+  articlesEntrants: Array<{ article: { nomArticle: string; couleur?: string; photo?: string }; quantite: number; dateRetour: string }> = [];
   
   constructor(
     private dashboardService: DashboardService,
@@ -478,7 +478,8 @@ export class DashboardPage implements OnInit {
         this.articlesEntrants = mouvements.entrants.map(m => ({
           article: {
             nomArticle: m.article.nomArticle,
-            couleur: m.article.couleur
+            couleur: m.article.couleur,
+            photo: m.article.photo
           },
           quantite: m.quantite,
           dateRetour: m.dateRetour
@@ -524,7 +525,8 @@ export class DashboardPage implements OnInit {
         this.articlesSortants = mouvements.sortants.map(m => ({
           article: {
             nomArticle: m.article.nomArticle,
-            couleur: m.article.couleur
+            couleur: m.article.couleur,
+            photo: m.article.photo
           },
           quantite: m.quantite,
           dateSortie: m.dateSortie

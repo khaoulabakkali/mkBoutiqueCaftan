@@ -27,43 +27,46 @@
 
   <!-- Liste des réservations -->
   <ion-list *ngIf="!isLoading && reservationsFiltres.length > 0">
-    <ion-item *ngFor="let reservation of reservationsFiltres" [button]="true" (click)="viewReservation(reservation)">
-      <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
-      <ion-label>
-        <h2>Réservation #{{ reservation.idReservation }}</h2>
-        <p><strong>Client:</strong> {{ getClientName(reservation.idClient) }}</p>
-        <p>
-          <ion-icon name="time-outline" style="margin-right: 4px;"></ion-icon>
-          Du {{ formatDate(reservation.dateDebut) }} au {{ formatDate(reservation.dateFin) }}
-        </p>
-        <div class="badges-container">
-          <ion-badge [color]="getStatutColor(reservation.statutReservation)">
-            {{ reservation.statutReservation }}
-          </ion-badge>
-          <ion-badge color="primary">
-            {{ reservation.montantTotal }} MAD
-          </ion-badge>
-          <ion-badge *ngIf="reservation.remiseAppliquee > 0" color="success">
-            Remise: {{ reservation.remiseAppliquee }} MAD
-          </ion-badge>
-        </div>
-      </ion-label>
-      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editReservation(reservation)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deleteReservation(reservation)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let reservation of reservationsFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewReservation(reservation)">
+        <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
+        <ion-label>
+          <h2>Réservation #{{ reservation.idReservation }}</h2>
+          <p><strong>Client:</strong> {{ getClientName(reservation.idClient) }}</p>
+          <p>
+            <ion-icon name="time-outline" style="margin-right: 4px;"></ion-icon>
+            Du {{ formatDate(reservation.dateDebut) }} au {{ formatDate(reservation.dateFin) }}
+          </p>
+          <div class="badges-container">
+            <ion-badge [color]="getStatutColor(reservation.statutReservation)">
+              {{ reservation.statutReservation }}
+            </ion-badge>
+            <ion-badge color="primary">
+              {{ reservation.montantTotal }} MAD
+            </ion-badge>
+            <ion-badge *ngIf="reservation.remiseAppliquee > 0" color="success">
+              Remise: {{ reservation.remiseAppliquee }} MAD
+            </ion-badge>
+          </div>
+        </ion-label>
+      </ion-item>
+      
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewReservation(reservation); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editReservation(reservation); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteReservation(reservation); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

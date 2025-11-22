@@ -27,48 +27,48 @@
 
   <!-- Liste des utilisateurs -->
   <ion-list *ngIf="!isLoading && utilisateursFiltres.length > 0">
-    <ion-item *ngFor="let utilisateur of utilisateursFiltres" [button]="true" (click)="viewDetail(utilisateur)">
-      <ion-label>
-        <h2>
-          <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" 
-                    [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'"
-                    style="margin-right: 8px; vertical-align: middle;"></ion-icon>
-          {{ utilisateur?.nomComplet || 'Nom non défini' }}
-        </h2>
-        <div class="badges-container">
-          <ion-badge [color]="getRoleColor(utilisateur.role || undefined)">
-            <ion-icon [name]="getRoleIcon(utilisateur.role || undefined)" style="margin-right: 4px;"></ion-icon>
-            {{ getRoleLabel(utilisateur?.role || undefined) }}
-          </ion-badge>
-          <ion-badge [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
-            <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-            {{ (utilisateur.actif !== undefined && utilisateur.actif) ? 'Actif' : 'Inactif' }}
-          </ion-badge>
-        </div>
-      </ion-label>
-      <div slot="end" class="actions-container">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editUtilisateur(utilisateur); $event.stopPropagation()">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deleteUtilisateur(utilisateur); $event.stopPropagation()">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          [color]="(utilisateur?.actif !== undefined && utilisateur?.actif) ? 'warning' : 'success'"
-          (click)="toggleActif(utilisateur); $event.stopPropagation()">
-          <ion-icon [name]="(utilisateur?.actif !== undefined && utilisateur?.actif) ? 'eye-off' : 'eye'"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let utilisateur of utilisateursFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewDetail(utilisateur)">
+        <ion-label>
+          <h2>
+            <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" 
+                      [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'"
+                      style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+            {{ utilisateur?.nomComplet || 'Nom non défini' }}
+          </h2>
+          <div class="badges-container">
+            <ion-badge [color]="getRoleColor(utilisateur.role || undefined)">
+              <ion-icon [name]="getRoleIcon(utilisateur.role || undefined)" style="margin-right: 4px;"></ion-icon>
+              {{ getRoleLabel(utilisateur?.role || undefined) }}
+            </ion-badge>
+            <ion-badge [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
+              <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+              {{ (utilisateur.actif !== undefined && utilisateur.actif) ? 'Actif' : 'Inactif' }}
+            </ion-badge>
+          </div>
+        </ion-label>
+      </ion-item>
+      
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewDetail(utilisateur); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editUtilisateur(utilisateur); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option [color]="(utilisateur?.actif !== undefined && utilisateur?.actif) ? 'warning' : 'success'" (click)="toggleActif(utilisateur); slidingItem.close()">
+          <ion-icon slot="icon-only" [name]="(utilisateur?.actif !== undefined && utilisateur?.actif) ? 'eye-off' : 'eye'"></ion-icon>
+          <span>{{ (utilisateur?.actif !== undefined && utilisateur?.actif) ? 'Désactiver' : 'Activer' }}</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteUtilisateur(utilisateur); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

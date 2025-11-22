@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -31,7 +34,8 @@ import {
   calendarOutline,
   checkmarkCircle,
   closeCircle,
-  timeOutline
+  timeOutline,
+  informationCircle
 } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation, StatutReservation } from '../models/reservation.model';
@@ -52,6 +56,9 @@ import { environment } from '../../environments/environment';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -87,7 +94,8 @@ export class ListeReservationsPage implements OnInit {
       calendarOutline,
       checkmarkCircle,
       closeCircle,
-      timeOutline
+      timeOutline,
+      informationCircle
     });
   }
 

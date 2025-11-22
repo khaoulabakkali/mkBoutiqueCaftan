@@ -27,41 +27,44 @@
 
   <!-- Liste des paiements -->
   <ion-list *ngIf="!isLoading && paiementsFiltres.length > 0">
-    <ion-item *ngFor="let paiement of paiementsFiltres" (click)="viewPaiement(paiement)">
-      <ion-icon name="wallet" slot="start" color="success"></ion-icon>
-      <ion-label>
-        <h2>Paiement #{{ paiement.idPaiement || 'N/A' }}</h2>
-        <p>{{ formatMontant(paiement.montant) }}</p>
-        <p *ngIf="paiement.methodePaiement">
-          <strong>Méthode:</strong> {{ paiement.methodePaiement }}
-        </p>
-        <p>
-          <strong>Date:</strong> {{ formatDate(paiement.datePaiement) }}
-        </p>
-        <p *ngIf="paiement.reference" class="reference-text">
-          <ion-icon name="document-text" style="font-size: 0.9rem; margin-right: 4px; vertical-align: middle;"></ion-icon>
-          {{ paiement.reference }}
-        </p>
-        <p *ngIf="paiement.idReservation">
-          <strong>Réservation:</strong> #{{ paiement.idReservation }}
-        </p>
-      </ion-label>
-      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editPaiement(paiement)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deletePaiement(paiement)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let paiement of paiementsFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewPaiement(paiement)">
+        <ion-icon name="wallet" slot="start" color="success"></ion-icon>
+        <ion-label>
+          <h2>Paiement #{{ paiement.idPaiement || 'N/A' }}</h2>
+          <p>{{ formatMontant(paiement.montant) }}</p>
+          <p *ngIf="paiement.methodePaiement">
+            <strong>Méthode:</strong> {{ paiement.methodePaiement }}
+          </p>
+          <p>
+            <strong>Date:</strong> {{ formatDate(paiement.datePaiement) }}
+          </p>
+          <p *ngIf="paiement.reference" class="reference-text">
+            <ion-icon name="document-text" style="font-size: 0.9rem; margin-right: 4px; vertical-align: middle;"></ion-icon>
+            {{ paiement.reference }}
+          </p>
+          <p *ngIf="paiement.idReservation">
+            <strong>Réservation:</strong> #{{ paiement.idReservation }}
+          </p>
+        </ion-label>
+      </ion-item>
+      
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewPaiement(paiement); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editPaiement(paiement); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deletePaiement(paiement); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

@@ -27,44 +27,44 @@
 
   <!-- Liste des rôles -->
   <ion-list *ngIf="!isLoading && rolesFiltres.length > 0">
-    <ion-item *ngFor="let role of rolesFiltres" [button]="true" (click)="viewRole(role)">
-      <ion-label>
-        <h2>
-          <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" 
-                    [color]="role.actif ? 'success' : 'danger'"
-                    style="margin-right: 8px; vertical-align: middle;"></ion-icon>
-          {{ role.nomRole }}
-        </h2>
-        <div class="badges-container">
-          <ion-badge [color]="role.actif ? 'success' : 'danger'">
-            <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-            {{ role.actif ? 'Actif' : 'Inactif' }}
-          </ion-badge>
-        </div>
-      </ion-label>
-      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editRole(role)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deleteRole(role)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          [color]="role.actif ? 'warning' : 'success'"
-          (click)="toggleActif(role)">
-          <ion-icon [name]="role.actif ? 'eye-off' : 'eye'"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let role of rolesFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewRole(role)">
+        <ion-label>
+          <h2>
+            <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" 
+                      [color]="role.actif ? 'success' : 'danger'"
+                      style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+            {{ role.nomRole }}
+          </h2>
+          <div class="badges-container">
+            <ion-badge [color]="role.actif ? 'success' : 'danger'">
+              <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+              {{ role.actif ? 'Actif' : 'Inactif' }}
+            </ion-badge>
+          </div>
+        </ion-label>
+      </ion-item>
+      
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewRole(role); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editRole(role); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option [color]="role.actif ? 'warning' : 'success'" (click)="toggleActif(role); slidingItem.close()">
+          <ion-icon slot="icon-only" [name]="role.actif ? 'eye-off' : 'eye'"></ion-icon>
+          <span>{{ role.actif ? 'Désactiver' : 'Activer' }}</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteRole(role); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

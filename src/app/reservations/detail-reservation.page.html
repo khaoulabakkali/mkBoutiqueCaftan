@@ -101,7 +101,7 @@
     <!-- Articles de la réservation -->
     <ion-card *ngIf="articles && articles.length > 0">
       <ion-card-header>
-        <ion-card-title>Articles de la réservation ({{ articles.length }})</ion-card-title>
+        <ion-card-title>Articles ({{ articles.length }})</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item *ngFor="let item of articles" lines="full" [button]="true" (click)="viewArticle(item.article)">

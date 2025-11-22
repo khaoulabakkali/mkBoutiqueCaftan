@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -30,7 +33,8 @@ import {
   search, 
   personOutline,
   checkmarkCircle,
-  closeCircle
+  closeCircle,
+  informationCircle
 } from 'ionicons/icons';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
@@ -49,6 +53,9 @@ import { environment } from '../../environments/environment';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -80,7 +87,8 @@ export class ListeClientsPage implements OnInit {
       search, 
       personOutline,
       checkmarkCircle,
-      closeCircle
+      closeCircle,
+      informationCircle
     });
   }
 

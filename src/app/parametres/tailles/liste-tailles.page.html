@@ -27,27 +27,30 @@
 
   <!-- Liste des tailles -->
   <ion-list *ngIf="!isLoading && taillesFiltres.length > 0">
-    <ion-item *ngFor="let taille of taillesFiltres" [button]="true" (click)="viewTaille(taille)">
-      <ion-icon name="resize" slot="start" color="primary"></ion-icon>
-      <ion-label>
-        <h2>{{ taille.taille }}</h2>
-      </ion-label>
-      <div slot="end" class="actions-container" (click)="$event.stopPropagation()">
-        <ion-button
-          fill="clear"
-          size="small"
-          (click)="editTaille(taille)">
-          <ion-icon name="create"></ion-icon>
-        </ion-button>
-        <ion-button
-          fill="clear"
-          size="small"
-          color="danger"
-          (click)="deleteTaille(taille)">
-          <ion-icon name="trash"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-item>
+    <ion-item-sliding *ngFor="let taille of taillesFiltres" #slidingItem>
+      <ion-item [button]="true" (click)="viewTaille(taille)">
+        <ion-icon name="resize" slot="start" color="primary"></ion-icon>
+        <ion-label>
+          <h2>{{ taille.taille }}</h2>
+        </ion-label>
+      </ion-item>
+      
+      <!-- Actions révélées par swipe -->
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="viewTaille(taille); slidingItem.close()">
+          <ion-icon slot="icon-only" name="information-circle"></ion-icon>
+          <span>Détails</span>
+        </ion-item-option>
+        <ion-item-option color="tertiary" (click)="editTaille(taille); slidingItem.close()">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+          <span>Modifier</span>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteTaille(taille); slidingItem.close()">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+          <span>Supprimer</span>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
   </ion-list>
 
   <!-- Message si aucun résultat -->

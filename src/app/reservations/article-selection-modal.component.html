@@ -1,0 +1,77 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Sélectionner un article</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Barre de recherche -->
+  <ion-searchbar
+    [(ngModel)]="searchTerm"
+    [ngModelOptions]="{standalone: true}"
+    (ionInput)="onSearchChange($event)"
+    placeholder="Rechercher par nom, couleur..."
+    debounce="200">
+  </ion-searchbar>
+
+  <!-- Liste des articles -->
+  <ion-list *ngIf="articlesFiltres.length > 0">
+    <ion-item 
+      *ngFor="let article of articlesFiltres" 
+      [button]="isArticleAvailable(article.idArticle)"
+      [class.article-unavailable]="!isArticleAvailable(article.idArticle)"
+      [disabled]="!isArticleAvailable(article.idArticle)"
+      (click)="selectArticle(article.idArticle!)">
+      <!-- Photo de l'article -->
+      <img 
+        *ngIf="article.photo" 
+        [src]="article.photo" 
+        [alt]="article.nomArticle"
+        slot="start"
+        class="article-image"
+        [class.article-image-unavailable]="!isArticleAvailable(article.idArticle)"
+        (error)="$event.target.src='assets/icon/placeholder-image.png'">
+      <ion-icon 
+        *ngIf="!article.photo" 
+        name="image-outline" 
+        slot="start" 
+        class="article-placeholder-icon"
+        [class.article-placeholder-icon-unavailable]="!isArticleAvailable(article.idArticle)">
+      </ion-icon>
+      <ion-label>
+        <h2>
+          {{ getArticleDisplayName(article) }}
+          <ion-icon 
+            *ngIf="!isArticleAvailable(article.idArticle)" 
+            name="alert-circle" 
+            color="danger"
+            style="margin-left: 8px; vertical-align: middle;">
+          </ion-icon>
+        </h2>
+        <p>{{ article.prixLocationBase }} MAD/jour | Avance: {{ article.prixAvanceBase }} MAD</p>
+        <p *ngIf="article.description" style="color: var(--ion-color-medium); font-size: 0.85rem;">
+          {{ article.description.length > 50 ? (article.description | slice:0:50) + '...' : article.description }}
+        </p>
+        <!-- Message de conflit -->
+        <p *ngIf="!isArticleAvailable(article.idArticle) && getConflictingReservation(article.idArticle)" 
+           class="conflict-message">
+          <ion-icon name="alert-circle" color="danger" style="margin-right: 4px;"></ion-icon>
+          <strong>Non disponible</strong> - Déjà réservé du {{ formatDate(getConflictingReservation(article.idArticle)?.dateDebut) }} 
+          au {{ formatDate(getConflictingReservation(article.idArticle)?.dateFin) }}
+          (Réservation #{{ getConflictingReservation(article.idArticle)?.idReservation }})
+        </p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Message si aucun résultat -->
+  <div *ngIf="articlesFiltres.length === 0" class="empty-state">
+    <p>Aucun article trouvé</p>
+  </div>
+</ion-content>
+

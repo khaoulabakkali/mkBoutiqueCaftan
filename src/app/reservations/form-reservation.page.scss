@@ -27,6 +27,33 @@ ion-item {
 // Styles pour les articles
 .articles-list {
   margin-bottom: 1rem;
+
+  ion-item {
+    .article-image-selected {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 12px;
+      border: 1px solid var(--ion-color-light);
+      background-color: var(--ion-color-light);
+      flex-shrink: 0;
+    }
+
+    .article-placeholder-icon-selected {
+      width: 50px;
+      height: 50px;
+      font-size: 28px;
+      color: var(--ion-color-medium);
+      margin-right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--ion-color-light);
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+  }
 }
 
 .article-controls {

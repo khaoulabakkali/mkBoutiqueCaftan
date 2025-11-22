@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -32,7 +35,8 @@ import {
   search, 
   shieldOutline,
   checkmarkCircle,
-  closeCircle
+  closeCircle,
+  informationCircle
 } from 'ionicons/icons';
 import { RoleService } from '../../services/role.service';
 import { Role } from '../../models/role.model';
@@ -51,6 +55,9 @@ import { environment } from '../../../environments/environment';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -85,7 +92,8 @@ export class ListeRolesPage implements OnInit {
       search, 
       shieldOutline,
       checkmarkCircle,
-      closeCircle
+      closeCircle,
+      informationCircle
     });
   }
 

@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -27,7 +30,8 @@ import {
   create, 
   trash, 
   search, 
-  resize
+  resize,
+  informationCircle
 } from 'ionicons/icons';
 import { TailleService } from '../../services/taille.service';
 import { Taille } from '../../models/taille.model';
@@ -46,6 +50,9 @@ import { environment } from '../../../environments/environment';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -75,7 +82,8 @@ export class ListeTaillesPage implements OnInit {
       create, 
       trash, 
       search, 
-      resize
+      resize,
+      informationCircle
     });
   }
 

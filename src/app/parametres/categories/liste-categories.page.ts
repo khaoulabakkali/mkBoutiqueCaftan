@@ -8,6 +8,9 @@ import {
   IonMenuButton,
   IonList,
   IonItem,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
   IonLabel,
   IonButton,
   IonIcon,
@@ -27,7 +30,8 @@ import {
   create, 
   trash, 
   search, 
-  grid
+  grid,
+  informationCircle
 } from 'ionicons/icons';
 import { CategorieService } from '../../services/categorie.service';
 import { Categorie } from '../../models/categorie.model';
@@ -46,6 +50,9 @@ import { environment } from '../../../environments/environment';
     IonMenuButton,
     IonList,
     IonItem,
+    IonItemSliding,
+    IonItemOptions,
+    IonItemOption,
     IonLabel,
     IonButton,
     IonIcon,
@@ -75,7 +82,8 @@ export class ListeCategoriesPage implements OnInit {
       create, 
       trash, 
       search, 
-      grid
+      grid,
+      informationCircle
     });
   }
 
