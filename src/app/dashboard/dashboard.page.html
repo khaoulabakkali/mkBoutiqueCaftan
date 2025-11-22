@@ -175,12 +175,48 @@
         </ion-card-header>
         <ion-card-content>
           <ion-list lines="none" class="articles-list" *ngIf="articlesPlusLoues.length > 0">
-            <ion-item *ngFor="let item of articlesPlusLoues" class="article-item">
+            <ion-item *ngFor="let item of articlesPlusLoues" class="article-item-dashboard">
+              <!-- Image de l'article à gauche -->
+              <img 
+                *ngIf="item.article.photo" 
+                [src]="item.article.photo" 
+                [alt]="item.article.nomArticle"
+                slot="start"
+                class="article-image-dashboard"
+                (error)="$event.target.src='assets/icon/placeholder-image.png'">
+              <ion-icon 
+                *ngIf="!item.article.photo" 
+                name="image-outline" 
+                slot="start" 
+                class="article-placeholder-icon-dashboard">
+              </ion-icon>
+              
               <ion-label>
-                <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
-                <p>{{ item.nombreLocations }} location(s)</p>
+                <h2>
+                  <ion-icon [name]="item.article.actif ? 'checkmark-circle' : 'close-circle'" 
+                            [color]="item.article.actif ? 'success' : 'danger'"
+                            style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+                  {{ item.article.nomArticle }}
+                </h2>
+                <div class="badges-container">
+                  <ion-badge color="primary">
+                    {{ getCategorieName(item.article.idCategorie) }}
+                  </ion-badge>
+                  <ion-badge *ngIf="item.article.idTaille" color="secondary">
+                    Taille: {{ getTailleLabel(item.article.idTaille) }}
+                  </ion-badge>
+                  <ion-badge [color]="item.article.actif ? 'success' : 'danger'">
+                    <ion-icon [name]="item.article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+                    {{ item.article.actif ? 'Actif' : 'Inactif' }}
+                  </ion-badge>
+                  <ion-badge color="success">
+                    {{ item.nombreLocations }} location(s)
+                  </ion-badge>
+                </div>
+                <p style="margin-top: 0.5rem; color: var(--ion-color-medium);">
+                  Prix location: {{ item.article.prixLocationBase }} MAD/jour | Avance: {{ item.article.prixAvanceBase }} MAD
+                </p>
               </ion-label>
-              <ion-badge color="success" slot="end">{{ item.nombreLocations }}</ion-badge>
             </ion-item>
           </ion-list>
           <div class="no-data" *ngIf="articlesPlusLoues.length === 0">
@@ -197,18 +233,57 @@
             Article le plus rentable
           </ion-card-title>
         </ion-card-header>
-        <ion-card-content>
-          <div class="stat-content-large">
-            <div class="stat-value">
-              <h2 class="article-nom">{{ articlePlusRentable.article.nomArticle }}{{ articlePlusRentable.article.couleur ? ' ' + articlePlusRentable.article.couleur : '' }}</h2>
-              <h1>{{ formatMontant(articlePlusRentable.revenus) }}</h1>
-              <p class="stat-description">
-                {{ articlePlusRentable.article.nomArticle }}{{ articlePlusRentable.article.couleur ? ' ' + articlePlusRentable.article.couleur : '' }} : {{ formatMontant(articlePlusRentable.revenus) }} ce mois
+        <ion-card-content *ngIf="articlePlusRentable.article.nomArticle !== 'N/A'">
+          <ion-item class="article-item-dashboard">
+            <!-- Image de l'article à gauche -->
+            <img 
+              *ngIf="articlePlusRentable.article.photo" 
+              [src]="articlePlusRentable.article.photo" 
+              [alt]="articlePlusRentable.article.nomArticle"
+              slot="start"
+              class="article-image-dashboard"
+              (error)="$event.target.src='assets/icon/placeholder-image.png'">
+            <ion-icon 
+              *ngIf="!articlePlusRentable.article.photo" 
+              name="image-outline" 
+              slot="start" 
+              class="article-placeholder-icon-dashboard">
+            </ion-icon>
+            
+            <ion-label>
+              <h2>
+                <ion-icon [name]="articlePlusRentable.article.actif ? 'checkmark-circle' : 'close-circle'" 
+                          [color]="articlePlusRentable.article.actif ? 'success' : 'danger'"
+                          style="margin-right: 8px; vertical-align: middle;"></ion-icon>
+                {{ articlePlusRentable.article.nomArticle }}
+              </h2>
+              <div class="badges-container">
+                <ion-badge color="primary">
+                  {{ getCategorieName(articlePlusRentable.article.idCategorie) }}
+                </ion-badge>
+                <ion-badge *ngIf="articlePlusRentable.article.idTaille" color="secondary">
+                  Taille: {{ getTailleLabel(articlePlusRentable.article.idTaille) }}
+                </ion-badge>
+                <ion-badge [color]="articlePlusRentable.article.actif ? 'success' : 'danger'">
+                  <ion-icon [name]="articlePlusRentable.article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
+                  {{ articlePlusRentable.article.actif ? 'Actif' : 'Inactif' }}
+                </ion-badge>
+                <ion-badge color="warning">
+                  {{ formatMontant(articlePlusRentable.revenus) }}
+                </ion-badge>
+              </div>
+              <p style="margin-top: 0.5rem; color: var(--ion-color-medium);">
+                Prix location: {{ articlePlusRentable.article.prixLocationBase }} MAD/jour | Avance: {{ articlePlusRentable.article.prixAvanceBase }} MAD
               </p>
-            </div>
-            <div class="stat-icon-large">
-              <ion-icon name="trending-up" color="warning"></ion-icon>
-            </div>
+              <p style="margin-top: 0.25rem; color: var(--ion-color-success); font-weight: 600;">
+                Revenus ce mois: {{ formatMontant(articlePlusRentable.revenus) }}
+              </p>
+            </ion-label>
+          </ion-item>
+        </ion-card-content>
+        <ion-card-content *ngIf="articlePlusRentable.article.nomArticle === 'N/A'">
+          <div class="no-data">
+            <p>Aucun article rentable pour le moment</p>
           </div>
         </ion-card-content>
       </ion-card>

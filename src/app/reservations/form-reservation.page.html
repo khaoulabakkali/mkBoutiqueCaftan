@@ -106,6 +106,71 @@
       <span *ngIf="remiseAppliquee?.errors?.['min']">La remise ne peut pas être négative</span>
     </div>
 
+    <!-- Carte d'identité nationale -->
+    <ion-item [class.item-has-error]="photoCarteIdentite?.invalid && photoCarteIdentite?.touched">
+      <ion-label position="stacked">Carte d'identité nationale *</ion-label>
+    </ion-item>
+
+    <!-- Message si la carte est récupérée du client -->
+    <ion-item *ngIf="carteIdentiteFromClient && carteIdentitePreview" lines="none">
+      <ion-label>
+        <p style="color: var(--ion-color-success); font-size: 0.875rem;">
+          <ion-icon name="checkmark-circle" style="vertical-align: middle; margin-right: 4px;"></ion-icon>
+          Carte d'identité récupérée depuis la fiche client
+        </p>
+      </ion-label>
+    </ion-item>
+
+    <!-- Aperçu de la carte d'identité -->
+    <div class="image-preview-container" *ngIf="carteIdentitePreview">
+      <div class="image-preview-wrapper">
+        <ion-img [src]="carteIdentitePreview" alt="Aperçu de la carte d'identité" class="image-preview"></ion-img>
+        <ion-button
+          *ngIf="!carteIdentiteFromClient"
+          fill="clear"
+          color="danger"
+          class="remove-image-btn"
+          (click)="removeCarteIdentite()">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Boutons pour la carte d'identité (si non récupérée du client ou pour changer) -->
+    <div class="image-upload-actions" *ngIf="!carteIdentiteFromClient || !carteIdentitePreview">
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="selectCarteIdentite()"
+        [disabled]="isUploadingCarteIdentite">
+        <ion-icon name="image" slot="start"></ion-icon>
+        {{ carteIdentitePreview ? 'Changer l\'image' : 'Sélectionner une image' }}
+      </ion-button>
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="takeCarteIdentitePhoto()"
+        [disabled]="isUploadingCarteIdentite">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        Prendre une photo
+      </ion-button>
+    </div>
+
+    <!-- Bouton pour remplacer la carte récupérée du client -->
+    <div class="image-upload-actions" *ngIf="carteIdentiteFromClient && carteIdentitePreview">
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="replaceCarteIdentite()">
+        <ion-icon name="refresh" slot="start"></ion-icon>
+        Utiliser une autre carte d'identité
+      </ion-button>
+    </div>
+
+    <div class="error-message" *ngIf="photoCarteIdentite?.invalid && photoCarteIdentite?.touched">
+      <span *ngIf="photoCarteIdentite?.errors?.['required']">La carte d'identité nationale est obligatoire</span>
+    </div>
+
     <!-- Statut réservation -->
     <ion-item [class.item-has-error]="statutReservation?.invalid && statutReservation?.touched">
       <ion-label position="stacked">Statut *</ion-label>

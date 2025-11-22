@@ -19,9 +19,11 @@ import {
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
+import { save, arrowBack, checkmark, closeOutline, image, camera, trash } from 'ionicons/icons';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
+import { ImageService } from '../services/image.service';
+import { IonImg } from '@ionic/angular/standalone';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -42,6 +44,7 @@ import { environment } from '../../environments/environment';
     IonButton,
     IonButtons,
     IonIcon,
+    IonImg,
     ReactiveFormsModule,
     CommonModule
   ],
@@ -51,16 +54,19 @@ export class FormClientPage implements OnInit {
   isEditMode = false;
   clientId?: number;
   returnTo?: string;
+  carteIdentitePreview: string | null = null;
+  isUploadingCarteIdentite = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private clientService: ClientService,
+    private imageService: ImageService,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ save, arrowBack, checkmark, closeOutline });
+    addIcons({ save, arrowBack, checkmark, closeOutline, image, camera, trash });
     
     this.clientForm = this.formBuilder.group({
       nomClient: ['', [Validators.required, this.trimmedMinLengthValidator(2)]],
@@ -68,6 +74,7 @@ export class FormClientPage implements OnInit {
       telephone: ['', [Validators.required, Validators.pattern(/^\+?[0-9\s-]+$/)]],
       email: ['', [Validators.email]],
       adressePrincipale: ['', []],
+      photoCarteIdentite: ['', []],
       actif: [true, [Validators.required]]
     });
   }
@@ -142,8 +149,15 @@ export class FormClientPage implements OnInit {
           telephone: client.telephone,
           email: client.email || '',
           adressePrincipale: client.adressePrincipale || '',
+          photoCarteIdentite: client.photoCarteIdentite || '',
           actif: client.actif !== undefined ? client.actif : true
         });
+        
+        // Afficher l'aperçu de la carte d'identité si elle existe
+        if (client.photoCarteIdentite) {
+          this.carteIdentitePreview = client.photoCarteIdentite;
+        }
+        
         loading.then(l => l.dismiss());
       },
       error: (error) => {
@@ -183,6 +197,7 @@ export class FormClientPage implements OnInit {
         telephone: formValue.telephone?.trim() || '',
         email: formValue.email?.trim() || undefined,
         adressePrincipale: formValue.adressePrincipale?.trim() || undefined,
+        photoCarteIdentite: formValue.photoCarteIdentite || undefined,
         totalCommandes: 0, // Valeur par défaut, sera calculé côté backend
         actif: formValue.actif !== undefined ? formValue.actif : true
       };
@@ -268,6 +283,85 @@ export class FormClientPage implements OnInit {
 
   onCancel() {
     this.router.navigate(['/clients']);
+  }
+
+  /**
+   * Sélectionne une image de carte d'identité depuis la galerie
+   */
+  async selectCarteIdentite() {
+    try {
+      this.isUploadingCarteIdentite = true;
+      const file = await this.imageService.triggerFileInput('image/*');
+      
+      if (!file) {
+        this.isUploadingCarteIdentite = false;
+        return;
+      }
+
+      const loading = await this.loadingController.create({
+        message: 'Traitement de l\'image...'
+      });
+      await loading.present();
+
+      const result = await this.imageService.processImageFile(file);
+      
+      // Mettre à jour le formulaire avec le base64
+      this.clientForm.patchValue({ photoCarteIdentite: result.base64 });
+      this.carteIdentitePreview = result.base64;
+      
+      await loading.dismiss();
+      this.isUploadingCarteIdentite = false;
+      this.showToast('Image de la carte d\'identité ajoutée avec succès', 'success');
+    } catch (error: any) {
+      this.isUploadingCarteIdentite = false;
+      const errorMessage = error?.message || 'Erreur lors de l\'upload de l\'image';
+      this.showToast(errorMessage, 'danger');
+    }
+  }
+
+  /**
+   * Prend une photo de la carte d'identité avec la caméra
+   */
+  async takeCarteIdentitePhoto() {
+    try {
+      this.isUploadingCarteIdentite = true;
+      
+      // Utiliser l'input file avec l'attribut capture pour ouvrir la caméra
+      const file = await this.imageService.triggerCameraInput();
+      
+      if (!file) {
+        this.isUploadingCarteIdentite = false;
+        return;
+      }
+
+      const loading = await this.loadingController.create({
+        message: 'Traitement de la photo...'
+      });
+      await loading.present();
+
+      const result = await this.imageService.processImageFile(file);
+      
+      // Mettre à jour le formulaire avec le base64
+      this.clientForm.patchValue({ photoCarteIdentite: result.base64 });
+      this.carteIdentitePreview = result.base64;
+      
+      await loading.dismiss();
+      this.isUploadingCarteIdentite = false;
+      this.showToast('Photo de la carte d\'identité ajoutée avec succès', 'success');
+    } catch (error: any) {
+      this.isUploadingCarteIdentite = false;
+      const errorMessage = error?.message || 'Erreur lors de la prise de photo';
+      this.showToast(errorMessage, 'danger');
+    }
+  }
+
+  /**
+   * Supprime la photo de la carte d'identité
+   */
+  removeCarteIdentite() {
+    this.clientForm.patchValue({ photoCarteIdentite: '' });
+    this.carteIdentitePreview = null;
+    this.showToast('Photo de la carte d\'identité supprimée', 'success');
   }
 }
 

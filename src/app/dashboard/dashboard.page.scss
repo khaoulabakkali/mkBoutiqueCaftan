@@ -374,3 +374,63 @@
   }
 }
 
+// Styles pour les articles dans le dashboard
+.article-item-dashboard {
+  --padding-start: 0;
+  --padding-end: 0;
+  --min-height: auto;
+  margin-bottom: 0.5rem;
+
+  .article-image-dashboard {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-right: 12px;
+    border: 1px solid var(--ion-color-light);
+    background-color: var(--ion-color-light);
+  }
+
+  .article-placeholder-icon-dashboard {
+    width: 60px;
+    height: 60px;
+    font-size: 32px;
+    color: var(--ion-color-medium);
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ion-color-light);
+    border-radius: 8px;
+  }
+
+  ion-label {
+    h2 {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      color: var(--ion-color-medium);
+      font-size: 0.9rem;
+      margin: 0.25rem 0;
+    }
+
+    .badges-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+      align-items: center;
+
+      ion-badge {
+        font-size: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+

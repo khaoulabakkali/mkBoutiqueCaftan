@@ -86,6 +86,45 @@
       </ion-textarea>
     </ion-item>
 
+    <!-- Carte d'identité nationale -->
+    <ion-item>
+      <ion-label position="stacked">Carte d'identité nationale</ion-label>
+    </ion-item>
+
+    <!-- Aperçu de la carte d'identité -->
+    <div class="image-preview-container" *ngIf="carteIdentitePreview">
+      <div class="image-preview-wrapper">
+        <ion-img [src]="carteIdentitePreview" alt="Aperçu de la carte d'identité" class="image-preview"></ion-img>
+        <ion-button
+          fill="clear"
+          color="danger"
+          class="remove-image-btn"
+          (click)="removeCarteIdentite()">
+          <ion-icon name="trash" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Boutons pour la carte d'identité -->
+    <div class="image-upload-actions">
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="selectCarteIdentite()"
+        [disabled]="isUploadingCarteIdentite">
+        <ion-icon name="image" slot="start"></ion-icon>
+        {{ carteIdentitePreview ? 'Changer l\'image' : 'Sélectionner une image' }}
+      </ion-button>
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="takeCarteIdentitePhoto()"
+        [disabled]="isUploadingCarteIdentite">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        Prendre une photo
+      </ion-button>
+    </div>
+
   </form>
 </ion-content>
 

@@ -33,10 +33,18 @@ import {
   trendingUp,
   grid,
   arrowDown,
-  arrowUp
+  arrowUp,
+  imageOutline,
+  checkmarkCircle,
+  closeCircle
 } from 'ionicons/icons';
 import { DashboardService } from '../services/dashboard.service';
 import { PaiementService } from '../services/paiement.service';
+import { CategorieService } from '../services/categorie.service';
+import { TailleService } from '../services/taille.service';
+import { Article } from '../models/article.model';
+import { Categorie } from '../models/categorie.model';
+import { Taille } from '../models/taille.model';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -92,13 +100,17 @@ export class DashboardPage implements OnInit {
   };
   
   // Articles les plus loués
-  articlesPlusLoues: Array<{ article: { nomArticle: string; couleur?: string }; nombreLocations: number }> = [];
+  articlesPlusLoues: Array<{ article: Article; nombreLocations: number }> = [];
   
   // Article le plus rentable
-  articlePlusRentable: { article: { nomArticle: string; couleur?: string }; revenus: number } = {
-    article: { nomArticle: 'N/A' },
+  articlePlusRentable: { article: Article; revenus: number } = {
+    article: { nomArticle: 'N/A', prixLocationBase: 0, prixAvanceBase: 0, description: '', idCategorie: 0, actif: true } as Article,
     revenus: 0
   };
+  
+  // Catégories et tailles pour l'affichage
+  categories: Categorie[] = [];
+  tailles: Taille[] = [];
   
   // Catégorie la plus demandée
   categoriePlusDemandee: { nomCategorie: string; nombreReservations: number } = {
@@ -125,6 +137,8 @@ export class DashboardPage implements OnInit {
   constructor(
     private dashboardService: DashboardService,
     private paiementService: PaiementService,
+    private categorieService: CategorieService,
+    private tailleService: TailleService,
     private loadingController: LoadingController
   ) {
     addIcons({
@@ -137,16 +151,59 @@ export class DashboardPage implements OnInit {
       trendingUp,
       grid,
       arrowDown,
-      arrowUp
+      arrowUp,
+      imageOutline,
+      checkmarkCircle,
+      closeCircle
     });
   }
 
   ngOnInit() {
+    this.loadCategories();
+    this.loadTailles();
     this.loadRevenus();
     this.loadMeilleurJour();
     this.loadArticlesPlusLoues();
     this.loadArticlePlusRentable();
     this.loadCategoriePlusDemandee();
+  }
+  
+  loadCategories() {
+    this.categorieService.getAllCategories().subscribe({
+      next: (data) => {
+        this.categories = data;
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des catégories:', error);
+        }
+      }
+    });
+  }
+  
+  loadTailles() {
+    this.tailleService.getAllTailles().subscribe({
+      next: (data) => {
+        this.tailles = data;
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des tailles:', error);
+        }
+      }
+    });
+  }
+  
+  getCategorieName(idCategorie?: number): string {
+    if (!idCategorie) return 'N/A';
+    const categorie = this.categories.find(c => c.idCategorie === idCategorie);
+    return categorie ? categorie.nomCategorie : 'N/A';
+  }
+  
+  getTailleLabel(idTaille?: number): string {
+    if (!idTaille) return 'N/A';
+    const taille = this.tailles.find(t => t.idTaille === idTaille);
+    return taille ? taille.taille : 'N/A';
   }
 
   ionViewWillEnter() {
@@ -332,13 +389,7 @@ export class DashboardPage implements OnInit {
   loadArticlesPlusLoues() {
     this.dashboardService.getArticlesPlusLoues(5).subscribe({
       next: (articles) => {
-        this.articlesPlusLoues = articles.map(a => ({
-          article: {
-            nomArticle: a.article.nomArticle,
-            couleur: a.article.couleur
-          },
-          nombreLocations: a.nombreLocations
-        }));
+        this.articlesPlusLoues = articles;
       },
       error: (error) => {
         if (!environment.production) {
@@ -352,19 +403,16 @@ export class DashboardPage implements OnInit {
   loadArticlePlusRentable() {
     this.dashboardService.getArticlePlusRentable().subscribe({
       next: (article) => {
-        this.articlePlusRentable = {
-          article: {
-            nomArticle: article.article.nomArticle,
-            couleur: article.article.couleur
-          },
-          revenus: article.revenus
-        };
+        this.articlePlusRentable = article;
       },
       error: (error) => {
         if (!environment.production) {
           console.error('Erreur lors du chargement de l\'article le plus rentable:', error);
         }
-        this.articlePlusRentable = { article: { nomArticle: 'N/A' }, revenus: 0 };
+        this.articlePlusRentable = { 
+          article: { nomArticle: 'N/A', prixLocationBase: 0, prixAvanceBase: 0, description: '', idCategorie: 0, actif: true } as Article, 
+          revenus: 0 
+        };
       }
     });
   }

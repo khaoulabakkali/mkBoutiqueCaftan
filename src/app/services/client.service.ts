@@ -67,6 +67,7 @@ export class ClientService {
       telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
+      photoCarteIdentite: client.photoCarteIdentite || undefined,
       totalCommandes: client.totalCommandes || 0,
       actif: client.actif !== undefined ? client.actif : true
     };
@@ -74,6 +75,11 @@ export class ClientService {
     // Retirer prenomClient du payload s'il est vide
     if (!payload.prenomClient || payload.prenomClient === '') {
       delete (payload as any).prenomClient;
+    }
+    
+    // Retirer photoCarteIdentite du payload s'il est vide
+    if (!payload.photoCarteIdentite || payload.photoCarteIdentite === '') {
+      delete (payload as any).photoCarteIdentite;
     }
 
     return this.http.post<Client>(
@@ -95,6 +101,7 @@ export class ClientService {
       telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
+      photoCarteIdentite: client.photoCarteIdentite || undefined,
       totalCommandes: client.totalCommandes || 0,
       actif: client.actif !== undefined ? client.actif : true
     };
@@ -102,6 +109,11 @@ export class ClientService {
     // Retirer prenomClient du payload s'il est vide
     if (!payload.prenomClient || payload.prenomClient === '') {
       delete (payload as any).prenomClient;
+    }
+    
+    // Retirer photoCarteIdentite du payload s'il est vide
+    if (!payload.photoCarteIdentite || payload.photoCarteIdentite === '') {
+      delete (payload as any).photoCarteIdentite;
     }
 
     return this.http.put<Client>(

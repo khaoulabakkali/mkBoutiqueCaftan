@@ -28,14 +28,16 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { addIcons } from 'ionicons';
-import { save, arrowBack, add, chevronDown, checkmark, closeOutline, trash } from 'ionicons/icons';
+import { save, arrowBack, add, chevronDown, checkmark, closeOutline, trash, image, camera, refresh, checkmarkCircle } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation, StatutReservation, ReservationArticle } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
 import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
+import { ImageService } from '../services/image.service';
 import { ClientSelectionModalComponent } from './client-selection-modal.component';
+import { IonImg } from '@ionic/angular/standalone';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -62,6 +64,7 @@ import { environment } from '../../environments/environment';
   IonCardTitle,
   IonCardContent,
   IonBadge,
+  IonImg,
   ReactiveFormsModule,
   FormsModule,
   CommonModule
@@ -76,19 +79,24 @@ export class FormReservationPage implements OnInit, OnDestroy {
   selectedArticles: Array<{ article: Article; quantite: number }> = [];
   statuts: StatutReservation[] = ['En attente', 'Confirmée', 'En cours', 'Terminée', 'Annulée'];
   private queryParamsSubscription?: Subscription;
+  selectedClient: Client | null = null;
+  carteIdentitePreview: string | null = null;
+  carteIdentiteFromClient: boolean = false;
+  isUploadingCarteIdentite = false;
 
   constructor(
     private formBuilder: FormBuilder,
     private reservationService: ReservationService,
     private clientService: ClientService,
     private articleService: ArticleService,
+    private imageService: ImageService,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
     private loadingController: LoadingController,
     private modalController: ModalController
   ) {
-    addIcons({ save, arrowBack, add, chevronDown, checkmark, closeOutline, trash });
+    addIcons({ save, arrowBack, add, chevronDown, checkmark, closeOutline, trash, image, camera, refresh, checkmarkCircle });
     
     this.reservationForm = this.formBuilder.group({
       idClient: ['', [Validators.required]],
@@ -98,7 +106,8 @@ export class FormReservationPage implements OnInit, OnDestroy {
       montantTotal: [0, [Validators.required, Validators.min(0)]],
       statutReservation: ['En attente', [Validators.required]],
       idPaiement: ['', []],
-      remiseAppliquee: [0, [Validators.required, Validators.min(0)]]
+      remiseAppliquee: [0, [Validators.required, Validators.min(0)]],
+      photoCarteIdentite: ['', [Validators.required]]
     });
   }
 
@@ -203,6 +212,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
       if (data.data) {
         if (data.data.action === 'select' && data.data.clientId) {
           this.reservationForm.patchValue({ idClient: data.data.clientId });
+          this.loadClientCarteIdentite(data.data.clientId);
         } else if (data.data.action === 'new') {
           this.addNewClient();
         }
@@ -254,8 +264,35 @@ export class FormReservationPage implements OnInit, OnDestroy {
           montantTotal: reservation.montantTotal,
           statutReservation: reservation.statutReservation,
           idPaiement: reservation.idPaiement || '',
-          remiseAppliquee: reservation.remiseAppliquee || 0
+          remiseAppliquee: reservation.remiseAppliquee || 0,
+          photoCarteIdentite: reservation.photoCarteIdentite || ''
         });
+        
+        // Afficher l'aperçu de la carte d'identité si elle existe
+        if (reservation.photoCarteIdentite) {
+          this.carteIdentitePreview = reservation.photoCarteIdentite;
+          this.carteIdentiteFromClient = false; // En édition, on considère qu'elle vient de la réservation
+        }
+        
+        // Charger les articles de la réservation
+        if (reservation.articles && reservation.articles.length > 0) {
+          this.selectedArticles = [];
+          reservation.articles.forEach(resArticle => {
+            const article = this.articles.find(a => a.idArticle === resArticle.idArticle);
+            if (article) {
+              this.selectedArticles.push({
+                article: article,
+                quantite: resArticle.quantite || 1
+              });
+            }
+          });
+          // Recalculer le montant total après chargement des articles
+          this.calculateTotal();
+        }
+        
+        // Charger les informations du client pour vérifier si la carte vient de lui
+        this.loadClientCarteIdentite(reservation.idClient);
+        
         loading.then(l => l.dismiss());
       },
       error: (error) => {
@@ -291,6 +328,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
         dateFin: formValue.dateFin,
         montantTotal: parseFloat(formValue.montantTotal),
         statutReservation: formValue.statutReservation,
+        photoCarteIdentite: formValue.photoCarteIdentite || undefined,
         idPaiement: formValue.idPaiement || undefined,
         remiseAppliquee: parseFloat(formValue.remiseAppliquee) || 0,
         articles: articles.length > 0 ? articles : undefined
@@ -477,6 +515,137 @@ export class FormReservationPage implements OnInit, OnDestroy {
     if (!idArticle) return '';
     const article = this.articles.find(a => a.idArticle === idArticle);
     return article ? article.nomArticle : '';
+  }
+
+  /**
+   * Charge la carte d'identité du client sélectionné si elle existe
+   */
+  loadClientCarteIdentite(clientId: number) {
+    this.clientService.getClientById(clientId).subscribe({
+      next: (client) => {
+        this.selectedClient = client;
+        if (client.photoCarteIdentite && !this.carteIdentitePreview) {
+          // Le client a déjà une carte d'identité, on l'utilise
+          this.reservationForm.patchValue({ photoCarteIdentite: client.photoCarteIdentite });
+          this.carteIdentitePreview = client.photoCarteIdentite;
+          this.carteIdentiteFromClient = true;
+          this.showToast('Carte d\'identité récupérée depuis la fiche client', 'success');
+        } else if (!client.photoCarteIdentite) {
+          // Le client n'a pas de carte d'identité, on doit l'ajouter
+          if (!this.carteIdentitePreview) {
+            this.reservationForm.patchValue({ photoCarteIdentite: '' });
+            this.carteIdentitePreview = null;
+            this.carteIdentiteFromClient = false;
+            this.reservationForm.get('photoCarteIdentite')?.setErrors({ required: true });
+            this.reservationForm.get('photoCarteIdentite')?.markAsTouched();
+          }
+        }
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors du chargement du client:', error);
+        }
+      }
+    });
+  }
+
+  /**
+   * Sélectionne une image de carte d'identité depuis la galerie
+   */
+  async selectCarteIdentite() {
+    try {
+      this.isUploadingCarteIdentite = true;
+      const file = await this.imageService.triggerFileInput('image/*');
+      
+      if (!file) {
+        this.isUploadingCarteIdentite = false;
+        return;
+      }
+
+      const loading = await this.loadingController.create({
+        message: 'Traitement de l\'image...'
+      });
+      await loading.present();
+
+      const result = await this.imageService.processImageFile(file);
+      
+      // Mettre à jour le formulaire avec le base64
+      this.reservationForm.patchValue({ photoCarteIdentite: result.base64 });
+      this.carteIdentitePreview = result.base64;
+      this.carteIdentiteFromClient = false;
+      
+      await loading.dismiss();
+      this.isUploadingCarteIdentite = false;
+      this.showToast('Image de la carte d\'identité ajoutée avec succès', 'success');
+    } catch (error: any) {
+      this.isUploadingCarteIdentite = false;
+      const errorMessage = error?.message || 'Erreur lors de l\'upload de l\'image';
+      this.showToast(errorMessage, 'danger');
+    }
+  }
+
+  /**
+   * Prend une photo de la carte d'identité avec la caméra
+   */
+  async takeCarteIdentitePhoto() {
+    try {
+      this.isUploadingCarteIdentite = true;
+      
+      // Utiliser l'input file avec l'attribut capture pour ouvrir la caméra
+      const file = await this.imageService.triggerCameraInput();
+      
+      if (!file) {
+        this.isUploadingCarteIdentite = false;
+        return;
+      }
+
+      const loading = await this.loadingController.create({
+        message: 'Traitement de la photo...'
+      });
+      await loading.present();
+
+      const result = await this.imageService.processImageFile(file);
+      
+      // Mettre à jour le formulaire avec le base64
+      this.reservationForm.patchValue({ photoCarteIdentite: result.base64 });
+      this.carteIdentitePreview = result.base64;
+      this.carteIdentiteFromClient = false;
+      
+      await loading.dismiss();
+      this.isUploadingCarteIdentite = false;
+      this.showToast('Photo de la carte d\'identité ajoutée avec succès', 'success');
+    } catch (error: any) {
+      this.isUploadingCarteIdentite = false;
+      const errorMessage = error?.message || 'Erreur lors de la prise de photo';
+      this.showToast(errorMessage, 'danger');
+    }
+  }
+
+  /**
+   * Remplace la carte d'identité récupérée du client par une nouvelle
+   */
+  replaceCarteIdentite() {
+    this.carteIdentiteFromClient = false;
+    this.carteIdentitePreview = null;
+    this.reservationForm.patchValue({ photoCarteIdentite: '' });
+    this.reservationForm.get('photoCarteIdentite')?.setErrors({ required: true });
+    this.reservationForm.get('photoCarteIdentite')?.markAsTouched();
+  }
+
+  /**
+   * Supprime la carte d'identité sélectionnée
+   */
+  removeCarteIdentite() {
+    this.reservationForm.patchValue({ photoCarteIdentite: '' });
+    this.carteIdentitePreview = null;
+    this.carteIdentiteFromClient = false;
+    this.reservationForm.get('photoCarteIdentite')?.setErrors({ required: true });
+    this.reservationForm.get('photoCarteIdentite')?.markAsTouched();
+    this.showToast('Photo de la carte d\'identité supprimée', 'success');
+  }
+
+  get photoCarteIdentite() {
+    return this.reservationForm.get('photoCarteIdentite');
   }
 }
 

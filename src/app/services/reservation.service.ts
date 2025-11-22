@@ -78,7 +78,8 @@ export class ReservationService {
       statutReservation: this.mapStatutFromApi(statutValue),
       idPaiement: data.idPaiement,
       remiseAppliquee: data.remiseAppliquee,
-      articles: data.articles,
+      articles: data.articles || data.Articles,
+      photoCarteIdentite: data.photoCarteIdentite || data.PhotoCarteIdentite,
       client: data.client
     };
   }
@@ -114,22 +115,30 @@ export class ReservationService {
    */
   createReservation(reservation: Reservation): Observable<Reservation> {
     const payload: any = {
-      idClient: reservation.idClient,
-      dateReservation: reservation.dateReservation,
-      dateDebut: reservation.dateDebut,
-      dateFin: reservation.dateFin,
-      montantTotal: reservation.montantTotal,
-      statutReservation: this.mapStatutToApi(reservation.statutReservation),
-      idPaiement: reservation.idPaiement || undefined,
-      remiseAppliquee: reservation.remiseAppliquee || 0.00
+      IdClient: reservation.idClient,
+      DateReservation: reservation.dateReservation,
+      DateDebut: reservation.dateDebut,
+      DateFin: reservation.dateFin,
+      MontantTotal: reservation.montantTotal,
+      StatutReservation: this.mapStatutToApi(reservation.statutReservation),
+      IdPaiement: reservation.idPaiement || undefined,
+      RemiseAppliquee: reservation.remiseAppliquee || 0.00,
+      PhotoCarteIdentite: reservation.photoCarteIdentite || undefined
     };
 
-    // Ajouter les articles si présents
+    // Ajouter les articles si présents - format PascalCase pour correspondre au backend
     if (reservation.articles && reservation.articles.length > 0) {
-      payload.articles = reservation.articles.map(article => ({
-        idArticle: article.idArticle,
-        quantite: article.quantite
+      payload.Articles = reservation.articles.map(article => ({
+        IdArticle: article.idArticle,
+        Quantite: article.quantite
       }));
+    } else {
+      // S'assurer que le tableau Articles est vide si aucun article n'est présent
+      payload.Articles = [];
+    }
+
+    if (!environment.production) {
+      console.log('Payload de création de réservation:', JSON.stringify(payload, null, 2));
     }
 
     return this.http.post<any>(
@@ -146,7 +155,7 @@ export class ReservationService {
    * Mettre à jour une réservation
    */
   updateReservation(id: number, reservation: Reservation): Observable<Reservation> {
-    const payload = {
+    const payload: any = {
       IdClient: reservation.idClient,
       DateReservation: reservation.dateReservation,
       DateDebut: reservation.dateDebut,
@@ -156,6 +165,21 @@ export class ReservationService {
       IdPaiement: reservation.idPaiement || undefined,
       RemiseAppliquee: reservation.remiseAppliquee || 0.00
     };
+
+    // Ajouter les articles si présents - format PascalCase pour correspondre au backend
+    if (reservation.articles && reservation.articles.length > 0) {
+      payload.Articles = reservation.articles.map(article => ({
+        IdArticle: article.idArticle,
+        Quantite: article.quantite
+      }));
+    } else {
+      // S'assurer que le tableau Articles est vide si aucun article n'est présent
+      payload.Articles = [];
+    }
+
+    if (!environment.production) {
+      console.log('Payload de mise à jour de réservation:', JSON.stringify(payload, null, 2));
+    }
 
     return this.http.put<any>(
       `${this.apiUrl}/reservations/${id}`,

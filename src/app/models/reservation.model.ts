@@ -83,6 +83,9 @@ export interface Reservation {
   /** Array - Liste des articles de la réservation */
   articles?: ReservationArticle[];
   
+  /** Longtext - Photo de la carte d'identité nationale (base64 ou URL) - obligatoire pour la réservation */
+  photoCarteIdentite?: string;
+  
   /** Navigation property */
   client?: any;
 }

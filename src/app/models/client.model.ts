@@ -29,5 +29,8 @@ export interface Client {
   
   /** BOOLEAN - Statut actif/inactif */
   actif?: boolean;
+  
+  /** Longtext - Photo de la carte d'identité nationale (base64 ou URL) */
+  photoCarteIdentite?: string;
 }
 
