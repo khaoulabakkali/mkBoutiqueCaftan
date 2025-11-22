@@ -145,7 +145,15 @@
         (click)="selectImage()"
         [disabled]="isUploadingImage">
         <ion-icon name="image" slot="start"></ion-icon>
-        {{ imagePreview ? 'Changer l\'image' : 'Ajouter une image' }}
+        {{ imagePreview ? 'Changer l\'image' : 'Sélectionner une image' }}
+      </ion-button>
+      <ion-button
+        expand="block"
+        fill="outline"
+        (click)="takePhoto()"
+        [disabled]="isUploadingImage">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        Prendre une photo
       </ion-button>
     </div>
 

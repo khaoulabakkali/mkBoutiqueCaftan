@@ -132,7 +132,42 @@ export class ImageService {
       };
 
       input.oncancel = () => {
-        document.body.removeChild(input);
+        if (document.body.contains(input)) {
+          document.body.removeChild(input);
+        }
+        resolve(null);
+      };
+
+      document.body.appendChild(input);
+      input.click();
+    });
+  }
+
+  /**
+   * Crée un input file pour la caméra et déclenche la capture
+   * Sur mobile, cela ouvrira directement la caméra
+   * Sur desktop, cela permettra de choisir entre caméra et galerie
+   */
+  triggerCameraInput(): Promise<File | null> {
+    return new Promise((resolve) => {
+      const input = document.createElement('input') as HTMLInputElement & { capture?: string };
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.capture = 'environment'; // Utilise la caméra arrière sur mobile
+      input.style.display = 'none';
+
+      input.onchange = (event: any) => {
+        const file = event.target.files?.[0] || null;
+        if (document.body.contains(input)) {
+          document.body.removeChild(input);
+        }
+        resolve(file);
+      };
+
+      input.oncancel = () => {
+        if (document.body.contains(input)) {
+          document.body.removeChild(input);
+        }
         resolve(null);
       };
 

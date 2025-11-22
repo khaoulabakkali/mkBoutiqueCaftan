@@ -299,6 +299,42 @@ export class FormArticlePage implements OnInit {
   }
 
   /**
+   * Prend une photo avec la caméra
+   */
+  async takePhoto() {
+    try {
+      this.isUploadingImage = true;
+      
+      // Utiliser l'input file avec l'attribut capture pour ouvrir la caméra
+      const file = await this.imageService.triggerCameraInput();
+      
+      if (!file) {
+        this.isUploadingImage = false;
+        return;
+      }
+
+      const loading = await this.loadingController.create({
+        message: 'Traitement de la photo...'
+      });
+      await loading.present();
+
+      const result = await this.imageService.processImageFile(file);
+      
+      // Mettre à jour le formulaire avec le base64
+      this.articleForm.patchValue({ photo: result.base64 });
+      this.imagePreview = result.base64;
+      
+      await loading.dismiss();
+      this.isUploadingImage = false;
+      this.showToast('Photo ajoutée avec succès', 'success');
+    } catch (error: any) {
+      this.isUploadingImage = false;
+      const errorMessage = error?.message || 'Erreur lors de la prise de photo';
+      this.showToast(errorMessage, 'danger');
+    }
+  }
+
+  /**
    * Supprime l'image sélectionnée
    */
   removeImage() {
