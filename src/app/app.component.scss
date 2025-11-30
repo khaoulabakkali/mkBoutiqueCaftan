@@ -225,5 +225,42 @@ ion-item.menu-item-active ion-label {
       color: #764ba2 !important;
     }
   }
+
+  // Language Switcher
+  .language-switcher {
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    
+    ion-item-divider {
+      --background: transparent;
+      --padding-start: 16px;
+      --color: #667eea;
+      font-weight: 600;
+      margin-bottom: 8px;
+      
+      ion-icon {
+        color: #667eea !important;
+        margin-right: 8px;
+      }
+    }
+    
+    ion-item {
+      --padding-start: 16px;
+      font-size: 14px;
+      
+      &.active {
+        --background: rgba(102, 126, 234, 0.1);
+        ion-label {
+          color: #667eea;
+          font-weight: 600;
+        }
+      }
+      
+      &:hover {
+        --background: rgba(102, 126, 234, 0.05);
+      }
+    }
+  }
 }
+
 

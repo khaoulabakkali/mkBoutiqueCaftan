@@ -44,6 +44,7 @@ import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -70,7 +71,8 @@ import { environment } from '../../environments/environment';
     IonButtons,
     IonSpinner,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
 })
 export class ListeReservationsPage implements OnInit {

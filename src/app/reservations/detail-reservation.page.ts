@@ -32,6 +32,7 @@ import { ArticleService } from '../services/article.service';
 import { Article } from '../models/article.model';
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -56,7 +57,8 @@ import { environment } from '../../environments/environment';
     IonCardContent,
     IonBadge,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailReservationPage implements OnInit {

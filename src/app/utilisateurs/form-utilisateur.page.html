@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Utilisateur</ion-title>
+    <ion-title>{{ isEditMode ? ('users.edit' | translate) : ('users.add' | translate) }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         type="button"

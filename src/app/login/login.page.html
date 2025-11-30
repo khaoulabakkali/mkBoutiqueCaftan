@@ -5,8 +5,8 @@
         <div class="logo-container">
           <ion-icon name="lock-closed" class="logo-icon"></ion-icon>
         </div>
-        <ion-card-title class="login-title">Bienvenue</ion-card-title>
-        <p class="login-subtitle">Veuillez saisir vos identifiants de gestion</p>
+        <ion-card-title class="login-title">{{ 'login.title' | translate }}</ion-card-title>
+        <p class="login-subtitle">{{ 'login.submit' | translate }}</p>
       </ion-card-header>
 
       <ion-card-content>
@@ -14,22 +14,22 @@
           <!-- Login Input -->
           <ion-item class="form-item" [class.item-has-error]="login?.invalid && login?.touched">
             <ion-icon name="person" slot="start" class="input-icon"></ion-icon>
-            <ion-label position="stacked">Login</ion-label>
+            <ion-label position="stacked">{{ 'login.login' | translate }}</ion-label>
             <ion-input
               type="text"
               formControlName="login"
-              placeholder="Votre login"
+              [placeholder]="'login.login' | translate"
               [clearOnEdit]="true">
             </ion-input>
           </ion-item>
           <div class="error-message" *ngIf="login?.invalid && login?.touched">
-            <span *ngIf="login?.errors?.['required']">Le login est requis</span>
+            <span *ngIf="login?.errors?.['required']">{{ 'login.required' | translate }}</span>
           </div>
 
           <!-- Password Input -->
           <ion-item class="form-item" [class.item-has-error]="password?.invalid && password?.touched">
             <ion-icon name="lock-closed" slot="start" class="input-icon"></ion-icon>
-            <ion-label position="stacked">Mot de passe</ion-label>
+            <ion-label position="stacked">{{ 'login.password' | translate }}</ion-label>
             <ion-input
               type="password"
               formControlName="password"
@@ -38,8 +38,8 @@
             </ion-input>
           </ion-item>
           <div class="error-message" *ngIf="password?.invalid && password?.touched">
-            <span *ngIf="password?.errors?.['required']">Le mot de passe est requis</span>
-            <span *ngIf="password?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+            <span *ngIf="password?.errors?.['required']">{{ 'login.required' | translate }}</span>
+            <span *ngIf="password?.errors?.['minlength']">{{ 'login.minLength' | translate }}</span>
           </div>
 
           <!-- Forgot Password Link -->
@@ -52,12 +52,13 @@
             type="submit"
             class="login-button"
             [disabled]="loginForm.invalid || isLoading">
-            <span *ngIf="!isLoading">Se connecter</span>
-            <span *ngIf="isLoading">Connexion...</span>
+            <span *ngIf="!isLoading">{{ 'login.submit' | translate }}</span>
+            <span *ngIf="isLoading">{{ 'common.loading' | translate }}</span>
           </ion-button>
         </form>
       </ion-card-content>
     </ion-card>
   </div>
 </ion-content>
+
 

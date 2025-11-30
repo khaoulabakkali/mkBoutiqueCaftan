@@ -45,6 +45,7 @@ import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur } from '../models/utilisateur.model';
 import { RoleService } from '../services/role.service';
 import { Role  } from '../models/role.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-liste-utilisateurs',
@@ -70,7 +71,8 @@ import { Role  } from '../models/role.model';
     IonButtons,
     IonSpinner,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
 })
 export class ListeUtilisateursPage implements OnInit {

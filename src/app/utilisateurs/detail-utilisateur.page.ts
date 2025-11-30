@@ -27,6 +27,7 @@ import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur } from '../models/utilisateur.model';
 import { RoleService } from '../services/role.service';
 import { Role } from '../models/role.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-detail-utilisateur',
@@ -50,7 +51,8 @@ import { Role } from '../models/role.model';
     IonCardContent,
     IonBadge,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailUtilisateurPage implements OnInit {

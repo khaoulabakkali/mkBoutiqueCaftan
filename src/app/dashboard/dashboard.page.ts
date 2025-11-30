@@ -48,6 +48,7 @@ import { Taille } from '../models/taille.model';
 import { environment } from '../../environments/environment';
 import { Chart, ChartConfiguration, ChartData, ChartType, registerables } from 'chart.js';
 import annotationPlugin from 'chartjs-plugin-annotation';
+import { TranslateModule } from '@ngx-translate/core';
 Chart.register(...registerables, annotationPlugin);
 
 @Component({
@@ -75,7 +76,8 @@ Chart.register(...registerables, annotationPlugin);
   IonList,
   IonBadge,
   CommonModule,
-  FormsModule
+  FormsModule,
+  TranslateModule
   ],
 })
 export class DashboardPage implements OnInit {

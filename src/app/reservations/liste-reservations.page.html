@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Gestion des Réservations</ion-title>
+    <ion-title>{{ 'reservations.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addNewReservation()">
         <ion-icon name="add"></ion-icon>
@@ -15,14 +15,14 @@
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher une réservation..."
+    [placeholder]="'reservations.search' | translate"
     debounce="300">
   </ion-searchbar>
 
   <!-- Spinner de chargement -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <!-- Liste des réservations -->

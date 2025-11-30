@@ -25,6 +25,7 @@ import { addIcons } from 'ionicons';
 import { arrowBack, create, person, mail, call, location, calendar, bag, idCard } from 'ionicons/icons';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -49,7 +50,8 @@ import { environment } from '../../environments/environment';
     IonCardContent,
     IonBadge,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailClientPage implements OnInit {

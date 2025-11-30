@@ -30,6 +30,7 @@ import { CategorieService } from '../services/categorie.service';
 import { Categorie } from '../models/categorie.model';
 import { TailleService } from '../services/taille.service';
 import { Taille } from '../models/taille.model';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -55,7 +56,8 @@ import { environment } from '../../environments/environment';
     IonBadge,
     IonImg,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailArticlePage implements OnInit {

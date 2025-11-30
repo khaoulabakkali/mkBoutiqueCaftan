@@ -24,6 +24,7 @@ import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
 import { ImageService } from '../services/image.service';
 import { IonImg } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -46,7 +47,8 @@ import { environment } from '../../environments/environment';
     IonIcon,
     IonImg,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class FormClientPage implements OnInit {

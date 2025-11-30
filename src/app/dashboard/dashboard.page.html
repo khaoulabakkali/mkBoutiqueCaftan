@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>
-      Tableau de bord
+      {{ 'dashboard.title' | translate }}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -10,14 +10,14 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tableau de bord</ion-title>
+      <ion-title size="large">{{ 'dashboard.title' | translate }}</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <!-- Loading state -->
   <div class="loading-container" *ngIf="isLoading">
     <ion-spinner></ion-spinner>
-    <p>Chargement des statistiques...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <!-- Onglets principaux -->
@@ -25,19 +25,19 @@
     <ion-segment [value]="selectedTab" (ionChange)="onTabChange($event)" class="main-tabs-segment">
       <ion-segment-button value="revenus">
         <ion-icon name="wallet"></ion-icon>
-        <ion-label>Revenus</ion-label>
+        <ion-label>{{ 'dashboard.income' | translate }}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="articles">
         <ion-icon name="cube"></ion-icon>
-        <ion-label>Articles</ion-label>
+        <ion-label>{{ 'dashboard.articles' | translate }}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="entrants">
         <ion-icon name="arrow-up"></ion-icon>
-        <ion-label>Entrants</ion-label>
+        <ion-label>{{ 'dashboard.incoming' | translate }}</ion-label>
       </ion-segment-button>
       <ion-segment-button value="sortants">
         <ion-icon name="arrow-down"></ion-icon>
-        <ion-label>Sortants</ion-label>
+        <ion-label>{{ 'dashboard.outgoing' | translate }}</ion-label>
       </ion-segment-button>
     </ion-segment>
 

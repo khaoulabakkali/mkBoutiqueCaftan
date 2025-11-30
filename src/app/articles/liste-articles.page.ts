@@ -45,6 +45,7 @@ import { CategorieService } from '../services/categorie.service';
 import { Categorie } from '../models/categorie.model';
 import { TailleService } from '../services/taille.service';
 import { Taille } from '../models/taille.model';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -71,7 +72,8 @@ import { environment } from '../../environments/environment';
     IonButtons,
     IonSpinner,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
 })
 export class ListeArticlesPage implements OnInit {

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Détails Réservation</ion-title>
+    <ion-title>{{ 'reservations.detail' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="terminerReservation()" *ngIf="reservation?.idReservation && canTerminateReservation()" color="success">
         <ion-icon name="checkmark"></ion-icon>

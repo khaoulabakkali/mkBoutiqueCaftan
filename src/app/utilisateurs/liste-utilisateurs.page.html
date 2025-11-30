@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Gestion des Utilisateurs</ion-title>
+    <ion-title>{{ 'users.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addNewUtilisateur()">
         <ion-icon name="add"></ion-icon>
@@ -15,14 +15,14 @@
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher un utilisateur..."
+    [placeholder]="'users.search' | translate"
     debounce="300">
   </ion-searchbar>
 
   <!-- Spinner de chargement -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <!-- Liste des utilisateurs -->
@@ -43,7 +43,7 @@
             </ion-badge>
             <ion-badge [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
               <ion-icon [name]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-              {{ (utilisateur.actif !== undefined && utilisateur.actif) ? 'Actif' : 'Inactif' }}
+              {{ (utilisateur.actif !== undefined && utilisateur.actif) ? ('common.active' | translate) : ('common.inactive' | translate) }}
             </ion-badge>
           </div>
         </ion-label>

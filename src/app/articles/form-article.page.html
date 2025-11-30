@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvel' }} Article</ion-title>
+    <ion-title>{{ isEditMode ? ('articles.edit' | translate) : ('articles.add' | translate) }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         type="button"
@@ -23,37 +23,37 @@
   <form id="articleForm" [formGroup]="articleForm" (ngSubmit)="onSubmit()">
     <!-- Nom article -->
     <ion-item [class.item-has-error]="nomArticle?.invalid && nomArticle?.touched">
-      <ion-label position="stacked">Nom de l'article *</ion-label>
+      <ion-label position="stacked">{{ 'articles.name' | translate }} *</ion-label>
       <ion-input
         type="text"
         formControlName="nomArticle"
-        placeholder="Caftan Royal, Tekchita Moderne..."
+        [placeholder]="'articles.namePlaceholder' | translate"
         maxlength="150">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="nomArticle?.invalid && nomArticle?.touched">
-      <span *ngIf="nomArticle?.errors?.['required']">Le nom est requis</span>
-      <span *ngIf="nomArticle?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
-      <span *ngIf="nomArticle?.errors?.['maxlength']">Le nom ne doit pas dépasser 150 caractères</span>
+      <span *ngIf="nomArticle?.errors?.['required']">{{ 'articles.errors.nameRequired' | translate }}</span>
+      <span *ngIf="nomArticle?.errors?.['minlength']">{{ 'articles.errors.nameMinLength' | translate }}</span>
+      <span *ngIf="nomArticle?.errors?.['maxlength']">{{ 'articles.errors.nameMaxLength' | translate }}</span>
     </div>
 
     <!-- Description -->
     <ion-item [class.item-has-error]="description?.invalid && description?.touched">
-      <ion-label position="stacked">Description *</ion-label>
+      <ion-label position="stacked">{{ 'articles.description' | translate }} *</ion-label>
       <ion-textarea
         formControlName="description"
-        placeholder="Description complète (matière, style, etc.)"
+        [placeholder]="'articles.descriptionPlaceholder' | translate"
         rows="4">
       </ion-textarea>
     </ion-item>
     <div class="error-message" *ngIf="description?.invalid && description?.touched">
-      <span *ngIf="description?.errors?.['required']">La description est requise</span>
-      <span *ngIf="description?.errors?.['minlength']">La description doit contenir au moins 10 caractères</span>
+      <span *ngIf="description?.errors?.['required']">{{ 'articles.errors.descriptionRequired' | translate }}</span>
+      <span *ngIf="description?.errors?.['minlength']">{{ 'articles.errors.descriptionMinLength' | translate }}</span>
     </div>
 
     <!-- Prix location base -->
     <ion-item [class.item-has-error]="prixLocationBase?.invalid && prixLocationBase?.touched">
-      <ion-label position="stacked">Prix de location (MAD/jour) *</ion-label>
+      <ion-label position="stacked">{{ 'articles.rentalPrice' | translate }} (MAD/{{ 'common.day' | translate }}) *</ion-label>
       <ion-input
         type="number"
         formControlName="prixLocationBase"
@@ -63,13 +63,13 @@
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="prixLocationBase?.invalid && prixLocationBase?.touched">
-      <span *ngIf="prixLocationBase?.errors?.['required']">Le prix de location est requis</span>
-      <span *ngIf="prixLocationBase?.errors?.['min']">Le prix ne peut pas être négatif</span>
+      <span *ngIf="prixLocationBase?.errors?.['required']">{{ 'articles.errors.priceRequired' | translate }}</span>
+      <span *ngIf="prixLocationBase?.errors?.['min']">{{ 'articles.errors.priceMin' | translate }}</span>
     </div>
 
     <!-- Prix avance base -->
     <ion-item [class.item-has-error]="prixAvanceBase?.invalid && prixAvanceBase?.touched">
-      <ion-label position="stacked">Montant de l'avance (MAD) *</ion-label>
+      <ion-label position="stacked">{{ 'articles.depositAmount' | translate }} (MAD) *</ion-label>
       <ion-input
         type="number"
         formControlName="prixAvanceBase"
@@ -79,28 +79,28 @@
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="prixAvanceBase?.invalid && prixAvanceBase?.touched">
-      <span *ngIf="prixAvanceBase?.errors?.['required']">Le montant de l'avance est requis</span>
-      <span *ngIf="prixAvanceBase?.errors?.['min']">Le montant ne peut pas être négatif</span>
+      <span *ngIf="prixAvanceBase?.errors?.['required']">{{ 'articles.errors.depositRequired' | translate }}</span>
+      <span *ngIf="prixAvanceBase?.errors?.['min']">{{ 'articles.errors.priceMin' | translate }}</span>
     </div>
 
     <!-- Catégorie -->
     <ion-item [class.item-has-error]="idCategorie?.invalid && idCategorie?.touched">
-      <ion-label position="stacked">Catégorie *</ion-label>
-      <ion-select formControlName="idCategorie" placeholder="Sélectionner une catégorie">
+      <ion-label position="stacked">{{ 'articles.category' | translate }} *</ion-label>
+      <ion-select formControlName="idCategorie" [placeholder]="'articles.selectCategory' | translate">
         <ion-select-option *ngFor="let categorie of categories" [value]="categorie.idCategorie">
           {{ categorie.nomCategorie }}
         </ion-select-option>
       </ion-select>
     </ion-item>
     <div class="error-message" *ngIf="idCategorie?.invalid && idCategorie?.touched">
-      <span *ngIf="idCategorie?.errors?.['required']">La catégorie est requise</span>
+      <span *ngIf="idCategorie?.errors?.['required']">{{ 'articles.errors.categoryRequired' | translate }}</span>
     </div>
 
     <!-- Taille -->
     <ion-item>
-      <ion-label position="stacked">Taille</ion-label>
-      <ion-select formControlName="idTaille" placeholder="Sélectionner une taille (optionnel)">
-        <ion-select-option [value]="">Aucune taille</ion-select-option>
+      <ion-label position="stacked">{{ 'articles.size' | translate }}</ion-label>
+      <ion-select formControlName="idTaille" [placeholder]="'articles.selectSize' | translate">
+        <ion-select-option [value]="">{{ 'common.noSelection' | translate }}</ion-select-option>
         <ion-select-option *ngFor="let taille of tailles" [value]="taille.idTaille">
           {{ taille.taille }}
         </ion-select-option>
@@ -109,18 +109,18 @@
 
     <!-- Couleur -->
     <ion-item>
-      <ion-label position="stacked">Couleur</ion-label>
+      <ion-label position="stacked">{{ 'articles.color' | translate }}</ion-label>
       <ion-input
         type="text"
         formControlName="couleur"
-        placeholder="Rouge, Bleu, Vert..."
+        [placeholder]="'articles.colorPlaceholder' | translate"
         maxlength="50">
       </ion-input>
     </ion-item>
 
     <!-- Photo -->
     <ion-item>
-      <ion-label position="stacked">Photo de l'article</ion-label>
+      <ion-label position="stacked">{{ 'articles.photo' | translate }}</ion-label>
     </ion-item>
 
     <!-- Aperçu de l'image -->
@@ -145,7 +145,7 @@
         (click)="selectImage()"
         [disabled]="isUploadingImage">
         <ion-icon name="image" slot="start"></ion-icon>
-        {{ imagePreview ? 'Changer l\'image' : 'Sélectionner une image' }}
+        {{ (imagePreview ? 'articles.changePhoto' : 'articles.selectPhoto') | translate }}
       </ion-button>
       <ion-button
         expand="block"
@@ -153,24 +153,24 @@
         (click)="takePhoto()"
         [disabled]="isUploadingImage">
         <ion-icon name="camera" slot="start"></ion-icon>
-        Prendre une photo
+        {{ 'articles.takePhoto' | translate }}
       </ion-button>
     </div>
 
     <!-- Option manuelle pour URL -->
     <ion-item>
-      <ion-label position="stacked">Ou entrer une URL d'image</ion-label>
+      <ion-label position="stacked">{{ 'articles.photoUrlLabel' | translate }}</ion-label>
       <ion-input
         type="text"
         formControlName="photo"
-        placeholder="https://exemple.com/image.jpg"
+        [placeholder]="'articles.photoUrlPlaceholder' | translate"
         (ionInput)="onPhotoUrlChange($event)">
       </ion-input>
     </ion-item>
 
     <!-- Actif -->
     <ion-item>
-      <ion-label>Article actif</ion-label>
+      <ion-label>{{ 'articles.active' | translate }}</ion-label>
       <ion-checkbox slot="end" formControlName="actif"></ion-checkbox>
     </ion-item>
 

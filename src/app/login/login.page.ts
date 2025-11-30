@@ -18,6 +18,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { lockClosed, mail, person } from 'ionicons/icons';
 import { AuthService } from '../services/auth.service';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslationService } from '../services/translation.service';
 
 @Component({
   selector: 'app-login',
@@ -37,7 +39,8 @@ import { AuthService } from '../services/auth.service';
     IonCardContent,
     FormsModule,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class LoginPage implements OnInit {
@@ -49,7 +52,9 @@ export class LoginPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private authService: AuthService,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private translationService: TranslationService,
+    private translate: TranslateService
   ) {
     addIcons({ lockClosed, mail, person });
     
@@ -81,7 +86,7 @@ export class LoginPage implements OnInit {
         },
         error: async (error) => {
           this.isLoading = false;
-          const errorMessage = error.message || 'Erreur de connexion. Vérifiez vos identifiants.';
+          const errorMessage = error.message || this.translate.instant('login.errorMessage');
           await this.showErrorToast(errorMessage);
         }
       });

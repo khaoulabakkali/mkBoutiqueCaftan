@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Gestion des Paiements</ion-title>
+    <ion-title>{{ 'payments.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -10,14 +10,14 @@
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher un paiement..."
+    [placeholder]="'payments.search' | translate"
     debounce="300">
   </ion-searchbar>
 
   <!-- Spinner de chargement -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <!-- Liste des paiements -->

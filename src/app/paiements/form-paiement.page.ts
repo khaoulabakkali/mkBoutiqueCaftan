@@ -26,6 +26,7 @@ import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation } from '../models/reservation.model';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -49,7 +50,8 @@ import { environment } from '../../environments/environment';
     IonSelectOption,
     ReactiveFormsModule,
     FormsModule,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class FormPaiementPage implements OnInit {

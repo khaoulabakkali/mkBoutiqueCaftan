@@ -38,6 +38,7 @@ import { ArticleService } from '../services/article.service';
 import { ReservationService } from '../services/reservation.service';
 import { PaiementService } from '../services/paiement.service';
 import { DashboardService } from '../services/dashboard.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 interface Statistiques {
@@ -73,7 +74,8 @@ interface Statistiques {
     IonCol,
     IonIcon,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class Tab1Page implements OnInit {

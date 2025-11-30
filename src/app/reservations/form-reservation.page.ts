@@ -41,6 +41,7 @@ import { ArticleSelectionModalComponent } from './article-selection-modal.compon
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
 import { IonImg } from '@ionic/angular/standalone';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -60,17 +61,18 @@ import { environment } from '../../environments/environment';
     IonButton,
     IonButtons,
     IonIcon,
-  IonSelect,
-  IonSelectOption,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardContent,
-  IonBadge,
-  IonImg,
-  ReactiveFormsModule,
-  FormsModule,
-  CommonModule
+    IonSelect,
+    IonSelectOption,
+    IonCard,
+    IonCardHeader,
+    IonCardTitle,
+    IonCardContent,
+    IonBadge,
+    IonImg,
+    ReactiveFormsModule,
+    FormsModule,
+    CommonModule,
+    TranslateModule
   ],
 })
 export class FormReservationPage implements OnInit, OnDestroy {

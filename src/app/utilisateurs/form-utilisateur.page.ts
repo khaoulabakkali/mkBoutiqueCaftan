@@ -26,6 +26,7 @@ import { UtilisateurService } from '../services/utilisateur.service';
 import { Utilisateur, CreateUserRequest } from '../models/utilisateur.model';
 import { RoleService } from '../services/role.service';
 import { Role as RoleModel } from '../models/role.model';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-form-utilisateur',
@@ -48,7 +49,8 @@ import { Role as RoleModel } from '../models/role.model';
     IonCheckbox,
     IonIcon,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class FormUtilisateurPage implements OnInit {

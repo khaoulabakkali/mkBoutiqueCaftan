@@ -31,6 +31,7 @@ import { Categorie } from '../models/categorie.model';
 import { TailleService } from '../services/taille.service';
 import { Taille } from '../models/taille.model';
 import { ImageService } from '../services/image.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -51,12 +52,13 @@ import { environment } from '../../environments/environment';
     IonButton,
     IonButtons,
     IonIcon,
-  IonSelect,
-  IonSelectOption,
-  IonCheckbox,
-  IonImg,
-  ReactiveFormsModule,
-  CommonModule
+    IonSelect,
+    IonSelectOption,
+    IonCheckbox,
+    IonImg,
+    ReactiveFormsModule,
+    CommonModule,
+    TranslateModule
   ],
 })
 export class FormArticlePage implements OnInit {

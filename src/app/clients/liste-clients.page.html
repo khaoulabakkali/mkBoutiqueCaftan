@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Gestion des Clients</ion-title>
+    <ion-title>{{ 'clients.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addNewClient()">
         <ion-icon name="add"></ion-icon>
@@ -15,14 +15,14 @@
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher un client..."
+    [placeholder]="'clients.search' | translate"
     debounce="300">
   </ion-searchbar>
 
   <!-- Spinner de chargement -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'common.loading' | translate }}</p>
   </div>
 
   <!-- Liste des clients -->
@@ -34,7 +34,7 @@
           <p>{{ client.telephone }}</p>
           <div class="badges-container">
             <ion-badge color="primary">
-              {{ client.totalCommandes }} commande{{ client.totalCommandes > 1 ? 's' : '' }}
+              {{ client.totalCommandes }} {{ client.totalCommandes > 1 ? ('clients.orders_plural' | translate) : ('clients.orders' | translate) }}
             </ion-badge>
           </div>
         </ion-label>
@@ -44,7 +44,7 @@
       <ion-item-options side="end">
         <ion-item-option color="primary" (click)="viewClient(client); slidingItem.close()">
           <ion-icon slot="icon-only" name="information-circle"></ion-icon>
-          <span>Détails</span>
+          <span>{{ 'clients.info' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="tertiary" (click)="editClient(client); slidingItem.close()">
           <ion-icon slot="icon-only" name="create"></ion-icon>

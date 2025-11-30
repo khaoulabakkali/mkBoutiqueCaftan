@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon, IonMenuToggle } from '@ionic/angular/standalone';
+import { IonApp, IonRouterOutlet, IonMenu, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonIcon, IonMenuToggle, IonButton, IonItemDivider } from '@ionic/angular/standalone';
 import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business, barChart } from 'ionicons/icons';
+import { home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business, barChart, globe } from 'ionicons/icons';
 import { AuthService } from './services/auth.service';
+import { TranslationService } from './services/translation.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 import { environment } from '../environments/environment';
 
@@ -25,21 +27,32 @@ import { environment } from '../environments/environment';
     IonLabel, 
     IonIcon, 
     IonMenuToggle,
+    IonButton,
+    IonItemDivider,
     RouterLink,
     RouterLinkActive,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class AppComponent {
   currentUrl: string = '';
   parametresExpanded: boolean = false;
   userName: string | null = null;
+  currentLanguage: string = 'fr';
+  languages = ['en', 'fr', 'ar'];
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private translationService: TranslationService
   ) {
-    addIcons({ home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business, barChart });
+    addIcons({ home, grid, settings, logOut, people, person, cube, calendar, chevronDown, chevronUp, shieldCheckmark, resize, wallet, business, barChart, globe });
+    
+    // Initialiser les traductions
+    this.translationService.currentLanguage$.subscribe(lang => {
+      this.currentLanguage = lang;
+    });
     
     // Initialiser l'URL actuelle
     this.currentUrl = this.router.url;
@@ -70,6 +83,10 @@ export class AppComponent {
     event.stopPropagation();
     event.preventDefault();
     this.parametresExpanded = !this.parametresExpanded;
+  }
+
+  changeLanguage(language: string) {
+    this.translationService.setLanguage(language);
   }
 
   logout() {
