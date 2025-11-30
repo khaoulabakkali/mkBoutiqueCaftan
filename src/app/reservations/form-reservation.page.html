@@ -30,9 +30,9 @@
       <ion-icon name="chevron-down" slot="end"></ion-icon>
     </ion-item>
     <div class="error-message" *ngIf="idClient?.invalid && idClient?.touched">
-        <span *ngIf="idClient?.errors?.['required']">{{ 'reservations.errors.clientRequired' | translate }}</span>
+      <span *ngIf="idClient?.errors?.['required']">{{ 'reservations.errors.clientRequired' | translate }}</span>
     </div>
-            <ion-card-title>{{ 'reservations.articles' | translate }}</ion-card-title>
+
     <!-- Date réservation -->
     <ion-item [class.item-has-error]="dateReservation?.invalid && dateReservation?.touched">
         <ion-label position="stacked">{{ 'reservations.reservationDate' | translate }} *</ion-label>

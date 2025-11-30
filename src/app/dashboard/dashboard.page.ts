@@ -261,7 +261,7 @@ export class DashboardPage implements OnInit {
 
   onFilterTypeChange(event: any) {
     const value = event.detail?.value;
-a    if (value === 'jour' || value === 'periode') {
+    if (value === 'jour' || value === 'periode') {
       this.filterType = value;
       this.loadRevenus();
     }
