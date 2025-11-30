@@ -153,14 +153,32 @@
     "startDate": "تاريخ البداية (الاستلام)",
     "endDate": "تاريخ النهاية (الإرجاع)",
     "totalAmount": "المبلغ الإجمالي (درهم)",
+    "totalAmountPlaceholder": "0.00",
     "discountApplied": "الخصم المطبق (درهم)",
+    "discountPlaceholder": "0.00",
     "notes": "ملاحظات",
     "date": "التاريخ",
     "status": "الحالة",
+    "selectStatus": "اختر حالة",
     "amount": "المبلغ",
     "pending": "قيد الانتظار",
     "confirmed": "مؤكد",
     "cancelled": "ملغى",
+    "articles": "المنتجات",
+    "addArticle": "إضافة منتج",
+    "selectArticle": "انقر لاختيار منتج",
+    "noArticleSelected": "لم يتم اختيار منتج",
+    "allArticlesAdded": "تمت إضافة جميع المنتجات",
+    "noActiveArticle": "لا يوجد منتج نشط متاح",
+    "paymentId": "معرف الدفع (اختياري)",
+    "paymentIdPlaceholder": "معرف الدفع المرتبط",
+    "idCard": "بطاقة الهوية الوطنية",
+    "idCardRequired": "بطاقة الهوية الوطنية إلزامية",
+    "idCardRetrieved": "تم استرجاع بطاقة الهوية من ملف العميل",
+    "selectIdCard": "اختر صورة",
+    "changeIdCard": "تغيير الصورة",
+    "takeIdCardPhoto": "التقط صورة",
+    "useAnotherIdCard": "استخدم بطاقة هوية أخرى",
     "errors": {
       "clientRequired": "العميل مطلوب",
       "dateRequired": "تاريخ الحجز مطلوب",
@@ -169,7 +187,8 @@
       "totalAmountRequired": "المبلغ الإجمالي مطلوب",
       "totalAmountMin": "المبلغ الإجمالي لا يمكن أن يكون سالب",
       "discountRequired": "مبلغ الخصم مطلوب",
-      "discountMin": "الخصم لا يمكن أن يكون سالب"
+      "discountMin": "الخصم لا يمكن أن يكون سالب",
+      "statusRequired": "الحالة مطلوبة"
     }
   },
   "payments": {
@@ -221,9 +240,12 @@
     "passwordEditNote": "(اترك فارغ لعدم التغيير)",
     "role": "الدور",
     "selectRole": "اختر دور",
+    "selectRolePlaceholder": "اختر دور",
     "firstName": "الاسم الأول",
     "lastName": "اسم العائلة",
     "phone": "الهاتف",
+    "phonePlaceholder": "+212 6 12 34 56 78",
+    "active": "حساب نشط",
     "confirmPassword": "تأكيد كلمة المرور",
     "errors": {
       "fullNameRequired": "الاسم الكامل مطلوب",
@@ -240,13 +262,62 @@
   "parameters": {
     "title": "المعاملات",
     "categories": "الفئات",
+    "categoriesDescription": "إدارة فئات المنتجات",
     "roles": "الأدوار",
+    "rolesDescription": "إدارة أدوار المستخدمين",
     "sizes": "الأحجام",
+    "sizesDescription": "إدارة الأحجام المتاحة",
     "companies": "الشركات",
     "add": "إضافة",
     "edit": "تعديل",
     "detail": "التفاصيل",
-    "delete": "حذف"
+    "delete": "حذف",
+    "category": {
+      "title": "إدارة الفئات",
+      "add": "فئة جديدة",
+      "edit": "تعديل الفئة",
+      "name": "اسم الفئة",
+      "namePlaceholder": "قفاطن، تقشيطة، حقائب...",
+      "description": "الوصف",
+      "descriptionPlaceholder": "وصف اختياري لما تحتويه الفئة",
+      "displayOrder": "ترتيب العرض",
+      "displayOrderPlaceholder": "1، 2، 3...",
+      "errors": {
+        "nameRequired": "الاسم مطلوب",
+        "nameMinLength": "يجب أن يحتوي الاسم على 2 أحرف على الأقل",
+        "nameMaxLength": "لا يجب أن يتجاوز الاسم 50 حرف",
+        "descriptionMaxLength": "لا يجب أن يتجاوز الوصف 500 حرف",
+        "orderMin": "الترتيب لا يمكن أن يكون سالب"
+      }
+    },
+    "role": {
+      "title": "إدارة الأدوار",
+      "add": "دور جديد",
+      "edit": "تعديل الدور",
+      "label": "تسمية الدور",
+      "labelPlaceholder": "مدير، موظف، مدير عام...",
+      "description": "الوصف",
+      "descriptionPlaceholder": "وصف الدور (اختياري)",
+      "active": "دور نشط",
+      "errors": {
+        "labelRequired": "التسمية مطلوبة",
+        "labelMinLength": "يجب أن تحتوي التسمية على 2 أحرف على الأقل",
+        "labelMaxLength": "لا يجب أن تتجاوز التسمية 100 حرف",
+        "descriptionMaxLength": "لا يجب أن يتجاوز الوصف 500 حرف"
+      }
+    },
+    "size": {
+      "title": "إدارة الأحجام",
+      "add": "حجم جديد",
+      "edit": "تعديل الحجم",
+      "size": "الحجم",
+      "sizePlaceholder": "XS، S، M، L، XL، XXL...",
+      "errors": {
+        "sizeRequired": "الحجم مطلوب",
+        "sizeMinLength": "يجب أن يحتوي الحجم على حرف واحد على الأقل",
+        "sizeMaxLength": "لا يجب أن يتجاوز الحجم 20 حرف"
+      }
+    }
   },
   "dashboard": {
     "title": "لوحة التحكم",
@@ -269,5 +340,22 @@
   "tab3": {
     "title": "التبويب 3",
     "content": "محتوى التبويب 3"
+  },
+  "modals": {
+    "selectArticle": {
+      "title": "اختر منتج",
+      "searchPlaceholder": "البحث بالاسم، اللون...",
+      "noResults": "لم يتم العثور على منتج",
+      "unavailable": "غير متاح",
+      "alreadyReserved": "محجوز بالفعل من",
+      "to": "إلى",
+      "reservation": "الحجز"
+    },
+    "selectClient": {
+      "title": "اختر عميل",
+      "searchPlaceholder": "البحث بالاسم، الاسم الأول أو الهاتف...",
+      "newClient": "عميل جديد",
+      "noResults": "لم يتم العثور على عميل"
+    }
   }
 }

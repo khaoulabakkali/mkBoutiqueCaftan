@@ -12,6 +12,7 @@ import {
   IonIcon
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { shieldCheckmark, resize, grid, settings } from 'ionicons/icons';
 
@@ -30,28 +31,29 @@ import { shieldCheckmark, resize, grid, settings } from 'ionicons/icons';
     IonItem,
     IonLabel,
     IonIcon,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class ParametresPage implements OnInit {
   menuItems = [
     {
-      title: 'Rôles',
-      description: 'Gérer les rôles des utilisateurs',
+      titleKey: 'parameters.roles',
+      descriptionKey: 'parameters.rolesDescription',
       icon: 'shield-checkmark',
       route: '/parametres/roles',
       color: 'primary'
     },
     {
-      title: 'Tailles',
-      description: 'Gérer les tailles disponibles',
+      titleKey: 'parameters.sizes',
+      descriptionKey: 'parameters.sizesDescription',
       icon: 'resize',
       route: '/parametres/tailles',
       color: 'secondary'
     },
     {
-      title: 'Catégories',
-      description: 'Gérer les catégories de produits',
+      titleKey: 'parameters.categories',
+      descriptionKey: 'parameters.categoriesDescription',
       icon: 'grid',
       route: '/parametres/categories',
       color: 'tertiary'

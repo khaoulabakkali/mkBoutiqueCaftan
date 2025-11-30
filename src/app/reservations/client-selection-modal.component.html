@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Sélectionner un client</ion-title>
+    <ion-title>{{ 'modals.selectClient.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()">
         <ion-icon name="close"></ion-icon>
@@ -15,7 +15,7 @@
     [(ngModel)]="searchTerm"
     [ngModelOptions]="{standalone: true}"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher par nom, prénom ou téléphone..."
+    [placeholder]="'modals.selectClient.searchPlaceholder' | translate"
     debounce="200">
   </ion-searchbar>
 
@@ -23,7 +23,7 @@
   <div style="padding: 0.5rem 1rem;">
     <ion-button expand="block" (click)="addNewClient()">
       <ion-icon name="add" slot="start"></ion-icon>
-      Nouveau client
+      {{ 'modals.selectClient.newClient' | translate }}
     </ion-button>
   </div>
 
@@ -43,7 +43,7 @@
 
   <!-- Message si aucun résultat -->
   <div *ngIf="clientsFiltres.length === 0" class="empty-state">
-    <p>Aucun client trouvé</p>
+    <p>{{ 'modals.selectClient.noResults' | translate }}</p>
   </div>
 </ion-content>
 

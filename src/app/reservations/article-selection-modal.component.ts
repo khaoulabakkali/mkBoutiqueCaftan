@@ -16,6 +16,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { close, imageOutline, alertCircle } from 'ionicons/icons';
 import { Article } from '../models/article.model';
@@ -40,7 +41,8 @@ import { Reservation } from '../models/reservation.model';
     IonLabel,
     IonImg,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
 })
 export class ArticleSelectionModalComponent implements OnInit {

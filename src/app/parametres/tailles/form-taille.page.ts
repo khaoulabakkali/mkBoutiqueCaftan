@@ -17,6 +17,7 @@ import {
 } from '@ionic/angular/standalone';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { save, arrowBack, checkmark, closeOutline } from 'ionicons/icons';
 import { TailleService } from '../../services/taille.service';
@@ -41,7 +42,8 @@ import { environment } from '../../../environments/environment';
     IonButtons,
     IonIcon,
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class FormTaillePage implements OnInit {

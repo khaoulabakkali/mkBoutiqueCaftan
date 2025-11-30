@@ -10,26 +10,24 @@
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
       <ion-button
-          <ion-label position="stacked">{{ 'reservations.status' | translate }} *</ion-label>
-          <ion-select formControlName="statutReservation" [placeholder]="'reservations.selectStatus' | translate">
+        type="submit"
+        form="reservationForm"
         [disabled]="reservationForm.invalid">
         <ion-icon name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-          <span *ngIf="statutReservation?.errors?.['required']">{{ 'reservations.errors.statusRequired' | translate }}</span>
 <ion-content [fullscreen]="true">
   <form id="reservationForm" [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
     <!-- Client -->
     <ion-item [class.item-has-error]="idClient?.invalid && idClient?.touched" button (click)="openClientModal()">
-          <ion-label position="stacked">{{ 'reservations.paymentId' | translate }}</ion-label>
-          <ion-input
-            type="number"
-            formControlName="idPaiement"
-            [placeholder]="'reservations.paymentIdPlaceholder' | translate">
-          </ion-input>
-        <ion-icon name="chevron-down" slot="end"></ion-icon>
+      <ion-label position="stacked">{{ 'reservations.client' | translate }} *</ion-label>
+      <ion-input
+        [placeholder]="'reservations.selectClient' | translate"
+        readonly>
+      </ion-input>
+      <ion-icon name="chevron-down" slot="end"></ion-icon>
     </ion-item>
     <div class="error-message" *ngIf="idClient?.invalid && idClient?.touched">
         <span *ngIf="idClient?.errors?.['required']">{{ 'reservations.errors.clientRequired' | translate }}</span>
@@ -44,27 +42,26 @@
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="dateReservation?.invalid && dateReservation?.touched">
-              <p>{{ 'reservations.noArticleSelected' | translate }}</p>
+      <span *ngIf="dateReservation?.errors?.['required']">{{ 'reservations.errors.dateRequired' | translate }}</span>
     </div>
 
     <!-- Date début -->
     <ion-item [class.item-has-error]="dateDebut?.invalid && dateDebut?.touched">
-              <ion-label position="stacked">{{ 'reservations.addArticle' | translate }}</ion-label>
-              <ion-input
-                [placeholder]="'reservations.selectArticle' | translate"
-                readonly>
-              </ion-input>
-              <ion-icon name="chevron-down" slot="end"></ion-icon>
+      <ion-label position="stacked">{{ 'reservations.startDate' | translate }} *</ion-label>
+      <ion-input
+        type="date"
+        formControlName="dateDebut"
+        (ionInput)="calculateTotal(); onDatesChange()">
+      </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="dateDebut?.invalid && dateDebut?.touched">
-        <span *ngIf="dateDebut?.errors?.['required']">{{ 'reservations.errors.startDateRequired' | translate }}</span>
+      <span *ngIf="dateDebut?.errors?.['required']">{{ 'reservations.errors.startDateRequired' | translate }}</span>
     </div>
-              <p>{{ 'reservations.allArticlesAdded' | translate }}</p>
     <!-- Date fin -->
     <ion-item [class.item-has-error]="dateFin?.invalid && dateFin?.touched">
-        <ion-label position="stacked">{{ 'reservations.endDate' | translate }} *</ion-label>
+      <ion-label position="stacked">{{ 'reservations.endDate' | translate }} *</ion-label>
       <ion-input
-              <p>{{ 'reservations.noActiveArticle' | translate }}</p>
+        type="date"
         formControlName="dateFin"
         (ionInput)="calculateTotal(); onDatesChange()">
       </ion-input>
@@ -108,7 +105,7 @@
 
     <!-- Carte d'identité nationale -->
     <ion-item [class.item-has-error]="photoCarteIdentite?.invalid && photoCarteIdentite?.touched">
-      <ion-label position="stacked">Carte d'identité nationale *</ion-label>
+      <ion-label position="stacked">{{ 'reservations.idCard' | translate }} *</ion-label>
     </ion-item>
 
     <!-- Message si la carte est récupérée du client -->
@@ -116,7 +113,7 @@
       <ion-label>
         <p style="color: var(--ion-color-success); font-size: 0.875rem;">
           <ion-icon name="checkmark-circle" style="vertical-align: middle; margin-right: 4px;"></ion-icon>
-          Carte d'identité récupérée depuis la fiche client
+          {{ 'reservations.idCardRetrieved' | translate }}
         </p>
       </ion-label>
     </ion-item>
@@ -144,7 +141,7 @@
         (click)="selectCarteIdentite()"
         [disabled]="isUploadingCarteIdentite">
         <ion-icon name="image" slot="start"></ion-icon>
-        {{ carteIdentitePreview ? 'Changer l\'image' : 'Sélectionner une image' }}
+        {{ carteIdentitePreview ? ('reservations.changeIdCard' | translate) : ('reservations.selectIdCard' | translate) }}
       </ion-button>
       <ion-button
         expand="block"
@@ -152,7 +149,7 @@
         (click)="takeCarteIdentitePhoto()"
         [disabled]="isUploadingCarteIdentite">
         <ion-icon name="camera" slot="start"></ion-icon>
-        Prendre une photo
+        {{ 'reservations.takeIdCardPhoto' | translate }}
       </ion-button>
     </div>
 
@@ -163,41 +160,41 @@
         fill="outline"
         (click)="replaceCarteIdentite()">
         <ion-icon name="refresh" slot="start"></ion-icon>
-        Utiliser une autre carte d'identité
+        {{ 'reservations.useAnotherIdCard' | translate }}
       </ion-button>
     </div>
 
     <div class="error-message" *ngIf="photoCarteIdentite?.invalid && photoCarteIdentite?.touched">
-      <span *ngIf="photoCarteIdentite?.errors?.['required']">La carte d'identité nationale est obligatoire</span>
+      <span *ngIf="photoCarteIdentite?.errors?.['required']">{{ 'reservations.idCardRequired' | translate }}</span>
     </div>
 
     <!-- Statut réservation -->
     <ion-item [class.item-has-error]="statutReservation?.invalid && statutReservation?.touched">
-      <ion-label position="stacked">Statut *</ion-label>
-      <ion-select formControlName="statutReservation" placeholder="Sélectionner un statut">
+      <ion-label position="stacked">{{ 'reservations.status' | translate }} *</ion-label>
+      <ion-select formControlName="statutReservation" [placeholder]="'reservations.selectStatus' | translate">
         <ion-select-option *ngFor="let statut of statuts" [value]="statut">
           {{ statut }}
         </ion-select-option>
       </ion-select>
     </ion-item>
     <div class="error-message" *ngIf="statutReservation?.invalid && statutReservation?.touched">
-      <span *ngIf="statutReservation?.errors?.['required']">Le statut est requis</span>
+      <span *ngIf="statutReservation?.errors?.['required']">{{ 'reservations.errors.statusRequired' | translate }}</span>
     </div>
 
     <!-- ID Paiement -->
     <ion-item>
-      <ion-label position="stacked">ID Paiement (optionnel)</ion-label>
+      <ion-label position="stacked">{{ 'reservations.paymentId' | translate }}</ion-label>
       <ion-input
         type="number"
         formControlName="idPaiement"
-        placeholder="ID du paiement associé">
+        [placeholder]="'reservations.paymentIdPlaceholder' | translate">
       </ion-input>
     </ion-item>
 
     <!-- Articles de la réservation -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Articles</ion-card-title>
+        <ion-card-title>{{ 'reservations.articles' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <!-- Liste des articles sélectionnés -->
@@ -242,14 +239,14 @@
 
         <!-- Message si aucun article -->
         <div *ngIf="selectedArticles.length === 0" class="empty-state">
-          <p>Aucun article sélectionné</p>
+          <p>{{ 'reservations.noArticleSelected' | translate }}</p>
         </div>
 
         <!-- Sélection d'article à ajouter -->
         <ion-item *ngIf="getAvailableArticles().length > 0" button (click)="openArticleModal()">
-          <ion-label position="stacked">Ajouter un article</ion-label>
+          <ion-label position="stacked">{{ 'reservations.addArticle' | translate }}</ion-label>
           <ion-input
-            placeholder="Cliquez pour sélectionner un article"
+            [placeholder]="'reservations.selectArticle' | translate"
             readonly>
           </ion-input>
           <ion-icon name="chevron-down" slot="end"></ion-icon>
@@ -257,12 +254,12 @@
         
         <!-- Message si tous les articles sont sélectionnés -->
         <div *ngIf="getAvailableArticles().length === 0 && articles.length > 0" class="empty-state">
-          <p>Tous les articles sont déjà ajoutés</p>
+          <p>{{ 'reservations.allArticlesAdded' | translate }}</p>
         </div>
         
         <!-- Message si aucun article disponible -->
         <div *ngIf="articles.length === 0" class="empty-state">
-          <p>Aucun article actif disponible</p>
+          <p>{{ 'reservations.noActiveArticle' | translate }}</p>
         </div>
       </ion-card-content>
     </ion-card>

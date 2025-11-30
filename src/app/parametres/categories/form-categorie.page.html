@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Catégorie</ion-title>
+    <ion-title>{{ isEditMode ? ('parameters.category.edit' | translate) : ('parameters.category.add' | translate) }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         type="button"
@@ -23,46 +23,46 @@
   <form id="categorieForm" [formGroup]="categorieForm" (ngSubmit)="onSubmit()">
     <!-- Nom catégorie -->
     <ion-item [class.item-has-error]="nomCategorie?.invalid && nomCategorie?.touched">
-      <ion-label position="stacked">Nom de la catégorie *</ion-label>
+      <ion-label position="stacked">{{ 'parameters.category.name' | translate }} *</ion-label>
       <ion-input
         type="text"
         formControlName="nomCategorie"
-        placeholder="Caftans, Tekchitas, Sacs..."
+        [placeholder]="'parameters.category.namePlaceholder' | translate"
         maxlength="50">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="nomCategorie?.invalid && nomCategorie?.touched">
-      <span *ngIf="nomCategorie?.errors?.['required']">Le nom est requis</span>
-      <span *ngIf="nomCategorie?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
-      <span *ngIf="nomCategorie?.errors?.['maxlength']">Le nom ne doit pas dépasser 50 caractères</span>
+      <span *ngIf="nomCategorie?.errors?.['required']">{{ 'parameters.category.errors.nameRequired' | translate }}</span>
+      <span *ngIf="nomCategorie?.errors?.['minlength']">{{ 'parameters.category.errors.nameMinLength' | translate }}</span>
+      <span *ngIf="nomCategorie?.errors?.['maxlength']">{{ 'parameters.category.errors.nameMaxLength' | translate }}</span>
     </div>
 
     <!-- Description -->
     <ion-item [class.item-has-error]="description?.invalid && description?.touched">
-      <ion-label position="stacked">Description</ion-label>
+      <ion-label position="stacked">{{ 'parameters.category.description' | translate }}</ion-label>
       <ion-textarea
         formControlName="description"
-        placeholder="Description optionnelle de ce que contient la catégorie"
+        [placeholder]="'parameters.category.descriptionPlaceholder' | translate"
         rows="3"
         maxlength="500">
       </ion-textarea>
     </ion-item>
     <div class="error-message" *ngIf="description?.invalid && description?.touched">
-      <span *ngIf="description?.errors?.['maxlength']">La description ne doit pas dépasser 500 caractères</span>
+      <span *ngIf="description?.errors?.['maxlength']">{{ 'parameters.category.errors.descriptionMaxLength' | translate }}</span>
     </div>
 
     <!-- Ordre d'affichage -->
     <ion-item [class.item-has-error]="ordreAffichage?.invalid && ordreAffichage?.touched">
-      <ion-label position="stacked">Ordre d'affichage</ion-label>
+      <ion-label position="stacked">{{ 'parameters.category.displayOrder' | translate }}</ion-label>
       <ion-input
         type="number"
         formControlName="ordreAffichage"
-        placeholder="1, 2, 3..."
+        [placeholder]="'parameters.category.displayOrderPlaceholder' | translate"
         min="0">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="ordreAffichage?.invalid && ordreAffichage?.touched">
-      <span *ngIf="ordreAffichage?.errors?.['min']">L'ordre ne peut pas être négatif</span>
+      <span *ngIf="ordreAffichage?.errors?.['min']">{{ 'parameters.category.errors.orderMin' | translate }}</span>
     </div>
 
   </form>

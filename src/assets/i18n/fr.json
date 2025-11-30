@@ -157,14 +157,32 @@
     "startDate": "Date de début (prise en charge)",
     "endDate": "Date de fin (retour)",
     "totalAmount": "Montant total (MAD)",
+    "totalAmountPlaceholder": "0.00",
     "discountApplied": "Remise appliquée (MAD)",
+    "discountPlaceholder": "0.00",
     "notes": "Notes",
     "date": "Date",
     "status": "Statut",
+    "selectStatus": "Sélectionner un statut",
     "amount": "Montant",
     "pending": "En attente",
     "confirmed": "Confirmée",
     "cancelled": "Annulée",
+    "articles": "Articles",
+    "addArticle": "Ajouter un article",
+    "selectArticle": "Cliquez pour sélectionner un article",
+    "noArticleSelected": "Aucun article sélectionné",
+    "allArticlesAdded": "Tous les articles sont déjà ajoutés",
+    "noActiveArticle": "Aucun article actif disponible",
+    "paymentId": "ID Paiement (optionnel)",
+    "paymentIdPlaceholder": "ID du paiement associé",
+    "idCard": "Carte d'identité nationale",
+    "idCardRequired": "La carte d'identité nationale est obligatoire",
+    "idCardRetrieved": "Carte d'identité récupérée depuis la fiche client",
+    "selectIdCard": "Sélectionner une image",
+    "changeIdCard": "Changer l'image",
+    "takeIdCardPhoto": "Prendre une photo",
+    "useAnotherIdCard": "Utiliser une autre carte d'identité",
     "errors": {
       "clientRequired": "Le client est requis",
       "dateRequired": "La date de réservation est requise",
@@ -173,7 +191,8 @@
       "totalAmountRequired": "Le montant total est requis",
       "totalAmountMin": "Le montant total ne peut pas être négatif",
       "discountRequired": "La remise appliquée est requise",
-      "discountMin": "La remise ne peut pas être négative"
+      "discountMin": "La remise ne peut pas être négative",
+      "statusRequired": "Le statut est requis"
     }
   },
   "payments": {
@@ -212,18 +231,25 @@
     "search": "Rechercher un utilisateur...",
     "fullName": "Nom complet",
     "fullNamePlaceholder": "Nom et prénom",
+    "selectReservationPlaceholder": "Sélectionner une réservation",
     "username": "Identifiant",
+    "amountPlaceholder": "0.00",
     "usernamePlaceholder": "username",
     "email": "Email",
     "emailPlaceholder": "email@exemple.com",
+    "selectMethodPlaceholder": "Sélectionner une méthode",
     "password": "Mot de passe",
+    "referencePlaceholder": "Numéro de transaction, chèque, etc.",
     "passwordPlaceholder": "••••••••",
     "passwordEditNote": "(laisser vide pour ne pas changer)",
     "role": "Rôle",
     "selectRole": "Sélectionner un rôle",
+    "selectRolePlaceholder": "Sélectionner un rôle",
     "firstName": "Prénom",
     "lastName": "Nom",
     "phone": "Téléphone",
+    "phonePlaceholder": "+212 6 12 34 56 78",
+    "active": "Compte actif",
     "confirmPassword": "Confirmer le mot de passe",
     "errors": {
       "fullNameRequired": "Le nom complet est requis",
@@ -240,13 +266,62 @@
   "parameters": {
     "title": "Paramètres",
     "categories": "Catégories",
+    "categoriesDescription": "Gérer les catégories de produits",
     "roles": "Rôles",
+    "rolesDescription": "Gérer les rôles des utilisateurs",
     "sizes": "Tailles",
+    "sizesDescription": "Gérer les tailles disponibles",
     "companies": "Sociétés",
     "add": "Ajouter",
     "edit": "Modifier",
     "detail": "Détails",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "category": {
+      "title": "Gestion des Catégories",
+      "add": "Nouvelle Catégorie",
+      "edit": "Modifier Catégorie",
+      "name": "Nom de la catégorie",
+      "namePlaceholder": "Caftans, Tekchitas, Sacs...",
+      "description": "Description",
+      "descriptionPlaceholder": "Description optionnelle de ce que contient la catégorie",
+      "displayOrder": "Ordre d'affichage",
+      "displayOrderPlaceholder": "1, 2, 3...",
+      "errors": {
+        "nameRequired": "Le nom est requis",
+        "nameMinLength": "Le nom doit contenir au moins 2 caractères",
+        "nameMaxLength": "Le nom ne doit pas dépasser 50 caractères",
+        "descriptionMaxLength": "La description ne doit pas dépasser 500 caractères",
+        "orderMin": "L'ordre ne peut pas être négatif"
+      }
+    },
+    "role": {
+      "title": "Gestion des Rôles",
+      "add": "Nouvel Rôle",
+      "edit": "Modifier Rôle",
+      "label": "Libellé du rôle",
+      "labelPlaceholder": "Administrateur, Staff, Manager...",
+      "description": "Description",
+      "descriptionPlaceholder": "Description du rôle (optionnel)",
+      "active": "Rôle actif",
+      "errors": {
+        "labelRequired": "Le libellé est requis",
+        "labelMinLength": "Le libellé doit contenir au moins 2 caractères",
+        "labelMaxLength": "Le libellé ne doit pas dépasser 100 caractères",
+        "descriptionMaxLength": "La description ne doit pas dépasser 500 caractères"
+      }
+    },
+    "size": {
+      "title": "Gestion des Tailles",
+      "add": "Nouvelle Taille",
+      "edit": "Modifier Taille",
+      "size": "Taille",
+      "sizePlaceholder": "XS, S, M, L, XL, XXL...",
+      "errors": {
+        "sizeRequired": "La taille est requise",
+        "sizeMinLength": "La taille doit contenir au moins 1 caractère",
+        "sizeMaxLength": "La taille ne doit pas dépasser 20 caractères"
+      }
+    }
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -269,5 +344,22 @@
   "tab3": {
     "title": "Onglet 3",
     "content": "Contenu de l'onglet 3"
+  },
+  "modals": {
+    "selectArticle": {
+      "title": "Sélectionner un article",
+      "searchPlaceholder": "Rechercher par nom, couleur...",
+      "noResults": "Aucun article trouvé",
+      "unavailable": "Non disponible",
+      "alreadyReserved": "Déjà réservé du",
+      "to": "au",
+      "reservation": "Réservation"
+    },
+    "selectClient": {
+      "title": "Sélectionner un client",
+      "searchPlaceholder": "Rechercher par nom, prénom ou téléphone...",
+      "newClient": "Nouveau client",
+      "noResults": "Aucun client trouvé"
+    }
   }
 }

@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Sélectionner un article</ion-title>
+    <ion-title>{{ 'modals.selectArticle.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="close()">
         <ion-icon name="close"></ion-icon>
@@ -15,7 +15,7 @@
     [(ngModel)]="searchTerm"
     [ngModelOptions]="{standalone: true}"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher par nom, couleur..."
+    [placeholder]="'modals.selectArticle.searchPlaceholder' | translate"
     debounce="200">
   </ion-searchbar>
 
@@ -61,9 +61,9 @@
         <p *ngIf="!isArticleAvailable(article.idArticle) && getConflictingReservation(article.idArticle)" 
            class="conflict-message">
           <ion-icon name="alert-circle" color="danger" style="margin-right: 4px;"></ion-icon>
-          <strong>Non disponible</strong> - Déjà réservé du {{ formatDate(getConflictingReservation(article.idArticle)?.dateDebut) }} 
-          au {{ formatDate(getConflictingReservation(article.idArticle)?.dateFin) }}
-          (Réservation #{{ getConflictingReservation(article.idArticle)?.idReservation }})
+          <strong>{{ 'modals.selectArticle.unavailable' | translate }}</strong> - {{ 'modals.selectArticle.alreadyReserved' | translate }} {{ formatDate(getConflictingReservation(article.idArticle)?.dateDebut) }} 
+          {{ 'modals.selectArticle.to' | translate }} {{ formatDate(getConflictingReservation(article.idArticle)?.dateFin) }}
+          ({{ 'modals.selectArticle.reservation' | translate }} #{{ getConflictingReservation(article.idArticle)?.idReservation }})
         </p>
       </ion-label>
     </ion-item>
@@ -71,7 +71,7 @@
 
   <!-- Message si aucun résultat -->
   <div *ngIf="articlesFiltres.length === 0" class="empty-state">
-    <p>Aucun article trouvé</p>
+    <p>{{ 'modals.selectArticle.noResults' | translate }}</p>
   </div>
 </ion-content>
 

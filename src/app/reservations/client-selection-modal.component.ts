@@ -15,6 +15,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { close, add, person } from 'ionicons/icons';
 import { Client } from '../models/client.model';
@@ -37,7 +38,8 @@ import { Client } from '../models/client.model';
     IonItem,
     IonLabel,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
 })
 export class ClientSelectionModalComponent implements OnInit {

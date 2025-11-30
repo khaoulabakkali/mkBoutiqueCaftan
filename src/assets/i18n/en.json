@@ -153,14 +153,32 @@
     "startDate": "Start Date (Pickup)",
     "endDate": "End Date (Return)",
     "totalAmount": "Total Amount (MAD)",
+    "totalAmountPlaceholder": "0.00",
     "discountApplied": "Discount Applied (MAD)",
+    "discountPlaceholder": "0.00",
     "notes": "Notes",
     "date": "Date",
     "status": "Status",
+    "selectStatus": "Select a status",
     "amount": "Amount",
     "pending": "Pending",
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
+    "articles": "Articles",
+    "addArticle": "Add Article",
+    "selectArticle": "Click to select an article",
+    "noArticleSelected": "No article selected",
+    "allArticlesAdded": "All articles are already added",
+    "noActiveArticle": "No active article available",
+    "paymentId": "Payment ID (optional)",
+    "paymentIdPlaceholder": "Payment ID",
+    "idCard": "National ID Card",
+    "idCardRequired": "National ID card is required",
+    "idCardRetrieved": "ID card retrieved from client file",
+    "selectIdCard": "Select an image",
+    "changeIdCard": "Change image",
+    "takeIdCardPhoto": "Take a photo",
+    "useAnotherIdCard": "Use another ID card",
     "errors": {
       "clientRequired": "Client is required",
       "dateRequired": "Reservation date is required",
@@ -169,7 +187,8 @@
       "totalAmountRequired": "Total amount is required",
       "totalAmountMin": "Total amount cannot be negative",
       "discountRequired": "Discount amount is required",
-      "discountMin": "Discount cannot be negative"
+      "discountMin": "Discount cannot be negative",
+      "statusRequired": "Status is required"
     }
   },
   "payments": {
@@ -221,9 +240,12 @@
     "passwordEditNote": "(leave empty to keep current)",
     "role": "Role",
     "selectRole": "Select a role",
+    "selectRolePlaceholder": "Select a role",
     "firstName": "First Name",
     "lastName": "Last Name",
     "phone": "Phone",
+    "phonePlaceholder": "+212 6 12 34 56 78",
+    "active": "Active Account",
     "confirmPassword": "Confirm Password",
     "errors": {
       "fullNameRequired": "Full name is required",
@@ -240,13 +262,62 @@
   "parameters": {
     "title": "Parameters",
     "categories": "Categories",
+    "categoriesDescription": "Manage product categories",
     "roles": "Roles",
+    "rolesDescription": "Manage user roles",
     "sizes": "Sizes",
+    "sizesDescription": "Manage available sizes",
     "companies": "Companies",
     "add": "Add",
     "edit": "Edit",
     "detail": "Details",
-    "delete": "Delete"
+    "delete": "Delete",
+    "category": {
+      "title": "Category Management",
+      "add": "New Category",
+      "edit": "Edit Category",
+      "name": "Category Name",
+      "namePlaceholder": "Caftans, Tekchitas, Bags...",
+      "description": "Description",
+      "descriptionPlaceholder": "Optional description of what the category contains",
+      "displayOrder": "Display Order",
+      "displayOrderPlaceholder": "1, 2, 3...",
+      "errors": {
+        "nameRequired": "Name is required",
+        "nameMinLength": "Name must be at least 2 characters",
+        "nameMaxLength": "Name must not exceed 50 characters",
+        "descriptionMaxLength": "Description must not exceed 500 characters",
+        "orderMin": "Order cannot be negative"
+      }
+    },
+    "role": {
+      "title": "Role Management",
+      "add": "New Role",
+      "edit": "Edit Role",
+      "label": "Role Label",
+      "labelPlaceholder": "Administrator, Staff, Manager...",
+      "description": "Description",
+      "descriptionPlaceholder": "Role description (optional)",
+      "active": "Active Role",
+      "errors": {
+        "labelRequired": "Label is required",
+        "labelMinLength": "Label must be at least 2 characters",
+        "labelMaxLength": "Label must not exceed 100 characters",
+        "descriptionMaxLength": "Description must not exceed 500 characters"
+      }
+    },
+    "size": {
+      "title": "Size Management",
+      "add": "New Size",
+      "edit": "Edit Size",
+      "size": "Size",
+      "sizePlaceholder": "XS, S, M, L, XL, XXL...",
+      "errors": {
+        "sizeRequired": "Size is required",
+        "sizeMinLength": "Size must be at least 1 character",
+        "sizeMaxLength": "Size must not exceed 20 characters"
+      }
+    }
   },
   "dashboard": {
     "title": "Dashboard",
@@ -269,5 +340,22 @@
   "tab3": {
     "title": "Tab 3",
     "content": "Tab 3 content"
+  },
+  "modals": {
+    "selectArticle": {
+      "title": "Select an Article",
+      "searchPlaceholder": "Search by name, color...",
+      "noResults": "No article found",
+      "unavailable": "Unavailable",
+      "alreadyReserved": "Already reserved from",
+      "to": "to",
+      "reservation": "Reservation"
+    },
+    "selectClient": {
+      "title": "Select a Client",
+      "searchPlaceholder": "Search by name, first name or phone...",
+      "newClient": "New Client",
+      "noResults": "No client found"
+    }
   }
 }

@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Taille</ion-title>
+    <ion-title>{{ isEditMode ? ('parameters.size.edit' | translate) : ('parameters.size.add' | translate) }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         type="button"
@@ -23,18 +23,18 @@
   <form id="tailleForm" [formGroup]="tailleForm" (ngSubmit)="onSubmit()">
     <!-- Taille -->
     <ion-item [class.item-has-error]="taille?.invalid && taille?.touched">
-      <ion-label position="stacked">Taille *</ion-label>
+      <ion-label position="stacked">{{ 'parameters.size.size' | translate }} *</ion-label>
       <ion-input
         type="text"
         formControlName="taille"
-        placeholder="XS, S, M, L, XL, XXL..."
+        [placeholder]="'parameters.size.sizePlaceholder' | translate"
         maxlength="20">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="taille?.invalid && taille?.touched">
-      <span *ngIf="taille?.errors?.['required']">La taille est requise</span>
-      <span *ngIf="taille?.errors?.['minlength']">La taille doit contenir au moins 1 caractère</span>
-      <span *ngIf="taille?.errors?.['maxlength']">La taille ne doit pas dépasser 20 caractères</span>
+      <span *ngIf="taille?.errors?.['required']">{{ 'parameters.size.errors.sizeRequired' | translate }}</span>
+      <span *ngIf="taille?.errors?.['minlength']">{{ 'parameters.size.errors.sizeMinLength' | translate }}</span>
+      <span *ngIf="taille?.errors?.['maxlength']">{{ 'parameters.size.errors.sizeMaxLength' | translate }}</span>
     </div>
 
   </form>
