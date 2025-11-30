@@ -261,6 +261,12 @@
   },
   "parameters": {
     "title": "المعاملات",
+    "otherSettings": "إعدادات أخرى",
+    "language": {
+      "title": "اللغة",
+      "current": "اللغة الحالية",
+      "changed": "تم تغيير اللغة بنجاح"
+    },
     "categories": "الفئات",
     "categoriesDescription": "إدارة فئات المنتجات",
     "roles": "الأدوار",

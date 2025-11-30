@@ -2,6 +2,21 @@
   padding: 1rem;
 }
 
+ion-list {
+  margin-bottom: 1.5rem;
+}
+
+ion-item-divider {
+  --background: var(--ion-color-light);
+  --color: var(--ion-color-primary);
+  font-weight: 600;
+  margin-top: 0.5rem;
+  
+  ion-icon {
+    margin-right: 0.5rem;
+  }
+}
+
 ion-item.menu-item {
   --padding-start: 1rem;
   --padding-end: 1rem;
@@ -25,6 +40,18 @@ ion-item.menu-item {
   ion-icon {
     font-size: 1.5rem;
     margin-right: 1rem;
+  }
+}
+
+ion-item.active {
+  --background: var(--ion-color-primary-tint);
+  --color: var(--ion-color-primary);
+  
+  ion-label {
+    h3 {
+      font-weight: 600;
+      color: var(--ion-color-primary);
+    }
   }
 }
 

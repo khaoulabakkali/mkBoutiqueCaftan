@@ -7,7 +7,35 @@
 
 <ion-content [fullscreen]="true">
   <div class="content-container">
+    <!-- Section Langue / Language -->
     <ion-list>
+      <ion-item-divider>
+        <ion-icon name="globe" slot="start"></ion-icon>
+        <ion-label>{{ 'parameters.language.title' | translate }}</ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-icon name="language" slot="start" color="primary"></ion-icon>
+        <ion-label>
+          <h2>{{ 'parameters.language.current' | translate }}</h2>
+          <p>{{ currentLanguageName }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item *ngFor="let lang of availableLanguages" button (click)="changeLanguage(lang.code)" [class.active]="currentLanguage === lang.code">
+        <ion-icon [name]="lang.icon" slot="start" [color]="currentLanguage === lang.code ? 'primary' : 'medium'"></ion-icon>
+        <ion-label>
+          <h3>{{ lang.name }}</h3>
+          <p>{{ lang.nativeName }}</p>
+        </ion-label>
+        <ion-icon *ngIf="currentLanguage === lang.code" name="checkmark" slot="end" color="primary"></ion-icon>
+      </ion-item>
+    </ion-list>
+
+    <!-- Section Autres Paramètres -->
+    <ion-list>
+      <ion-item-divider>
+        <ion-icon name="settings" slot="start"></ion-icon>
+        <ion-label>{{ 'parameters.otherSettings' | translate }}</ion-label>
+      </ion-item-divider>
       <ion-item 
         *ngFor="let item of menuItems" 
         [button]="true"

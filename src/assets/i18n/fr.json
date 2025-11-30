@@ -265,6 +265,12 @@
   },
   "parameters": {
     "title": "Paramètres",
+    "otherSettings": "Autres Paramètres",
+    "language": {
+      "title": "Langue / Language",
+      "current": "Langue actuelle",
+      "changed": "Langue changée avec succès"
+    },
     "categories": "Catégories",
     "categoriesDescription": "Gérer les catégories de produits",
     "roles": "Rôles",

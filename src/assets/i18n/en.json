@@ -261,6 +261,12 @@
   },
   "parameters": {
     "title": "Parameters",
+    "otherSettings": "Other Settings",
+    "language": {
+      "title": "Language",
+      "current": "Current Language",
+      "changed": "Language changed successfully"
+    },
     "categories": "Categories",
     "categoriesDescription": "Manage product categories",
     "roles": "Roles",
