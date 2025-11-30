@@ -23,49 +23,49 @@
   <form id="paiementForm" [formGroup]="paiementForm" (ngSubmit)="onSubmit()">
     <!-- Réservation -->
     <ion-item [class.item-has-error]="idReservation?.invalid && idReservation?.touched">
-      <ion-label position="stacked">Réservation *</ion-label>
-      <ion-select formControlName="idReservation" placeholder="Sélectionner une réservation">
+        <ion-label position="stacked">{{ 'payments.selectReservation' | translate }} *</ion-label>
+        <ion-select formControlName="idReservation" [placeholder]="'payments.selectReservationPlaceholder' | translate">
         <ion-select-option *ngFor="let reservation of reservations" [value]="getReservationId(reservation)">
           {{ getReservationLabel(reservation) }}
         </ion-select-option>
       </ion-select>
     </ion-item>
     <div class="error-message" *ngIf="idReservation?.invalid && idReservation?.touched">
-      <span *ngIf="idReservation?.errors?.['required']">La réservation est requise</span>
+        <span *ngIf="idReservation?.errors?.['required']">{{ 'payments.errors.reservationRequired' | translate }}</span>
     </div>
 
     <!-- Montant -->
     <ion-item [class.item-has-error]="montant?.invalid && montant?.touched">
-      <ion-label position="stacked">Montant (MAD) *</ion-label>
+        <ion-label position="stacked">{{ 'payments.amount' | translate }} (MAD) *</ion-label>
       <ion-input
         type="number"
         formControlName="montant"
-        placeholder="0.00"
+          [placeholder]="'payments.amountPlaceholder' | translate"
         step="0.01"
         min="0.01">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="montant?.invalid && montant?.touched">
-      <span *ngIf="montant?.errors?.['required']">Le montant est requis</span>
-      <span *ngIf="montant?.errors?.['min']">Le montant doit être supérieur à 0</span>
+        <span *ngIf="montant?.errors?.['required']">{{ 'payments.errors.amountRequired' | translate }}</span>
+        <span *ngIf="montant?.errors?.['min']">{{ 'payments.errors.amountMin' | translate }}</span>
     </div>
 
     <!-- Date de paiement -->
     <ion-item [class.item-has-error]="datePaiement?.invalid && datePaiement?.touched">
-      <ion-label position="stacked">Date de paiement *</ion-label>
+        <ion-label position="stacked">{{ 'payments.paymentDate' | translate }} *</ion-label>
       <ion-input
         type="datetime-local"
         formControlName="datePaiement">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="datePaiement?.invalid && datePaiement?.touched">
-      <span *ngIf="datePaiement?.errors?.['required']">La date de paiement est requise</span>
+        <span *ngIf="datePaiement?.errors?.['required']">{{ 'payments.errors.dateRequired' | translate }}</span>
     </div>
 
     <!-- Méthode de paiement -->
     <ion-item>
-      <ion-label position="stacked">Méthode de paiement</ion-label>
-      <ion-select formControlName="methodePaiement" placeholder="Sélectionner une méthode">
+        <ion-label position="stacked">{{ 'payments.selectMethod' | translate }}</ion-label>
+        <ion-select formControlName="methodePaiement" [placeholder]="'payments.selectMethodPlaceholder' | translate">
         <ion-select-option *ngFor="let methode of methodesPaiement" [value]="methode">
           {{ methode }}
         </ion-select-option>
@@ -74,12 +74,12 @@
 
     <!-- Référence -->
     <ion-item>
-      <ion-label position="stacked">Référence</ion-label>
-      <ion-input
-        type="text"
-        formControlName="reference"
-        placeholder="Numéro de transaction, chèque, etc.">
-      </ion-input>
+        <ion-label position="stacked">{{ 'payments.reference' | translate }}</ion-label>
+        <ion-input
+          type="text"
+          formControlName="reference"
+          [placeholder]="'payments.referencePlaceholder' | translate">
+        </ion-input>
     </ion-item>
 
   </form>

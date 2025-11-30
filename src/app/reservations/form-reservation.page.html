@@ -10,100 +10,100 @@
         <ion-icon name="close-outline"></ion-icon>
       </ion-button>
       <ion-button
-        type="submit"
-        form="reservationForm"
+          <ion-label position="stacked">{{ 'reservations.status' | translate }} *</ion-label>
+          <ion-select formControlName="statutReservation" [placeholder]="'reservations.selectStatus' | translate">
         [disabled]="reservationForm.invalid">
         <ion-icon name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
+          <span *ngIf="statutReservation?.errors?.['required']">{{ 'reservations.errors.statusRequired' | translate }}</span>
 <ion-content [fullscreen]="true">
   <form id="reservationForm" [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
     <!-- Client -->
     <ion-item [class.item-has-error]="idClient?.invalid && idClient?.touched" button (click)="openClientModal()">
-      <ion-label position="stacked">Client *</ion-label>
-      <ion-input
-        [value]="getSelectedClientName()"
-        placeholder="Sélectionner un client"
-        readonly>
-      </ion-input>
-      <ion-icon name="chevron-down" slot="end"></ion-icon>
+          <ion-label position="stacked">{{ 'reservations.paymentId' | translate }}</ion-label>
+          <ion-input
+            type="number"
+            formControlName="idPaiement"
+            [placeholder]="'reservations.paymentIdPlaceholder' | translate">
+          </ion-input>
+        <ion-icon name="chevron-down" slot="end"></ion-icon>
     </ion-item>
     <div class="error-message" *ngIf="idClient?.invalid && idClient?.touched">
-      <span *ngIf="idClient?.errors?.['required']">Le client est requis</span>
+        <span *ngIf="idClient?.errors?.['required']">{{ 'reservations.errors.clientRequired' | translate }}</span>
     </div>
-
+            <ion-card-title>{{ 'reservations.articles' | translate }}</ion-card-title>
     <!-- Date réservation -->
     <ion-item [class.item-has-error]="dateReservation?.invalid && dateReservation?.touched">
-      <ion-label position="stacked">Date et heure de réservation *</ion-label>
+        <ion-label position="stacked">{{ 'reservations.reservationDate' | translate }} *</ion-label>
       <ion-input
         type="datetime-local"
         formControlName="dateReservation">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="dateReservation?.invalid && dateReservation?.touched">
-      <span *ngIf="dateReservation?.errors?.['required']">La date de réservation est requise</span>
+              <p>{{ 'reservations.noArticleSelected' | translate }}</p>
     </div>
 
     <!-- Date début -->
     <ion-item [class.item-has-error]="dateDebut?.invalid && dateDebut?.touched">
-      <ion-label position="stacked">Date de début (prise en charge) *</ion-label>
-      <ion-input
-        type="date"
-        formControlName="dateDebut"
-        (ionInput)="calculateTotal(); onDatesChange()">
-      </ion-input>
+              <ion-label position="stacked">{{ 'reservations.addArticle' | translate }}</ion-label>
+              <ion-input
+                [placeholder]="'reservations.selectArticle' | translate"
+                readonly>
+              </ion-input>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
     </ion-item>
     <div class="error-message" *ngIf="dateDebut?.invalid && dateDebut?.touched">
-      <span *ngIf="dateDebut?.errors?.['required']">La date de début est requise</span>
+        <span *ngIf="dateDebut?.errors?.['required']">{{ 'reservations.errors.startDateRequired' | translate }}</span>
     </div>
-
+              <p>{{ 'reservations.allArticlesAdded' | translate }}</p>
     <!-- Date fin -->
     <ion-item [class.item-has-error]="dateFin?.invalid && dateFin?.touched">
-      <ion-label position="stacked">Date de fin (retour) *</ion-label>
+        <ion-label position="stacked">{{ 'reservations.endDate' | translate }} *</ion-label>
       <ion-input
-        type="date"
+              <p>{{ 'reservations.noActiveArticle' | translate }}</p>
         formControlName="dateFin"
         (ionInput)="calculateTotal(); onDatesChange()">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="dateFin?.invalid && dateFin?.touched">
-      <span *ngIf="dateFin?.errors?.['required']">La date de fin est requise</span>
+        <span *ngIf="dateFin?.errors?.['required']">{{ 'reservations.errors.endDateRequired' | translate }}</span>
     </div>
 
     <!-- Montant total -->
     <ion-item [class.item-has-error]="montantTotal?.invalid && montantTotal?.touched">
-      <ion-label position="stacked">Montant total (MAD) *</ion-label>
+        <ion-label position="stacked">{{ 'reservations.totalAmount' | translate }} (MAD) *</ion-label>
       <ion-input
         type="number"
         formControlName="montantTotal"
-        placeholder="0.00"
+          [placeholder]="'reservations.totalAmountPlaceholder' | translate"
         step="0.01"
         min="0">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="montantTotal?.invalid && montantTotal?.touched">
-      <span *ngIf="montantTotal?.errors?.['required']">Le montant total est requis</span>
-      <span *ngIf="montantTotal?.errors?.['min']">Le montant ne peut pas être négatif</span>
+        <span *ngIf="montantTotal?.errors?.['required']">{{ 'reservations.errors.totalAmountRequired' | translate }}</span>
+        <span *ngIf="montantTotal?.errors?.['min']">{{ 'reservations.errors.totalAmountMin' | translate }}</span>
     </div>
 
     <!-- Remise appliquée -->
     <ion-item [class.item-has-error]="remiseAppliquee?.invalid && remiseAppliquee?.touched">
-      <ion-label position="stacked">Remise appliquée (MAD) *</ion-label>
+        <ion-label position="stacked">{{ 'reservations.discountApplied' | translate }} (MAD) *</ion-label>
       <ion-input
         type="number"
         formControlName="remiseAppliquee"
-        placeholder="0.00"
+          [placeholder]="'reservations.discountPlaceholder' | translate"
         step="0.01"
         min="0"
         (ionInput)="calculateTotal()">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="remiseAppliquee?.invalid && remiseAppliquee?.touched">
-      <span *ngIf="remiseAppliquee?.errors?.['required']">La remise est requise (0 si aucune)</span>
-      <span *ngIf="remiseAppliquee?.errors?.['min']">La remise ne peut pas être négative</span>
+        <span *ngIf="remiseAppliquee?.errors?.['required']">{{ 'reservations.errors.discountRequired' | translate }}</span>
+        <span *ngIf="remiseAppliquee?.errors?.['min']">{{ 'reservations.errors.discountMin' | translate }}</span>
     </div>
 
     <!-- Carte d'identité nationale -->
