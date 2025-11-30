@@ -110,7 +110,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
       dateDebut: ['', [Validators.required]],
       dateFin: ['', [Validators.required]],
       montantTotal: [0, [Validators.required, Validators.min(0)]],
-      statutReservation: ['En attente', [Validators.required]],
+      statutReservation: ['Confirmée', [Validators.required]],
       idPaiement: ['', []],
       remiseAppliquee: [0, [Validators.required, Validators.min(0)]],
       photoCarteIdentite: ['', [Validators.required]]

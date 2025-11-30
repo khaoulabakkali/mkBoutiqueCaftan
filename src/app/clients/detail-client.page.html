@@ -79,6 +79,26 @@
       </ion-card-content>
     </ion-card>
 
+    <!-- Photo de la Carte d'Identité Nationale -->
+    <ion-card *ngIf="client.photoCarteIdentite">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="id-card" slot="start"></ion-icon>
+          Carte d'Identité Nationale
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="cin-photo-container">
+          <img 
+            [src]="client.photoCarteIdentite" 
+            alt="Photo CIN"
+            class="cin-photo"
+            (error)="handleImageError($event)"
+            (load)="handleImageLoad($event)">
+        </div>
+      </ion-card-content>
+    </ion-card>
+
     <!-- Informations supplémentaires -->
     <ion-card *ngIf="client.adressePrincipale || client.dateCreationFiche">
       <ion-card-header>

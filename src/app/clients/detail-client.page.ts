@@ -22,7 +22,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { addIcons } from 'ionicons';
-import { arrowBack, create, person, mail, call, location, calendar, bag } from 'ionicons/icons';
+import { arrowBack, create, person, mail, call, location, calendar, bag, idCard } from 'ionicons/icons';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
 import { environment } from '../../environments/environment';
@@ -63,7 +63,7 @@ export class DetailClientPage implements OnInit {
     private toastController: ToastController,
     private loadingController: LoadingController
   ) {
-    addIcons({ arrowBack, create, person, mail, call, location, calendar, bag });
+    addIcons({ arrowBack, create, person, mail, call, location, calendar, bag, idCard });
   }
 
   ngOnInit() {
@@ -137,6 +137,29 @@ export class DetailClientPage implements OnInit {
       position: 'bottom'
     });
     await toast.present();
+  }
+
+  /**
+   * Gère les erreurs de chargement d'image
+   */
+  handleImageError(event: any) {
+    if (!environment.production) {
+      console.error('Erreur lors du chargement de l\'image CIN:', event);
+    }
+    // Optionnel : masquer l'image ou afficher un placeholder
+    const img = event.target;
+    if (img) {
+      img.style.display = 'none';
+    }
+  }
+
+  /**
+   * Gère le chargement réussi de l'image
+   */
+  handleImageLoad(event: any) {
+    if (!environment.production) {
+      console.log('Image CIN chargée avec succès');
+    }
   }
 }
 

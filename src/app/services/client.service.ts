@@ -37,10 +37,11 @@ export class ClientService {
    * Récupérer tous les clients
    */
   getAllClients(): Observable<Client[]> {
-    return this.http.get<Client[]>(
+    return this.http.get<any[]>(
       `${this.apiUrl}/clients`,
       this.getHttpOptions()
     ).pipe(
+      map((clients) => clients.map(client => this.mapApiToModel(client))),
       catchError(this.handleError<Client[]>('getAllClients', []))
     );
   }
@@ -49,10 +50,11 @@ export class ClientService {
    * Récupérer un client par ID
    */
   getClientById(id: number): Observable<Client> {
-    return this.http.get<Client>(
+    return this.http.get<any>(
       `${this.apiUrl}/clients/${id}`,
       this.getHttpOptions()
     ).pipe(
+      map((client) => this.mapApiToModel(client)),
       catchError(this.handleError<Client>('getClientById'))
     );
   }
@@ -67,7 +69,7 @@ export class ClientService {
       telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
-      photoCarteIdentite: client.photoCarteIdentite || undefined,
+      photoCIN: client.photoCarteIdentite || undefined,
       totalCommandes: client.totalCommandes || 0,
       actif: client.actif !== undefined ? client.actif : true
     };
@@ -77,16 +79,17 @@ export class ClientService {
       delete (payload as any).prenomClient;
     }
     
-    // Retirer photoCarteIdentite du payload s'il est vide
-    if (!payload.photoCarteIdentite || payload.photoCarteIdentite === '') {
-      delete (payload as any).photoCarteIdentite;
+    // Retirer photoCIN du payload s'il est vide
+    if (!payload.photoCIN || payload.photoCIN === '') {
+      delete (payload as any).photoCIN;
     }
 
-    return this.http.post<Client>(
+    return this.http.post<any>(
       `${this.apiUrl}/clients`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map((client) => this.mapApiToModel(client)),
       catchError(this.handleError<Client>('createClient'))
     );
   }
@@ -101,7 +104,7 @@ export class ClientService {
       telephone: client.telephone?.trim() || '',
       email: client.email?.trim() || undefined,
       adressePrincipale: client.adressePrincipale?.trim() || undefined,
-      photoCarteIdentite: client.photoCarteIdentite || undefined,
+      photoCIN: client.photoCarteIdentite || undefined,
       totalCommandes: client.totalCommandes || 0,
       actif: client.actif !== undefined ? client.actif : true
     };
@@ -111,16 +114,17 @@ export class ClientService {
       delete (payload as any).prenomClient;
     }
     
-    // Retirer photoCarteIdentite du payload s'il est vide
-    if (!payload.photoCarteIdentite || payload.photoCarteIdentite === '') {
-      delete (payload as any).photoCarteIdentite;
+    // Retirer photoCIN du payload s'il est vide
+    if (!payload.photoCIN || payload.photoCIN === '') {
+      delete (payload as any).photoCIN;
     }
 
-    return this.http.put<Client>(
+    return this.http.put<any>(
       `${this.apiUrl}/clients/${id}`,
       payload,
       this.getHttpOptions()
     ).pipe(
+      map((client) => this.mapApiToModel(client)),
       catchError(this.handleError<Client>('updateClient'))
     );
   }
@@ -136,6 +140,25 @@ export class ClientService {
       map(() => true),
       catchError(this.handleError<boolean>('deleteClient', false))
     );
+  }
+
+  /**
+   * Mappe les données reçues de l'API vers le modèle Client
+   * Gère les variations de nom de colonne (photoCIN, photoCarteIdentite, etc.)
+   */
+  private mapApiToModel(data: any): Client {
+    return {
+      idClient: data.idClient,
+      nomClient: data.nomClient,
+      prenomClient: data.prenomClient,
+      telephone: data.telephone,
+      email: data.email,
+      adressePrincipale: data.adressePrincipale,
+      totalCommandes: data.totalCommandes || 0,
+      dateCreationFiche: data.dateCreationFiche,
+      actif: data.actif !== undefined ? data.actif : true,
+      photoCarteIdentite: data.photoCarteIdentite || data.PhotoCarteIdentite || data.photoCIN || data.PhotoCIN || data.photo_cin || data.Photo_cin
+    };
   }
 
   /**
