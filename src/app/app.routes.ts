@@ -171,16 +171,18 @@ export const routes: Routes = [
     loadComponent: () => import('./paiements/liste-paiements.page').then((m) => m.ListePaiementsPage),
     canActivate: [authGuard],
   },
-  {
-    path: 'paiements/new',
-    loadComponent: () => import('./paiements/form-paiement.page').then((m) => m.FormPaiementPage),
-    canActivate: [authGuard],
-  },
-  {
-    path: 'paiements/edit/:id',
-    loadComponent: () => import('./paiements/form-paiement.page').then((m) => m.FormPaiementPage),
-    canActivate: [authGuard],
-  },
+  // Routes désactivées - Les paiements ne peuvent plus être créés ou modifiés manuellement
+  // Les paiements sont créés automatiquement lors de la finalisation d'une réservation
+  // {
+  //   path: 'paiements/new',
+  //   loadComponent: () => import('./paiements/form-paiement.page').then((m) => m.FormPaiementPage),
+  //   canActivate: [authGuard],
+  // },
+  // {
+  //   path: 'paiements/edit/:id',
+  //   loadComponent: () => import('./paiements/form-paiement.page').then((m) => m.FormPaiementPage),
+  //   canActivate: [authGuard],
+  // },
   {
     path: 'paiements/detail/:id',
     loadComponent: () => import('./paiements/detail-paiement.page').then((m) => m.DetailPaiementPage),

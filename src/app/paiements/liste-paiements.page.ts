@@ -193,59 +193,62 @@ export class ListePaiementsPage implements OnInit {
     });
   }
 
-  async editPaiement(paiement: Paiement) {
-    if (!paiement || !paiement.idPaiement) {
-      this.presentToast('ID paiement manquant', 'danger');
-      return;
-    }
-    this.router.navigate(['/paiements/edit', paiement.idPaiement]);
-  }
+  // Méthodes désactivées - Les paiements ne peuvent plus être modifiés ou supprimés manuellement
+  // Les paiements sont créés automatiquement lors de la finalisation d'une réservation
+  
+  // async editPaiement(paiement: Paiement) {
+  //   if (!paiement || !paiement.idPaiement) {
+  //     this.presentToast('ID paiement manquant', 'danger');
+  //     return;
+  //   }
+  //   this.router.navigate(['/paiements/edit', paiement.idPaiement]);
+  // }
 
-  async deletePaiement(paiement: Paiement) {
-    if (!paiement || !paiement.idPaiement) {
-      this.presentToast('ID paiement manquant', 'danger');
-      return;
-    }
+  // async deletePaiement(paiement: Paiement) {
+  //   if (!paiement || !paiement.idPaiement) {
+  //     this.presentToast('ID paiement manquant', 'danger');
+  //     return;
+  //   }
 
-    const alert = await this.alertController.create({
-      header: 'Confirmer la suppression',
-      message: `Êtes-vous sûr de vouloir supprimer le paiement #${paiement.idPaiement} (${this.formatMontant(paiement.montant)}) ?`,
-      buttons: [
-        {
-          text: 'Annuler',
-          role: 'cancel'
-        },
-        {
-          text: 'Supprimer',
-          role: 'destructive',
-          handler: async () => {
-            const loading = await this.loadingController.create({
-              message: 'Suppression...'
-            });
-            await loading.present();
+  //   const alert = await this.alertController.create({
+  //     header: 'Confirmer la suppression',
+  //     message: `Êtes-vous sûr de vouloir supprimer le paiement #${paiement.idPaiement} (${this.formatMontant(paiement.montant)}) ?`,
+  //     buttons: [
+  //       {
+  //         text: 'Annuler',
+  //         role: 'cancel'
+  //       },
+  //       {
+  //         text: 'Supprimer',
+  //         role: 'destructive',
+  //         handler: async () => {
+  //           const loading = await this.loadingController.create({
+  //             message: 'Suppression...'
+  //           });
+  //           await loading.present();
 
-            if (paiement.idPaiement) {
-              this.paiementService.deletePaiement(paiement.idPaiement).subscribe({
-                next: () => {
-                  loading.dismiss();
-                  this.presentToast('Paiement supprimé avec succès', 'success');
-                  // Recharger la liste depuis l'API
-                  this.loadPaiements(false);
-                },
-                error: (error) => {
-                  loading.dismiss();
-                  const errorMessage = error?.message || 'Erreur lors de la suppression';
-                  this.presentToast(errorMessage, 'danger');
-                }
-              });
-            }
-          }
-        }
-      ]
-    });
+  //           if (paiement.idPaiement) {
+  //             this.paiementService.deletePaiement(paiement.idPaiement).subscribe({
+  //               next: () => {
+  //                 loading.dismiss();
+  //                 this.presentToast('Paiement supprimé avec succès', 'success');
+  //                 // Recharger la liste depuis l'API
+  //                 this.loadPaiements(false);
+  //               },
+  //               error: (error) => {
+  //                 loading.dismiss();
+  //                 const errorMessage = error?.message || 'Erreur lors de la suppression';
+  //                 this.presentToast(errorMessage, 'danger');
+  //               }
+  //             });
+  //           }
+  //         }
+  //       }
+  //     ]
+  //   });
 
-    await alert.present();
-  }
+  //   await alert.present();
+  // }
 
   async presentToast(message: string, color: string) {
     const toast = await this.toastController.create({
@@ -257,9 +260,12 @@ export class ListePaiementsPage implements OnInit {
     await toast.present();
   }
 
-  addNewPaiement() {
-    this.router.navigate(['/paiements/new']);
-  }
+  // Méthode désactivée - Les paiements ne peuvent plus être créés manuellement
+  // Les paiements sont créés automatiquement lors de la finalisation d'une réservation
+  
+  // addNewPaiement() {
+  //   this.router.navigate(['/paiements/new']);
+  // }
 
   viewPaiement(paiement: Paiement) {
     if (paiement.idPaiement) {

@@ -140,11 +140,14 @@ export class DetailPaiementPage implements OnInit {
     });
   }
 
-  editPaiement() {
-    if (this.paiement?.idPaiement) {
-      this.router.navigate(['/paiements/edit', this.paiement.idPaiement]);
-    }
-  }
+  // Méthode désactivée - Les paiements ne peuvent plus être modifiés manuellement
+  // Les paiements sont créés automatiquement lors de la finalisation d'une réservation
+  
+  // editPaiement() {
+  //   if (this.paiement?.idPaiement) {
+  //     this.router.navigate(['/paiements/edit', this.paiement.idPaiement]);
+  //   }
+  // }
 
   goBack() {
     this.router.navigate(['/paiements']);

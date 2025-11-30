@@ -35,12 +35,15 @@ import {
   checkmarkCircle,
   closeCircle,
   timeOutline,
-  informationCircle
+  informationCircle,
+  checkmark
 } from 'ionicons/icons';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation, StatutReservation } from '../models/reservation.model';
 import { ClientService } from '../services/client.service';
 import { Client } from '../models/client.model';
+import { PaiementService } from '../services/paiement.service';
+import { Paiement } from '../models/paiement.model';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -81,6 +84,7 @@ export class ListeReservationsPage implements OnInit {
   constructor(
     private reservationService: ReservationService,
     private clientService: ClientService,
+    private paiementService: PaiementService,
     private router: Router,
     private alertController: AlertController,
     private toastController: ToastController,
@@ -95,7 +99,8 @@ export class ListeReservationsPage implements OnInit {
       checkmarkCircle,
       closeCircle,
       timeOutline,
-      informationCircle
+      informationCircle,
+      checkmark
     });
   }
 
@@ -161,6 +166,40 @@ export class ListeReservationsPage implements OnInit {
         const errorMessage = error?.message || 'Erreur lors du chargement des réservations';
         this.presentToast(errorMessage, 'danger');
       }
+    });
+  }
+
+  /**
+   * Recharge la liste des réservations après une mise à jour (sans afficher le loading)
+   */
+  private async loadReservationsAfterUpdate(): Promise<void> {
+    return new Promise((resolve) => {
+      // Réinitialiser le flag pour permettre le rechargement
+      this.isLoadingData = false;
+      
+      // Forcer le rechargement en ajoutant un petit délai pour s'assurer que l'API a bien mis à jour
+      setTimeout(() => {
+        this.reservationService.getAllReservations().subscribe({
+          next: (data) => {
+            // Mettre à jour les tableaux avec les nouvelles données
+            this.reservations = data || [];
+            // Appliquer le filtre de recherche si actif
+            if (this.searchTerm.trim()) {
+              this.filterReservations();
+            } else {
+              this.reservationsFiltres = [...this.reservations]; // Créer une nouvelle référence pour forcer la détection de changement
+            }
+            resolve();
+          },
+          error: (error) => {
+            if (!environment.production) {
+              console.error('Erreur lors du rechargement:', error);
+            }
+            // Même en cas d'erreur, résoudre pour ne pas bloquer l'interface
+            resolve();
+          }
+        });
+      }, 100); // Petit délai pour s'assurer que l'API a bien mis à jour
     });
   }
 
@@ -284,6 +323,220 @@ export class ListeReservationsPage implements OnInit {
     if (reservation.idReservation) {
       this.router.navigate(['/reservations/detail', reservation.idReservation]);
     }
+  }
+
+  /**
+   * Vérifie si une réservation peut être terminée
+   */
+  canTerminateReservation(reservation: Reservation): boolean {
+    return reservation.statutReservation !== 'Terminée' && 
+           reservation.statutReservation !== 'Annulée';
+  }
+
+  /**
+   * Termine une réservation et crée automatiquement un paiement
+   */
+  async terminerReservation(reservation: Reservation, slidingItem?: any) {
+    if (!reservation.idReservation) {
+      return;
+    }
+
+    // Vérifier si la réservation peut être terminée
+    if (!this.canTerminateReservation(reservation)) {
+      if (slidingItem) {
+        slidingItem.close();
+      }
+      await this.presentToast('Cette réservation est déjà terminée ou annulée', 'warning');
+      return;
+    }
+
+    if (slidingItem) {
+      slidingItem.close();
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Terminer la réservation',
+      message: `Êtes-vous sûr de vouloir terminer la réservation #${reservation.idReservation} ? Un paiement sera automatiquement créé.`,
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel'
+        },
+        {
+          text: 'Terminer',
+          handler: async () => {
+            await this.executeTerminerReservation(reservation);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  /**
+   * Exécute la logique de terminaison de réservation
+   */
+  private async executeTerminerReservation(reservation: Reservation) {
+    if (!reservation.idReservation) {
+      return;
+    }
+
+    const loading = await this.loadingController.create({
+      message: 'Terminaison de la réservation...'
+    });
+    await loading.present();
+
+    // Mettre à jour le statut de la réservation
+    const reservationData: Reservation = {
+      idClient: reservation.idClient,
+      dateReservation: reservation.dateReservation,
+      dateDebut: reservation.dateDebut,
+      dateFin: reservation.dateFin,
+      montantTotal: reservation.montantTotal,
+      statutReservation: 'Terminée',
+      idPaiement: reservation.idPaiement || undefined,
+      remiseAppliquee: reservation.remiseAppliquee || 0,
+      photoCarteIdentite: reservation.photoCarteIdentite,
+      articles: reservation.articles
+    };
+
+    this.reservationService.updateReservation(reservation.idReservation, reservationData).subscribe({
+      next: async (updatedReservation) => {
+        // Mettre à jour immédiatement la réservation dans le tableau local
+        const index = this.reservations.findIndex(r => r.idReservation === reservation.idReservation);
+        if (index !== -1) {
+          this.reservations[index] = { ...this.reservations[index], statutReservation: 'Terminée' };
+          // Mettre à jour aussi dans la liste filtrée
+          const indexFiltre = this.reservationsFiltres.findIndex(r => r.idReservation === reservation.idReservation);
+          if (indexFiltre !== -1) {
+            this.reservationsFiltres[indexFiltre] = { ...this.reservationsFiltres[indexFiltre], statutReservation: 'Terminée' };
+          }
+        }
+
+        // Si aucun paiement n'existe, créer un paiement automatiquement
+        if (!updatedReservation.idPaiement) {
+          try {
+            await this.createPaymentForReservation(
+              reservation.idReservation!,
+              reservation.montantTotal,
+              reservation.idClient
+            );
+            // Recharger la liste des réservations depuis l'API pour avoir les données complètes
+            await this.loadReservationsAfterUpdate();
+            loading.dismiss();
+            await this.presentToast('Réservation terminée et paiement créé avec succès', 'success');
+          } catch (error) {
+            // Même en cas d'erreur de paiement, recharger la liste car la réservation est terminée
+            await this.loadReservationsAfterUpdate();
+            loading.dismiss();
+            await this.presentToast('Réservation terminée mais erreur lors de la création du paiement', 'warning');
+          }
+        } else {
+          // Recharger la liste des réservations depuis l'API pour avoir les données complètes
+          await this.loadReservationsAfterUpdate();
+          loading.dismiss();
+          await this.presentToast('Réservation terminée avec succès', 'success');
+        }
+      },
+      error: async (error) => {
+        loading.dismiss();
+        const errorMessage = error?.message || 'Erreur lors de la terminaison de la réservation';
+        await this.presentToast(errorMessage, 'danger');
+      }
+    });
+  }
+
+  /**
+   * Crée automatiquement un paiement pour une réservation terminée
+   */
+  private async createPaymentForReservation(reservationId: number, montant: number, idClient: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Vérifier d'abord si un paiement existe déjà pour cette réservation
+      this.paiementService.getAllPaiements().subscribe({
+        next: (paiements) => {
+          const existingPaiement = paiements.find(p => p.idReservation === reservationId);
+          
+          if (existingPaiement) {
+            // Un paiement existe déjà, mettre à jour la réservation avec cet ID
+            this.updateReservationWithPayment(reservationId, existingPaiement.idPaiement!);
+            resolve();
+            return;
+          }
+
+          // Créer un nouveau paiement
+          const nouveauPaiement: Paiement = {
+            idReservation: reservationId,
+            montant: montant,
+            datePaiement: new Date().toISOString(),
+            methodePaiement: 'Automatique',
+            reference: `AUTO-${reservationId}-${Date.now()}`
+          };
+
+          this.paiementService.createPaiement(nouveauPaiement).subscribe({
+            next: (paiementCree) => {
+              // Mettre à jour la réservation avec l'ID du paiement créé
+              if (paiementCree.idPaiement) {
+                this.updateReservationWithPayment(reservationId, paiementCree.idPaiement);
+              }
+              resolve();
+            },
+            error: (error) => {
+              if (!environment.production) {
+                console.error('Erreur lors de la création du paiement:', error);
+              }
+              reject(error);
+            }
+          });
+        },
+        error: (error) => {
+          if (!environment.production) {
+            console.error('Erreur lors de la vérification des paiements:', error);
+          }
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * Met à jour une réservation avec l'ID du paiement
+   */
+  private updateReservationWithPayment(reservationId: number, paiementId: number): void {
+    this.reservationService.getReservationById(reservationId).subscribe({
+      next: (reservation) => {
+        const reservationData: Reservation = {
+          idClient: reservation.idClient,
+          dateReservation: reservation.dateReservation,
+          dateDebut: reservation.dateDebut,
+          dateFin: reservation.dateFin,
+          montantTotal: reservation.montantTotal,
+          statutReservation: reservation.statutReservation,
+          idPaiement: paiementId,
+          remiseAppliquee: reservation.remiseAppliquee || 0,
+          photoCarteIdentite: reservation.photoCarteIdentite,
+          articles: reservation.articles
+        };
+
+        this.reservationService.updateReservation(reservationId, reservationData).subscribe({
+          next: () => {
+            if (!environment.production) {
+              console.log('Paiement associé à la réservation avec succès');
+            }
+          },
+          error: (error) => {
+            if (!environment.production) {
+              console.error('Erreur lors de la mise à jour de la réservation avec le paiement:', error);
+            }
+          }
+        });
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors de la récupération de la réservation:', error);
+        }
+      }
+    });
   }
 }
 

@@ -38,6 +38,8 @@ import { Article } from '../models/article.model';
 import { ImageService } from '../services/image.service';
 import { ClientSelectionModalComponent } from './client-selection-modal.component';
 import { ArticleSelectionModalComponent } from './article-selection-modal.component';
+import { PaiementService } from '../services/paiement.service';
+import { Paiement } from '../models/paiement.model';
 import { IonImg } from '@ionic/angular/standalone';
 import { environment } from '../../environments/environment';
 
@@ -85,6 +87,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
   carteIdentitePreview: string | null = null;
   carteIdentiteFromClient: boolean = false;
   isUploadingCarteIdentite = false;
+  private previousStatut?: StatutReservation; // Pour détecter le changement de statut
 
   constructor(
     private formBuilder: FormBuilder,
@@ -92,6 +95,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
     private clientService: ClientService,
     private articleService: ArticleService,
     private imageService: ImageService,
+    private paiementService: PaiementService,
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
@@ -336,6 +340,9 @@ export class FormReservationPage implements OnInit, OnDestroy {
         const dateDebut = reservation.dateDebut ? new Date(reservation.dateDebut).toISOString().slice(0, 10) : '';
         const dateFin = reservation.dateFin ? new Date(reservation.dateFin).toISOString().slice(0, 10) : '';
         
+        // Sauvegarder le statut précédent pour détecter le changement
+        this.previousStatut = reservation.statutReservation;
+        
         this.reservationForm.patchValue({
           idClient: reservation.idClient,
           dateReservation: dateReservation,
@@ -402,6 +409,9 @@ export class FormReservationPage implements OnInit, OnDestroy {
         nomArticle: item.article.nomArticle
       }));
       
+      const newStatut = formValue.statutReservation;
+      const isBecomingTerminee = newStatut === 'Terminée' && this.previousStatut !== 'Terminée';
+      
       const reservationData: Reservation = {
         idClient: formValue.idClient,
         dateReservation: formValue.dateReservation,
@@ -417,10 +427,23 @@ export class FormReservationPage implements OnInit, OnDestroy {
 
       if (this.isEditMode && this.reservationId) {
         this.reservationService.updateReservation(this.reservationId, reservationData).subscribe({
-          next: () => {
-            loading.dismiss();
-            this.showToast('Réservation modifiée avec succès', 'success');
-            this.router.navigate(['/reservations']);
+          next: (updatedReservation) => {
+            // Si la réservation passe à "Terminée" et qu'il n'y a pas encore de paiement
+            if (isBecomingTerminee && !updatedReservation.idPaiement) {
+              this.createPaymentForReservation(this.reservationId!, parseFloat(formValue.montantTotal), formValue.idClient).then(() => {
+                loading.dismiss();
+                this.showToast('Réservation modifiée avec succès et paiement associé', 'success');
+                this.router.navigate(['/reservations']);
+              }).catch(() => {
+                loading.dismiss();
+                this.showToast('Réservation modifiée mais erreur lors de la création du paiement', 'warning');
+                this.router.navigate(['/reservations']);
+              });
+            } else {
+              loading.dismiss();
+              this.showToast('Réservation modifiée avec succès', 'success');
+              this.router.navigate(['/reservations']);
+            }
           },
           error: (error) => {
             loading.dismiss();
@@ -430,10 +453,23 @@ export class FormReservationPage implements OnInit, OnDestroy {
         });
       } else {
         this.reservationService.createReservation(reservationData).subscribe({
-          next: () => {
-            loading.dismiss();
-            this.showToast('Réservation créée avec succès', 'success');
-            this.router.navigate(['/reservations']);
+          next: (createdReservation) => {
+            // Si la réservation est créée avec le statut "Terminée", créer le paiement
+            if (newStatut === 'Terminée' && createdReservation.idReservation && !createdReservation.idPaiement) {
+              this.createPaymentForReservation(createdReservation.idReservation, parseFloat(formValue.montantTotal), formValue.idClient).then(() => {
+                loading.dismiss();
+                this.showToast('Réservation créée avec succès et paiement associé', 'success');
+                this.router.navigate(['/reservations']);
+              }).catch(() => {
+                loading.dismiss();
+                this.showToast('Réservation créée mais erreur lors de la création du paiement', 'warning');
+                this.router.navigate(['/reservations']);
+              });
+            } else {
+              loading.dismiss();
+              this.showToast('Réservation créée avec succès', 'success');
+              this.router.navigate(['/reservations']);
+            }
           },
           error: (error) => {
             loading.dismiss();
@@ -458,6 +494,100 @@ export class FormReservationPage implements OnInit, OnDestroy {
       position: 'top'
     });
     await toast.present();
+  }
+
+  /**
+   * Crée automatiquement un paiement pour une réservation terminée
+   */
+  private async createPaymentForReservation(reservationId: number, montant: number, idClient: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Vérifier d'abord si un paiement existe déjà pour cette réservation
+      this.paiementService.getAllPaiements().subscribe({
+        next: (paiements) => {
+          const existingPaiement = paiements.find(p => p.idReservation === reservationId);
+          
+          if (existingPaiement) {
+            // Un paiement existe déjà, mettre à jour la réservation avec cet ID
+            this.updateReservationWithPayment(reservationId, existingPaiement.idPaiement!);
+            resolve();
+            return;
+          }
+
+          // Créer un nouveau paiement
+          const nouveauPaiement: Paiement = {
+            idReservation: reservationId,
+            montant: montant,
+            datePaiement: new Date().toISOString(),
+            methodePaiement: 'Automatique',
+            reference: `AUTO-${reservationId}-${Date.now()}`
+          };
+
+          this.paiementService.createPaiement(nouveauPaiement).subscribe({
+            next: (paiementCree) => {
+              // Mettre à jour la réservation avec l'ID du paiement créé
+              if (paiementCree.idPaiement) {
+                this.updateReservationWithPayment(reservationId, paiementCree.idPaiement);
+              }
+              resolve();
+            },
+            error: (error) => {
+              if (!environment.production) {
+                console.error('Erreur lors de la création du paiement:', error);
+              }
+              reject(error);
+            }
+          });
+        },
+        error: (error) => {
+          if (!environment.production) {
+            console.error('Erreur lors de la vérification des paiements:', error);
+          }
+          reject(error);
+        }
+      });
+    });
+  }
+
+  /**
+   * Met à jour une réservation avec l'ID du paiement
+   */
+  private updateReservationWithPayment(reservationId: number, paiementId: number): void {
+    this.reservationService.getReservationById(reservationId).subscribe({
+      next: (reservation) => {
+        const reservationData: Reservation = {
+          idClient: reservation.idClient,
+          dateReservation: reservation.dateReservation,
+          dateDebut: reservation.dateDebut,
+          dateFin: reservation.dateFin,
+          montantTotal: reservation.montantTotal,
+          statutReservation: reservation.statutReservation,
+          idPaiement: paiementId,
+          remiseAppliquee: reservation.remiseAppliquee || 0,
+          photoCarteIdentite: reservation.photoCarteIdentite,
+          articles: reservation.articles
+        };
+
+        this.reservationService.updateReservation(reservationId, reservationData).subscribe({
+          next: () => {
+            // Mettre à jour le formulaire avec le nouvel ID de paiement
+            this.reservationForm.patchValue({ idPaiement: paiementId });
+            if (!environment.production) {
+              console.log('Paiement associé à la réservation avec succès');
+            }
+          },
+          error: (error) => {
+            if (!environment.production) {
+              console.error('Erreur lors de la mise à jour de la réservation avec le paiement:', error);
+            }
+          }
+        });
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors de la récupération de la réservation:', error);
+        }
+      }
+    });
   }
 
   get idClient() {

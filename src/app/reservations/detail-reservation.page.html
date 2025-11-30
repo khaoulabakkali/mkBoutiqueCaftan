@@ -3,6 +3,9 @@
     <ion-menu-button slot="start"></ion-menu-button>
     <ion-title>Détails Réservation</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="terminerReservation()" *ngIf="reservation?.idReservation && canTerminateReservation()" color="success">
+        <ion-icon name="checkmark"></ion-icon>
+      </ion-button>
       <ion-button (click)="editReservation()" *ngIf="reservation?.idReservation">
         <ion-icon name="create"></ion-icon>
       </ion-button>
@@ -123,6 +126,36 @@
         <p style="color: var(--ion-color-medium); font-style: italic; text-align: center;">
           Aucun article associé à cette réservation
         </p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Photo de la Carte d'Identité Nationale -->
+    <ion-card *ngIf="reservation.photoCarteIdentite">
+      <ion-card-header>
+        <ion-card-title>
+          <ion-icon name="id-card" slot="start"></ion-icon>
+          Carte d'Identité Nationale
+        </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="cin-photo-container">
+          <img 
+            [src]="reservation.photoCarteIdentite" 
+            alt="Photo CIN"
+            class="cin-photo"
+            (error)="handleImageError($event)"
+            (load)="handleImageLoad($event)">
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Bouton pour terminer la réservation -->
+    <ion-card *ngIf="canTerminateReservation()">
+      <ion-card-content>
+        <ion-button expand="block" color="success" (click)="terminerReservation()">
+          <ion-icon name="checkmark" slot="start"></ion-icon>
+          Terminer la réservation
+        </ion-button>
       </ion-card-content>
     </ion-card>
 

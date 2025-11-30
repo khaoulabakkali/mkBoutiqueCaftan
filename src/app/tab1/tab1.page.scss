@@ -183,3 +183,27 @@ ion-col {
   }
 }
 
+.quick-stat-card-success {
+  border-left: 4px solid var(--ion-color-success);
+  
+  ion-card-title {
+    color: var(--ion-color-success);
+  }
+  
+  .detail-stat h1 {
+    color: var(--ion-color-success);
+  }
+}
+
+.quick-stat-card-danger {
+  border-left: 4px solid var(--ion-color-danger);
+  
+  ion-card-title {
+    color: var(--ion-color-danger);
+  }
+  
+  .detail-stat h1 {
+    color: var(--ion-color-danger);
+  }
+}
+

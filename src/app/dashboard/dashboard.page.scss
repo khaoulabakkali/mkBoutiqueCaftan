@@ -442,9 +442,141 @@
       }
     }
   }
+  }
+
+.chart-card {
+  margin-bottom: 16px;
 }
 
-// Styles pour les articles dans le dashboard
+.chart-segment {
+  margin-bottom: 16px;
+  --background: var(--ion-color-light);
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  ion-segment-button {
+    --color: var(--ion-color-medium);
+    --color-checked: var(--ion-color-primary);
+    --indicator-color: var(--ion-color-primary);
+    min-height: 40px;
+    border-radius: 8px;
+
+    ion-label {
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+}
+
+.chart-date-selector {
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 12px;
+  background: var(--ion-color-light);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  .filter-item-wrapper {
+    margin-bottom: 0;
+  }
+
+  .filter-item {
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
+    --inner-padding-start: 0;
+    --background: transparent;
+    --border-radius: 0;
+    --border-width: 0;
+    --border-style: none;
+    --border-color: transparent;
+    margin-bottom: 8px;
+    background: transparent;
+
+    ion-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    ion-input {
+      border: 2px solid var(--ion-color-primary);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      background: white;
+      color: var(--ion-color-dark);
+      transition: all 0.3s ease;
+      width: 100%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      &:focus-within {
+        border-color: var(--ion-color-primary-shade);
+        box-shadow: 0 4px 8px rgba(var(--ion-color-primary-rgb), 0.2);
+        outline: none;
+      }
+
+      &::placeholder {
+        color: var(--ion-color-medium);
+        opacity: 0.7;
+      }
+    }
+  }
+
+  .filter-hint {
+    font-size: 12px;
+    color: var(--ion-color-medium);
+    margin-top: 8px;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-left: 0;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &::before {
+      content: "ℹ️";
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  }
+
+  // Amélioration du style pour les inputs de type date
+  ion-input[type="date"] {
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+      margin-left: 8px;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      opacity: 1;
+    }
+  }
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  margin-top: 16px;
+
+  canvas {
+    max-height: 100%;
+  }
+}
+  
+  // Styles pour les articles dans le dashboard
 .article-item-dashboard {
   --padding-start: 0;
   --padding-end: 0;

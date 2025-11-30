@@ -79,7 +79,7 @@ export class ReservationService {
       idPaiement: data.idPaiement,
       remiseAppliquee: data.remiseAppliquee,
       articles: data.articles || data.Articles,
-      photoCarteIdentite: data.photoCarteIdentite || data.PhotoCarteIdentite,
+      photoCarteIdentite: data.photoCarteIdentite || data.PhotoCarteIdentite || data.photo_cin || data.Photo_cin || data.PhotoCIN || data.photoCIN,
       client: data.client
     };
   }
@@ -123,7 +123,7 @@ export class ReservationService {
       StatutReservation: this.mapStatutToApi(reservation.statutReservation),
       IdPaiement: reservation.idPaiement || undefined,
       RemiseAppliquee: reservation.remiseAppliquee || 0.00,
-      PhotoCarteIdentite: reservation.photoCarteIdentite || undefined
+      Photo_cin: reservation.photoCarteIdentite || undefined
     };
 
     // Ajouter les articles si présents - format PascalCase pour correspondre au backend

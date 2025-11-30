@@ -138,6 +138,68 @@
         </ion-card-content>
       </ion-card>
 
+      <!-- Graphique de progression du chiffre d'affaires -->
+      <ion-card class="stat-card chart-card">
+        <ion-card-header>
+          <ion-card-title>
+            <ion-icon name="trending-up" slot="start"></ion-icon>
+            Progression du chiffre d'affaires
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <!-- Sélecteur de période pour le graphique -->
+          <ion-segment [value]="chartType" (ionChange)="onChartTypeChange($event)" class="chart-segment">
+            <ion-segment-button value="jour">
+              <ion-label>Jour</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="semaine">
+              <ion-label>Semaine</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="mois">
+              <ion-label>Mois</ion-label>
+            </ion-segment-button>
+            <ion-segment-button value="annee">
+              <ion-label>Année</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+          
+          <!-- Sélecteur de date unique pour tous les types -->
+          <div class="chart-date-selector">
+            <div class="filter-item-wrapper">
+              <ion-item lines="none" class="filter-item">
+                <ion-label position="stacked">
+                  <ion-icon name="calendar" style="margin-right: 6px; vertical-align: middle; font-size: 16px;"></ion-icon>
+                  Sélectionner une date de référence
+                </ion-label>
+                <ion-input
+                  type="date"
+                  [value]="selectedDateChart"
+                  (ionInput)="onChartDateChange($event)"
+                  placeholder="Sélectionner une date">
+                </ion-input>
+              </ion-item>
+              <p class="filter-hint" *ngIf="chartType === 'jour'">
+                Affiche les 30 derniers jours à partir de cette date
+              </p>
+              <p class="filter-hint" *ngIf="chartType === 'semaine'">
+                Affiche les 12 dernières semaines à partir de la semaine de cette date
+              </p>
+              <p class="filter-hint" *ngIf="chartType === 'mois'">
+                Affiche les 12 derniers mois à partir du mois de cette date
+              </p>
+              <p class="filter-hint" *ngIf="chartType === 'annee'">
+                Affiche les 5 dernières années à partir de l'année de cette date
+              </p>
+            </div>
+          </div>
+          
+          <!-- Conteneur du graphique -->
+          <div class="chart-container">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
       <!-- Meilleur jour de la semaine -->
       <ion-card class="stat-card stat-card-info">
         <ion-card-header>

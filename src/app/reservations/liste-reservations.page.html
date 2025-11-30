@@ -57,6 +57,12 @@
           <ion-icon slot="icon-only" name="information-circle"></ion-icon>
           <span>Détails</span>
         </ion-item-option>
+        <ion-item-option 
+          [color]="canTerminateReservation(reservation) ? 'success' : 'medium'" 
+          (click)="terminerReservation(reservation, slidingItem)">
+          <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+          <span>Terminer</span>
+        </ion-item-option>
         <ion-item-option color="tertiary" (click)="editReservation(reservation); slidingItem.close()">
           <ion-icon slot="icon-only" name="create"></ion-icon>
           <span>Modifier</span>

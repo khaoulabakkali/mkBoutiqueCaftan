@@ -46,6 +46,9 @@ import { Article } from '../models/article.model';
 import { Categorie } from '../models/categorie.model';
 import { Taille } from '../models/taille.model';
 import { environment } from '../../environments/environment';
+import { Chart, ChartConfiguration, ChartData, ChartType, registerables } from 'chart.js';
+import annotationPlugin from 'chartjs-plugin-annotation';
+Chart.register(...registerables, annotationPlugin);
 
 @Component({
   selector: 'app-dashboard',
@@ -107,6 +110,15 @@ export class DashboardPage implements OnInit {
     article: { nomArticle: 'N/A', prixLocationBase: 0, prixAvanceBase: 0, description: '', idCategorie: 0, actif: true } as Article,
     revenus: 0
   };
+
+  // Graphique de progression
+  chartType: 'jour' | 'semaine' | 'mois' | 'annee' = 'mois';
+  chartData: ChartData<'line'> | null = null;
+  chartOptions: ChartConfiguration<'line'>['options'] | null = null;
+  chart: Chart | null = null;
+  
+  // Filtre unique pour le graphique (utilisé pour tous les types)
+  selectedDateChart: string = new Date().toISOString().slice(0, 10); // Format: "YYYY-MM-DD"
   
   // Catégories et tailles pour l'affichage
   categories: Categorie[] = [];
@@ -166,6 +178,10 @@ export class DashboardPage implements OnInit {
     this.loadArticlesPlusLoues();
     this.loadArticlePlusRentable();
     this.loadCategoriePlusDemandee();
+    // Initialiser le graphique après un court délai pour s'assurer que le DOM est prêt
+    setTimeout(() => {
+      this.loadChartData();
+    }, 500);
   }
   
   loadCategories() {
@@ -216,6 +232,11 @@ export class DashboardPage implements OnInit {
       this.loadArticlesEntrants();
     } else if (this.selectedTab === 'sortants') {
       this.loadArticlesSortants();
+    } else if (this.selectedTab === 'revenus') {
+      // Recharger le graphique quand on revient sur l'onglet revenus
+      setTimeout(() => {
+        this.loadChartData();
+      }, 300);
     }
   }
 
@@ -227,6 +248,11 @@ export class DashboardPage implements OnInit {
         this.loadArticlesEntrants();
       } else if (value === 'sortants') {
         this.loadArticlesSortants();
+      } else if (value === 'revenus') {
+        // Charger le graphique quand on sélectionne l'onglet revenus
+        setTimeout(() => {
+          this.loadChartData();
+        }, 300);
       }
     }
   }
@@ -555,6 +581,426 @@ export class DashboardPage implements OnInit {
 
   onSortantsPeriodeChange() {
     this.loadArticlesSortants();
+  }
+
+  /**
+   * Change le type de graphique (jour, semaine, mois, année)
+   */
+  onChartTypeChange(event: any) {
+    const value = event.detail?.value;
+    if (value === 'jour' || value === 'semaine' || value === 'mois' || value === 'annee') {
+      this.chartType = value;
+      this.loadChartData();
+    }
+  }
+
+  /**
+   * Charge les données pour le graphique de progression
+   */
+  loadChartData() {
+    this.paiementService.getAllPaiements().subscribe({
+      next: (paiements) => {
+        let labels: string[] = [];
+        let data: number[] = [];
+
+        if (!environment.production) {
+          console.log('Type de graphique sélectionné:', this.chartType);
+        }
+
+        if (this.chartType === 'jour') {
+          const result = this.calculateDailyData(paiements);
+          labels = result.labels;
+          data = result.data;
+          if (!environment.production) {
+            console.log('Données par jour calculées:', { labels, data });
+          }
+        } else if (this.chartType === 'semaine') {
+          const result = this.calculateWeeklyData(paiements);
+          labels = result.labels;
+          data = result.data;
+        } else if (this.chartType === 'mois') {
+          const result = this.calculateMonthlyData(paiements);
+          labels = result.labels;
+          data = result.data;
+        } else if (this.chartType === 'annee') {
+          const result = this.calculateYearlyData(paiements);
+          labels = result.labels;
+          data = result.data;
+        }
+
+        if (labels.length > 0 && data.length > 0) {
+          this.createChart(labels, data);
+        } else {
+          if (!environment.production) {
+            console.warn('Aucune donnée à afficher pour le graphique');
+          }
+        }
+      },
+      error: (error) => {
+        if (!environment.production) {
+          console.error('Erreur lors du chargement des données du graphique:', error);
+        }
+      }
+    });
+  }
+
+  /**
+   * Gère le changement de date sélectionnée pour le graphique (utilisé pour tous les types)
+   */
+  onChartDateChange(event: any) {
+    const value = event.detail?.value;
+    if (value) {
+      this.selectedDateChart = value;
+      this.loadChartData();
+    }
+  }
+
+  /**
+   * Calcule les données par jour
+   */
+  private calculateDailyData(paiements: any[]): { labels: string[]; data: number[] } {
+    const jours: { [key: string]: number } = {};
+    const labels: string[] = [];
+    let dateReference: Date;
+    
+    // Utiliser la date sélectionnée comme référence
+    if (this.selectedDateChart) {
+      dateReference = new Date(this.selectedDateChart);
+    } else {
+      dateReference = new Date();
+    }
+    
+    // S'assurer que la date de référence est valide
+    if (isNaN(dateReference.getTime())) {
+      dateReference = new Date();
+    }
+    
+    // Calculer les 30 derniers jours à partir de la date de référence
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date(dateReference);
+      date.setDate(date.getDate() - i);
+      const jourKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+      jours[jourKey] = 0;
+      labels.push(`${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`);
+    }
+
+    // Agréger les paiements par jour
+    paiements.forEach(paiement => {
+      if (!paiement.datePaiement) return;
+      const datePaiement = new Date(paiement.datePaiement);
+      
+      // Vérifier que la date est valide
+      if (isNaN(datePaiement.getTime())) return;
+      
+      const jourKey = `${datePaiement.getFullYear()}-${String(datePaiement.getMonth() + 1).padStart(2, '0')}-${String(datePaiement.getDate()).padStart(2, '0')}`;
+      
+      if (jours[jourKey] !== undefined) {
+        jours[jourKey] += paiement.montant || 0;
+      }
+    });
+
+    const data = Object.values(jours);
+    
+    if (!environment.production) {
+      console.log('Résultat calculateDailyData:', { labels, data, jours });
+    }
+    
+    return { labels, data };
+  }
+
+  /**
+   * Calcule les données par semaine
+   */
+  private calculateWeeklyData(paiements: any[]): { labels: string[]; data: number[] } {
+    const semaines: { [key: string]: number } = {};
+    const labels: string[] = [];
+    let dateReference: Date;
+    
+    // Utiliser la date sélectionnée comme référence
+    if (this.selectedDateChart) {
+      dateReference = new Date(this.selectedDateChart);
+    } else {
+      dateReference = new Date();
+    }
+    
+    // S'assurer que la date de référence est valide
+    if (isNaN(dateReference.getTime())) {
+      dateReference = new Date();
+    }
+    
+    // Trouver le début de la semaine de la date sélectionnée (dimanche)
+    const semaineDebutReference = new Date(dateReference);
+    semaineDebutReference.setDate(semaineDebutReference.getDate() - semaineDebutReference.getDay());
+    
+    // Calculer les 12 dernières semaines à partir de la semaine de la date de référence
+    for (let i = 11; i >= 0; i--) {
+      const date = new Date(semaineDebutReference);
+      date.setDate(date.getDate() - (i * 7));
+      const semaineDebut = new Date(date);
+      semaineDebut.setDate(semaineDebut.getDate() - semaineDebut.getDay()); // Début de semaine (dimanche)
+      
+      const semaineKey = this.getWeekKey(semaineDebut);
+      semaines[semaineKey] = 0;
+      const semaineNum = this.getWeekNumber(semaineDebut);
+      labels.push(`S${semaineNum} ${semaineDebut.getFullYear()}`);
+    }
+
+    // Agréger les paiements par semaine
+    paiements.forEach(paiement => {
+      if (!paiement.datePaiement) return;
+      const datePaiement = new Date(paiement.datePaiement);
+      const semaineDebut = new Date(datePaiement);
+      semaineDebut.setDate(semaineDebut.getDate() - semaineDebut.getDay());
+      const semaineKey = this.getWeekKey(semaineDebut);
+      
+      if (semaines[semaineKey] !== undefined) {
+        semaines[semaineKey] += paiement.montant || 0;
+      }
+    });
+
+    const data = Object.values(semaines);
+    return { labels, data };
+  }
+
+  /**
+   * Calcule les données par mois
+   */
+  private calculateMonthlyData(paiements: any[]): { labels: string[]; data: number[] } {
+    const mois: { [key: string]: number } = {};
+    const labels: string[] = [];
+    const moisNoms = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+    
+    let dateReference: Date;
+    // Utiliser la date sélectionnée comme référence
+    if (this.selectedDateChart) {
+      dateReference = new Date(this.selectedDateChart);
+    } else {
+      dateReference = new Date();
+    }
+    
+    // S'assurer que la date de référence est valide
+    if (isNaN(dateReference.getTime())) {
+      dateReference = new Date();
+    }
+    
+    // Utiliser le mois de la date sélectionnée comme référence
+    const moisReference = new Date(dateReference.getFullYear(), dateReference.getMonth(), 1);
+    
+    // Calculer les 12 derniers mois à partir du mois de la date de référence
+    for (let i = 11; i >= 0; i--) {
+      const date = new Date(moisReference.getFullYear(), moisReference.getMonth() - i, 1);
+      const moisKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      mois[moisKey] = 0;
+      labels.push(`${moisNoms[date.getMonth()]} ${date.getFullYear()}`);
+    }
+
+    // Agréger les paiements par mois
+    paiements.forEach(paiement => {
+      if (!paiement.datePaiement) return;
+      const datePaiement = new Date(paiement.datePaiement);
+      const moisKey = `${datePaiement.getFullYear()}-${String(datePaiement.getMonth() + 1).padStart(2, '0')}`;
+      
+      if (mois[moisKey] !== undefined) {
+        mois[moisKey] += paiement.montant || 0;
+      }
+    });
+
+    const data = Object.values(mois);
+    return { labels, data };
+  }
+
+  /**
+   * Calcule les données par année
+   */
+  private calculateYearlyData(paiements: any[]): { labels: string[]; data: number[] } {
+    const annees: { [key: number]: number } = {};
+    const labels: string[] = [];
+    
+    let anneeReference: number;
+    // Utiliser l'année de la date sélectionnée comme référence
+    if (this.selectedDateChart) {
+      const dateReference = new Date(this.selectedDateChart);
+      if (!isNaN(dateReference.getTime())) {
+        anneeReference = dateReference.getFullYear();
+      } else {
+        anneeReference = new Date().getFullYear();
+      }
+    } else {
+      anneeReference = new Date().getFullYear();
+    }
+    
+    // Calculer les 5 dernières années à partir de l'année de référence
+    for (let i = 4; i >= 0; i--) {
+      const annee = anneeReference - i;
+      annees[annee] = 0;
+      labels.push(annee.toString());
+    }
+
+    // Agréger les paiements par année
+    paiements.forEach(paiement => {
+      if (!paiement.datePaiement) return;
+      const datePaiement = new Date(paiement.datePaiement);
+      const annee = datePaiement.getFullYear();
+      
+      if (annees[annee] !== undefined) {
+        annees[annee] += paiement.montant || 0;
+      }
+    });
+
+    const data = Object.values(annees);
+    return { labels, data };
+  }
+
+  /**
+   * Crée le graphique Chart.js
+   */
+  private createChart(labels: string[], data: number[]) {
+    // Détruire le graphique existant s'il existe
+    if (this.chart) {
+      this.chart.destroy();
+    }
+
+    const canvas = document.getElementById('revenueChart') as HTMLCanvasElement;
+    if (!canvas) {
+      // Réessayer après un court délai si le canvas n'est pas encore disponible
+      setTimeout(() => this.createChart(labels, data), 100);
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Calculer la variation pour l'annotation
+    const dernierValeur = data[data.length - 1];
+    const avantDernierValeur = data.length > 1 ? data[data.length - 2] : dernierValeur;
+    const variation = avantDernierValeur > 0 
+      ? ((dernierValeur - avantDernierValeur) / avantDernierValeur) * 100 
+      : 0;
+
+    this.chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Chiffre d\'affaires (MAD)',
+          data: data,
+          borderColor: 'rgb(99, 102, 241)',
+          backgroundColor: 'rgba(99, 102, 241, 0.1)',
+          tension: 0.4,
+          fill: true,
+          pointRadius: (context) => {
+            // Mettre en évidence le dernier point
+            return context.dataIndex === data.length - 1 ? 7 : 5;
+          },
+          pointHoverRadius: 8,
+          pointBackgroundColor: (context) => {
+            // Mettre en évidence le dernier point en rouge
+            return context.dataIndex === data.length - 1 ? 'rgb(239, 68, 68)' : 'rgb(99, 102, 241)';
+          },
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            padding: 12,
+            titleFont: {
+              size: 14,
+              weight: 'bold'
+            },
+            bodyFont: {
+              size: 13
+            },
+            callbacks: {
+              label: (context) => {
+                const value = context.parsed.y;
+                return `${context.dataset.label}: ${this.formatMontant(value !== null && value !== undefined ? value : 0)}`;
+              }
+            }
+          },
+          annotation: {
+            annotations: {
+              point1: {
+                type: 'point',
+                xValue: labels[labels.length - 1],
+                yValue: dernierValeur,
+                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                borderColor: 'rgba(239, 68, 68, 1)',
+                borderWidth: 2,
+                radius: 6
+              },
+              label1: {
+                type: 'label',
+                xValue: labels[labels.length - 1],
+                yValue: dernierValeur,
+                content: `↑ ${variation >= 0 ? '+' : ''}${variation.toFixed(1)}%`,
+                backgroundColor: 'rgba(239, 68, 68, 0.9)',
+                color: '#fff',
+                font: {
+                  size: 12,
+                  weight: 'bold'
+                },
+                padding: 8,
+                textAlign: 'center',
+                adjustScaleRange: true,
+                position: 'end'
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: (value) => {
+                const numValue = typeof value === 'string' ? parseFloat(value) : Number(value);
+                return this.formatMontant(numValue);
+              }
+            },
+            grid: {
+              color: 'rgba(0, 0, 0, 0.1)'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        }
+      }
+    });
+  }
+
+  /**
+   * Utilitaires pour les calculs de semaines
+   */
+  private getWeekKey(date: Date): string {
+    const annee = date.getFullYear();
+    const semaine = this.getWeekNumber(date);
+    return `${annee}-W${semaine}`;
+  }
+
+  private getWeekNumber(date: Date): number {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + (4 - dayNum));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7);
   }
 }
 

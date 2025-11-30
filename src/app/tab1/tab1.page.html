@@ -142,9 +142,27 @@
             </ion-card-content>
           </ion-card>
         </ion-col>
+
+        <!-- Réservations terminées -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-card">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="flag" color="primary"></ion-icon>
+                Réservations terminées
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-stat">
+                <h1>{{ statistiques.reservationsTerminees }}</h1>
+                <p>terminées</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
       </ion-row>
 
-      <!-- Paiements -->
+      <!-- Paiements et mouvements d'articles -->
       <ion-row>
         <ion-col size="12" size-md="6" size-lg="4">
           <ion-card class="detail-card">
@@ -158,6 +176,42 @@
               <div class="detail-stat">
                 <h1>{{ statistiques.totalPaiements }}</h1>
                 <p>paiements enregistrés</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Articles entrants aujourd'hui -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-card quick-stat-card-success">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="arrow-down" color="success"></ion-icon>
+                Articles entrants aujourd'hui
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-stat">
+                <h1>{{ statistiques.nombreArticlesEntrantsAujourdhui }}</h1>
+                <p>articles retournés aujourd'hui</p>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+
+        <!-- Articles sortants aujourd'hui -->
+        <ion-col size="12" size-md="6" size-lg="4">
+          <ion-card class="detail-card quick-stat-card-danger">
+            <ion-card-header>
+              <ion-card-title>
+                <ion-icon name="arrow-up" color="danger"></ion-icon>
+                Articles sortants aujourd'hui
+              </ion-card-title>
+            </ion-card-header>
+            <ion-card-content>
+              <div class="detail-stat">
+                <h1>{{ statistiques.nombreArticlesSortantsAujourdhui }}</h1>
+                <p>articles sortis aujourd'hui</p>
               </div>
             </ion-card-content>
           </ion-card>
