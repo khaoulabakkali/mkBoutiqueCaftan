@@ -67,7 +67,7 @@
         <ion-label position="stacked">{{ 'payments.selectMethod' | translate }}</ion-label>
         <ion-select formControlName="methodePaiement" [placeholder]="'payments.selectMethodPlaceholder' | translate">
         <ion-select-option *ngFor="let methode of methodesPaiement" [value]="methode">
-          {{ methode }}
+          {{ getMethodeTranslation(methode) }}
         </ion-select-option>
       </ion-select>
     </ion-item>

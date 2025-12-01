@@ -41,7 +41,7 @@ import { ArticleSelectionModalComponent } from './article-selection-modal.compon
 import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
 import { IonImg } from '@ionic/angular/standalone';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -97,6 +97,7 @@ export class FormReservationPage implements OnInit, OnDestroy {
     private clientService: ClientService,
     private articleService: ArticleService,
     private imageService: ImageService,
+    private translate: TranslateService,
     private paiementService: PaiementService,
     private router: Router,
     private route: ActivatedRoute,
@@ -923,6 +924,18 @@ export class FormReservationPage implements OnInit, OnDestroy {
 
   get photoCarteIdentite() {
     return this.reservationForm.get('photoCarteIdentite');
+  }
+
+  getStatutTranslation(statut: string): string {
+    const translations: { [key: string]: string } = {
+      'En attente': 'reservations.statusPending',
+      'Confirmée': 'reservations.statusConfirmed',
+      'En cours': 'reservations.statusInProgress',
+      'Terminée': 'reservations.statusCompleted',
+      'Annulée': 'reservations.statusCancelled'
+    };
+    const key = translations[statut] || statut;
+    return this.translate.instant(key);
   }
 }
 

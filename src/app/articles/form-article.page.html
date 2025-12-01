@@ -57,7 +57,7 @@
       <ion-input
         type="number"
         formControlName="prixLocationBase"
-        placeholder="0.00"
+        [placeholder]="'articles.rentalPricePlaceholder' | translate"
         step="0.01"
         min="0">
       </ion-input>
@@ -73,7 +73,7 @@
       <ion-input
         type="number"
         formControlName="prixAvanceBase"
-        placeholder="0.00"
+        [placeholder]="'articles.rentalPricePlaceholder' | translate"
         step="0.01"
         min="0">
       </ion-input>
@@ -126,7 +126,7 @@
     <!-- Aperçu de l'image -->
     <div class="image-preview-container" *ngIf="imagePreview">
       <div class="image-preview-wrapper">
-        <ion-img [src]="imagePreview" alt="Aperçu de l'article" class="image-preview"></ion-img>
+        <ion-img [src]="imagePreview" [alt]="'articles.articlePreview' | translate" class="image-preview"></ion-img>
         <ion-button
           fill="clear"
           color="danger"

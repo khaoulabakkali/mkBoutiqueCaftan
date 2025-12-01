@@ -53,7 +53,7 @@
             style="margin-left: 8px; vertical-align: middle;">
           </ion-icon>
         </h2>
-        <p>{{ article.prixLocationBase }} MAD/jour | Avance: {{ article.prixAvanceBase }} MAD</p>
+        <p>{{ article.prixLocationBase }} {{ 'articles.perDay' | translate }} | {{ 'reservations.advance' | translate }}: {{ article.prixAvanceBase }} MAD</p>
         <p *ngIf="article.description" style="color: var(--ion-color-medium); font-size: 0.85rem;">
           {{ article.description.length > 50 ? (article.description | slice:0:50) + '...' : article.description }}
         </p>

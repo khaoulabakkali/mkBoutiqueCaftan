@@ -111,7 +111,7 @@
           <ion-icon name="cube" slot="start" color="primary"></ion-icon>
           <ion-label>
             <h3>{{ item.article.nomArticle || 'Article non défini' }}</h3>
-            <p>{{ item.article.prixLocationBase || 0 }} MAD/jour</p>
+            <p>{{ item.article.prixLocationBase || 0 }} {{ 'articles.perDay' | translate }}</p>
           </ion-label>
           <ion-badge slot="end" color="primary">
             Quantité: {{ item.quantite || 0 }}

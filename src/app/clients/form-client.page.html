@@ -94,7 +94,7 @@
     <!-- Aperçu de la carte d'identité -->
     <div class="image-preview-container" *ngIf="carteIdentitePreview">
       <div class="image-preview-wrapper">
-        <ion-img [src]="carteIdentitePreview" alt="Aperçu de la carte d'identité" class="image-preview"></ion-img>
+        <ion-img [src]="carteIdentitePreview" [alt]="'reservations.idCardPreview' | translate" class="image-preview"></ion-img>
         <ion-button
           fill="clear"
           color="danger"
@@ -121,7 +121,7 @@
         (click)="takeCarteIdentitePhoto()"
         [disabled]="isUploadingCarteIdentite">
         <ion-icon name="camera" slot="start"></ion-icon>
-        {{ 'common.close' | translate }}
+        {{ 'clients.takeIdCardPhoto' | translate }}
       </ion-button>
     </div>
 

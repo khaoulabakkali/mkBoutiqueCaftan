@@ -26,7 +26,7 @@ import { PaiementService } from '../services/paiement.service';
 import { Paiement } from '../models/paiement.model';
 import { ReservationService } from '../services/reservation.service';
 import { Reservation } from '../models/reservation.model';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -68,7 +68,8 @@ export class FormPaiementPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private toastController: ToastController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private translate: TranslateService
   ) {
     addIcons({ save, arrowBack, checkmark, closeOutline });
     
@@ -234,5 +235,17 @@ export class FormPaiementPage implements OnInit {
 
   onCancel() {
     this.router.navigate(['/paiements']);
+  }
+
+  getMethodeTranslation(methode: string): string {
+    const translations: { [key: string]: string } = {
+      'Espèces': 'payments.methodCash',
+      'Carte': 'payments.methodCard',
+      'Chèque': 'payments.methodCheck',
+      'Virement': 'payments.methodTransfer',
+      'Autre': 'payments.methodOther'
+    };
+    const key = translations[methode] || methode;
+    return this.translate.instant(key);
   }
 }

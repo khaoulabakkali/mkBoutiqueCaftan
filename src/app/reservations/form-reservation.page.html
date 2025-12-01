@@ -121,7 +121,7 @@
     <!-- Aperçu de la carte d'identité -->
     <div class="image-preview-container" *ngIf="carteIdentitePreview">
       <div class="image-preview-wrapper">
-        <ion-img [src]="carteIdentitePreview" alt="Aperçu de la carte d'identité" class="image-preview"></ion-img>
+        <ion-img [src]="carteIdentitePreview" [alt]="'reservations.idCardPreview' | translate" class="image-preview"></ion-img>
         <ion-button
           *ngIf="!carteIdentiteFromClient"
           fill="clear"
@@ -173,7 +173,7 @@
       <ion-label position="stacked">{{ 'reservations.status' | translate }} *</ion-label>
       <ion-select formControlName="statutReservation" [placeholder]="'reservations.selectStatus' | translate">
         <ion-select-option *ngFor="let statut of statuts" [value]="statut">
-          {{ statut }}
+          {{ getStatutTranslation(statut) }}
         </ion-select-option>
       </ion-select>
     </ion-item>
@@ -216,7 +216,7 @@
             </ion-icon>
             <ion-label>
               <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' - ' + item.article.couleur : '' }}</h3>
-              <p>{{ item.article.prixLocationBase }} MAD/jour | Avance: {{ item.article.prixAvanceBase }} MAD</p>
+              <p>{{ item.article.prixLocationBase }} {{ 'articles.perDay' | translate }} | {{ 'reservations.advance' | translate }}: {{ item.article.prixAvanceBase }} MAD</p>
             </ion-label>
             <div slot="end" class="article-controls">
               <ion-input
