@@ -86,7 +86,14 @@ export class LoginPage implements OnInit {
         },
         error: async (error) => {
           this.isLoading = false;
-          const errorMessage = error.message || this.translate.instant('login.errorMessage');
+          let errorMessage = error.message || 'Login error. Please check your credentials.';
+          try {
+            if (!error.message) {
+              errorMessage = this.translate.instant('login.errorMessage');
+            }
+          } catch (e) {
+            // Clé de traduction manquante, utiliser le message par défaut
+          }
           await this.showErrorToast(errorMessage);
         }
       });

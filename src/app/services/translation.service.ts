@@ -37,7 +37,17 @@ export class TranslationService {
   }
 
   instant(key: string): string {
-    return this.translate.instant(key);
+    try {
+      const translation = this.translate.instant(key);
+      // Si la traduction retourne la clé elle-même, cela signifie qu'elle n'existe pas
+      if (translation === key) {
+        return key; // Retourner la clé plutôt que de générer une erreur
+      }
+      return translation;
+    } catch (e) {
+      // En cas d'erreur, retourner la clé
+      return key;
+    }
   }
 
   get(key: string): Observable<string> {

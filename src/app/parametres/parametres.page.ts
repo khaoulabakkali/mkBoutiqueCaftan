@@ -113,8 +113,15 @@ export class ParametresPage implements OnInit {
       this.updateCurrentLanguageName();
       
       // Afficher un message de confirmation
+      let toastMessage = 'Language changed successfully!'; // Default message
+      try {
+        toastMessage = this.translate.instant('parameters.language.changed');
+      } catch (e) {
+        // Clé de traduction manquante, utiliser le message par défaut
+      }
+      
       const toast = await this.toastController.create({
-        message: this.translate.instant('parameters.language.changed'),
+        message: toastMessage,
         duration: 2000,
         color: 'success',
         position: 'top'

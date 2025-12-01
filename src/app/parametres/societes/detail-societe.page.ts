@@ -89,9 +89,6 @@ export class DetailSocietePage implements OnInit {
       return;
     }
     
-    if (!environment.production) {
-      console.log('Chargement de la société avec ID:', id);
-    }
     this.loadSociete(id);
   }
 
@@ -104,9 +101,6 @@ export class DetailSocietePage implements OnInit {
 
     this.societeService.getSocieteById(id).subscribe({
       next: (data) => {
-        if (!environment.production) {
-          console.log('Données reçues de l\'API:', data);
-        }
         this.societe = data || null;
         if (!this.societe) {
           if (!environment.production) {
