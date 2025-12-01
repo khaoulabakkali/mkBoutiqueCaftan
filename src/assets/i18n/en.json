@@ -64,7 +64,21 @@
     "clients": "Clients",
     "articles": "Articles",
     "reservations": "Reservations",
-    "payments": "Payments"
+    "payments": "Payments",
+    "activeArticles": "Active Articles",
+    "outOf": "out of",
+    "pendingReservations": "Pending Reservations",
+    "waitingConfirmation": "waiting for confirmation",
+    "confirmedReservations": "Confirmed Reservations",
+    "confirmed": "confirmed",
+    "completedReservations": "Completed Reservations",
+    "completed": "completed",
+    "recordedPayments": "recorded payments",
+    "incomingArticlesToday": "Incoming Articles Today",
+    "returnedToday": "articles returned today",
+    "outgoingArticlesToday": "Outgoing Articles Today",
+    "exitedToday": "articles exited today",
+    "loadingStatistics": "Loading statistics..."
   },
   "clients": {
     "title": "Client Management",

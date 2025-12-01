@@ -64,7 +64,21 @@
     "clients": "Clients",
     "articles": "Articles",
     "reservations": "Réservations",
-    "payments": "Paiements"
+    "payments": "Paiements",
+    "activeArticles": "Articles actifs",
+    "outOf": "sur",
+    "pendingReservations": "Réservations en attente",
+    "waitingConfirmation": "en attente de confirmation",
+    "confirmedReservations": "Réservations confirmées",
+    "confirmed": "confirmées",
+    "completedReservations": "Réservations terminées",
+    "completed": "terminées",
+    "recordedPayments": "paiements enregistrés",
+    "incomingArticlesToday": "Articles entrants aujourd'hui",
+    "returnedToday": "articles retournés aujourd'hui",
+    "outgoingArticlesToday": "Articles sortants aujourd'hui",
+    "exitedToday": "articles sortis aujourd'hui",
+    "loadingStatistics": "Chargement des statistiques..."
   },
   "clients": {
     "title": "Gestion des Clients",

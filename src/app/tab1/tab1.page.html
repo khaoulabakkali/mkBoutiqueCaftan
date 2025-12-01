@@ -62,7 +62,7 @@
                 </div>
                 <div class="stat-info">
                   <h2>{{ statistiques.totalArticles }}</h2>
-                  <p>Articles</p>
+                  <p>{{ 'home.articles' | translate }}</p>fix translate
                 </div>
               </div>
             </ion-card-content>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="stat-info">
                   <h2>{{ statistiques.totalReservations }}</h2>
-                  <p>Réservations</p>
+                  <p>{{ 'home.reservations' | translate }}</p>
                 </div>
               </div>
             </ion-card-content>
@@ -95,13 +95,13 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="checkmark-circle" color="success"></ion-icon>
-                Articles actifs
+                {{ 'home.activeArticles' | translate }}
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div class="detail-stat">
                 <h1>{{ statistiques.articlesActifs }}</h1>
-                <p>sur {{ statistiques.totalArticles }} articles</p>
+                <p>{{ 'home.outOf' | translate }} {{ statistiques.totalArticles }} {{ 'home.articles' | translate }}</p>
               </div>
             </ion-card-content>
           </ion-card>
@@ -113,13 +113,13 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="time-outline" color="warning"></ion-icon>
-                Réservations en attente
+                {{ 'home.pendingReservations' | translate }}
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div class="detail-stat">
                 <h1>{{ statistiques.reservationsEnAttente }}</h1>
-                <p>en attente de confirmation</p>
+                <p>{{ 'home.waitingConfirmation' | translate }}</p>
               </div>
             </ion-card-content>
           </ion-card>
@@ -131,13 +131,13 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="checkmark-circle" color="success"></ion-icon>
-                Réservations confirmées
+                {{ 'home.confirmedReservations' | translate }}
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div class="detail-stat">
                 <h1>{{ statistiques.reservationsConfirmees }}</h1>
-                <p>confirmées</p>
+                <p>{{ 'home.confirmed' | translate }}</p>
               </div>
             </ion-card-content>
           </ion-card>
@@ -149,13 +149,13 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="flag" color="primary"></ion-icon>
-                Réservations terminées
+                {{ 'home.completedReservations' | translate }}
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div class="detail-stat">
                 <h1>{{ statistiques.reservationsTerminees }}</h1>
-                <p>terminées</p>
+                <p>{{ 'home.completed' | translate }}</p>
               </div>
             </ion-card-content>
           </ion-card>
@@ -169,13 +169,13 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="wallet" color="success"></ion-icon>
-                Paiements
+                {{ 'home.payments' | translate }}
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div class="detail-stat">
                 <h1>{{ statistiques.totalPaiements }}</h1>
-                <p>paiements enregistrés</p>
+                <p>{{ 'home.recordedPayments' | translate }}</p>
               </div>
             </ion-card-content>
           </ion-card>
@@ -187,13 +187,13 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="arrow-down" color="success"></ion-icon>
-                Articles entrants aujourd'hui
+                {{ 'home.incomingArticlesToday' | translate }}
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div class="detail-stat">
                 <h1>{{ statistiques.nombreArticlesEntrantsAujourdhui }}</h1>
-                <p>articles retournés aujourd'hui</p>
+                <p>{{ 'home.returnedToday' | translate }}</p>
               </div>
             </ion-card-content>
           </ion-card>
@@ -205,13 +205,13 @@
             <ion-card-header>
               <ion-card-title>
                 <ion-icon name="arrow-up" color="danger"></ion-icon>
-                Articles sortants aujourd'hui
+                {{ 'home.outgoingArticlesToday' | translate }}
               </ion-card-title>
             </ion-card-header>
             <ion-card-content>
               <div class="detail-stat">
                 <h1>{{ statistiques.nombreArticlesSortantsAujourdhui }}</h1>
-                <p>articles sortis aujourd'hui</p>
+                <p>{{ 'home.exitedToday' | translate }}</p>
               </div>
             </ion-card-content>
           </ion-card>
@@ -223,6 +223,6 @@
   <!-- Loading state -->
   <div class="loading-container" *ngIf="isLoading">
     <ion-spinner></ion-spinner>
-    <p>Chargement des statistiques...</p>
+    <p>{{ 'home.loadingStatistics' | translate }}</p>
   </div>
 </ion-content>

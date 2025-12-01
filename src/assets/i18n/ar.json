@@ -64,7 +64,21 @@
     "clients": "العملاء",
     "articles": "المنتجات",
     "reservations": "الحجوزات",
-    "payments": "الدفعات"
+    "payments": "الدفعات",
+    "activeArticles": "المنتجات النشطة",
+    "outOf": "من أصل",
+    "pendingReservations": "الحجوزات قيد الانتظار",
+    "waitingConfirmation": "في انتظار التأكيد",
+    "confirmedReservations": "الحجوزات المؤكدة",
+    "confirmed": "مؤكدة",
+    "completedReservations": "الحجوزات المكتملة",
+    "completed": "مكتملة",
+    "recordedPayments": "الدفعات المسجلة",
+    "incomingArticlesToday": "المنتجات الواردة اليوم",
+    "returnedToday": "منتجات تم إرجاعها اليوم",
+    "outgoingArticlesToday": "المنتجات الصادرة اليوم",
+    "exitedToday": "منتجات خرجت اليوم",
+    "loadingStatistics": "جاري تحميل الإحصائيات..."
   },
   "clients": {
     "title": "إدارة العملاء",
