@@ -24,6 +24,7 @@ import {
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { 
   add, 
@@ -60,7 +61,8 @@ import { environment } from '../../../environments/environment';
     IonButtons,
     IonSpinner,
     CommonModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
 })
 export class ListeCategoriesPage implements OnInit {

@@ -16,7 +16,7 @@
 <ion-content [fullscreen]="true">
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'clients.loading' | translate }}</p>
   </div>
   <div *ngIf="!isLoading && client" class="detail-container">
     <!-- En-tête avec nom -->
@@ -27,11 +27,11 @@
             <ion-icon name="person" color="primary" class="status-icon-large"></ion-icon>
           </div>
           <div class="info-section">
-            <h1>{{ getFullName() || 'Client non défini' }}</h1>
+            <h1>{{ getFullName() || ('clients.notDefined' | translate) }}</h1>
             <div class="badges-header">
               <ion-badge color="primary">
                 <ion-icon name="bag" style="margin-right: 4px;"></ion-icon>
-                {{ client.totalCommandes }} commande{{ client.totalCommandes > 1 ? 's' : '' }}
+                {{ client.totalCommandes }} {{ client.totalCommandes > 1 ? ('clients.ordersCountPlural' | translate) : ('clients.ordersCount' | translate) }}
               </ion-badge>
             </div>
           </div>
@@ -42,37 +42,37 @@
     <!-- Informations personnelles -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Informations personnelles</ion-card-title>
+        <ion-card-title>{{ 'clients.personalInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
           <ion-icon name="person" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Nom</h3>
-            <p>{{ client.nomClient || 'Non défini' }}</p>
+            <h3>{{ 'clients.name' | translate }}</h3>
+            <p>{{ client.nomClient || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none">
           <ion-icon name="person" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Prénom</h3>
-            <p>{{ client.prenomClient || 'Non défini' }}</p>
+            <h3>{{ 'clients.firstName' | translate }}</h3>
+            <p>{{ client.prenomClient || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none">
           <ion-icon name="call" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Téléphone</h3>
-            <p>{{ client.telephone || 'Non défini' }}</p>
+            <h3>{{ 'clients.phone' | translate }}</h3>
+            <p>{{ client.telephone || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none" *ngIf="client.email">
           <ion-icon name="mail" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Email</h3>
+            <h3>{{ 'clients.email' | translate }}</h3>
             <p>{{ client.email }}</p>
           </ion-label>
         </ion-item>

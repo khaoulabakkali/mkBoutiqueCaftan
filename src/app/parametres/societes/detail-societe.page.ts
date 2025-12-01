@@ -21,6 +21,7 @@ import {
   LoadingController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, create, business, mail, call, location, globe, checkmarkCircle, closeCircle, calendar, informationCircle } from 'ionicons/icons';
 import { SocieteService } from '../../services/societe.service';
@@ -49,7 +50,8 @@ import { environment } from '../../../environments/environment';
     IonCardContent,
     IonBadge,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailSocietePage implements OnInit {

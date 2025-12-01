@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Détails Taille</ion-title>
+    <ion-title>{{ 'parameters.size.detail' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="editTaille()" *ngIf="taille?.idTaille">
         <ion-icon name="create"></ion-icon>
@@ -16,7 +16,7 @@
 <ion-content [fullscreen]="true">
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'parameters.size.loading' | translate }}</p>
   </div>
   <div *ngIf="!isLoading && taille" class="detail-container">
     <!-- En-tête avec nom -->
@@ -31,7 +31,7 @@
             </ion-icon>
           </div>
           <div class="info-section">
-            <h1>{{ taille.taille || 'Taille non définie' }}</h1>
+            <h1>{{ taille.taille || ('parameters.size.notDefined' | translate) }}</h1>
           </div>
         </div>
       </ion-card-content>
@@ -40,14 +40,14 @@
     <!-- Informations de la taille -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Informations de la taille</ion-card-title>
+        <ion-card-title>{{ 'parameters.size.sizeInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
           <ion-icon name="resize" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Libellé de la taille</h3>
-            <p>{{ taille.taille || 'Non défini' }}</p>
+            <h3>{{ 'parameters.size.sizeLabel' | translate }}</h3>
+            <p>{{ taille.taille || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
       </ion-card-content>

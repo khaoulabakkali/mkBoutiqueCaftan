@@ -16,7 +16,7 @@
 <ion-content [fullscreen]="true">
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'articles.loading' | translate }}</p>
   </div>
   <div *ngIf="!isLoading && article" class="detail-container">
     <!-- En-tête avec nom et statut -->
@@ -31,11 +31,11 @@
             </ion-icon>
           </div>
           <div class="info-section">
-            <h1>{{ article.nomArticle || 'Article non défini' }}</h1>
+            <h1>{{ article.nomArticle || ('articles.notDefined' | translate) }}</h1>
             <div class="badges-header">
               <ion-badge [color]="article.actif ? 'success' : 'danger'">
                 <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-                {{ article.actif ? 'Actif' : 'Inactif' }}
+                {{ article.actif ? ('common.active' | translate) : ('common.inactive' | translate) }}
               </ion-badge>
             </div>
           </div>
@@ -47,7 +47,7 @@
     <ion-card *ngIf="getPhotoUrl()">
       <ion-card-content>
         <div class="photo-container">
-          <ion-img [src]="getPhotoUrl()!" alt="Photo de l'article"></ion-img>
+          <ion-img [src]="getPhotoUrl()!" [alt]="'articles.photoLabel' | translate"></ion-img>
         </div>
       </ion-card-content>
     </ion-card>
@@ -55,29 +55,29 @@
     <!-- Informations de l'article -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Informations de l'article</ion-card-title>
+        <ion-card-title>{{ 'articles.articleInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
           <ion-icon name="cube" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Nom de l'article</h3>
-            <p>{{ article.nomArticle || 'Non défini' }}</p>
+            <h3>{{ 'articles.articleName' | translate }}</h3>
+            <p>{{ article.nomArticle || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none">
           <ion-icon name="information-circle" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Description</h3>
-            <p>{{ article.description || 'Non défini' }}</p>
+            <h3>{{ 'articles.description' | translate }}</h3>
+            <p>{{ article.description || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none" [button]="true" (click)="viewCategorie()" *ngIf="categorie">
           <ion-icon name="grid" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Catégorie</h3>
+            <h3>{{ 'articles.category' | translate }}</h3>
             <p>{{ categorie.nomCategorie }}</p>
           </ion-label>
         </ion-item>
@@ -85,7 +85,7 @@
         <ion-item lines="none" [button]="true" (click)="viewTaille()" *ngIf="taille">
           <ion-icon name="resize" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Taille</h3>
+            <h3>{{ 'articles.size' | translate }}</h3>
             <p>{{ taille.taille }}</p>
           </ion-label>
         </ion-item>
@@ -93,7 +93,7 @@
         <ion-item lines="none" *ngIf="article.couleur">
           <ion-icon name="color-fill" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Couleur</h3>
+            <h3>{{ 'articles.color' | translate }}</h3>
             <p>{{ article.couleur }}</p>
           </ion-label>
         </ion-item>
@@ -103,21 +103,21 @@
     <!-- Informations financières -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Informations financières</ion-card-title>
+        <ion-card-title>{{ 'articles.financialInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
           <ion-icon name="cash" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Prix de location (base)</h3>
-            <p class="montant">{{ formatMontant(article.prixLocationBase) }} / jour</p>
+            <h3>{{ 'articles.rentalPriceBase' | translate }}</h3>
+            <p class="montant">{{ formatMontant(article.prixLocationBase) }} {{ 'articles.perDay' | translate }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none">
           <ion-icon name="cash" slot="start" color="success"></ion-icon>
           <ion-label>
-            <h3>Prix d'avance (base)</h3>
+            <h3>{{ 'articles.advancePriceBase' | translate }}</h3>
             <p class="montant">{{ formatMontant(article.prixAvanceBase) }}</p>
           </ion-label>
         </ion-item>

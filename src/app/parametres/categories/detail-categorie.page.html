@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Détails Catégorie</ion-title>
+    <ion-title>{{ 'parameters.category.detail' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="editCategorie()" *ngIf="categorie?.idCategorie">
         <ion-icon name="create"></ion-icon>
@@ -16,7 +16,7 @@
 <ion-content [fullscreen]="true">
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'parameters.category.loading' | translate }}</p>
   </div>
   <div *ngIf="!isLoading && categorie" class="detail-container">
     <!-- En-tête avec nom -->
@@ -31,7 +31,7 @@
             </ion-icon>
           </div>
           <div class="info-section">
-            <h1>{{ categorie.nomCategorie || 'Catégorie non définie' }}</h1>
+            <h1>{{ categorie.nomCategorie || ('parameters.category.notDefined' | translate) }}</h1>
           </div>
         </div>
       </ion-card-content>
@@ -40,21 +40,21 @@
     <!-- Informations de la catégorie -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Informations de la catégorie</ion-card-title>
+        <ion-card-title>{{ 'parameters.category.categoryInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
           <ion-icon name="grid" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Nom de la catégorie</h3>
-            <p>{{ categorie.nomCategorie || 'Non défini' }}</p>
+            <h3>{{ 'parameters.category.categoryName' | translate }}</h3>
+            <p>{{ categorie.nomCategorie || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none" *ngIf="categorie.description">
           <ion-icon name="informationCircle" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Description</h3>
+            <h3>{{ 'parameters.category.description' | translate }}</h3>
             <p>{{ categorie.description }}</p>
           </ion-label>
         </ion-item>
@@ -62,7 +62,7 @@
         <ion-item lines="none" *ngIf="categorie.ordreAffichage !== undefined && categorie.ordreAffichage !== null">
           <ion-icon name="list" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Ordre d'affichage</h3>
+            <h3>{{ 'parameters.category.displayOrderLabel' | translate }}</h3>
             <p>{{ categorie.ordreAffichage }}</p>
           </ion-label>
         </ion-item>

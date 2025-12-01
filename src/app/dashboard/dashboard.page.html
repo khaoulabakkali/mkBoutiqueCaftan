@@ -48,7 +48,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="search" slot="start"></ion-icon>
-            Filtrer les revenus
+            {{ 'dashboard.filterIncome' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -56,50 +56,50 @@
           <ion-segment [value]="filterType" (ionChange)="onFilterTypeChange($event)" class="filter-segment">
             <ion-segment-button value="jour">
               <ion-icon name="calendar"></ion-icon>
-              <ion-label>Jour unique</ion-label>
+              <ion-label>{{ 'dashboard.singleDay' | translate }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="periode">
               <ion-icon name="bar-chart"></ion-icon>
-              <ion-label>Période</ion-label>
+              <ion-label>{{ 'dashboard.period' | translate }}</ion-label>
             </ion-segment-button>
           </ion-segment>
 
           <!-- Filtre par jour unique -->
           <div class="filter-content" *ngIf="filterType === 'jour'">
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Sélectionner une date</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.selectDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="selectedDate"
                 (ionInput)="selectedDate = $event.detail.value ?? selectedDate; onDateChange()"
-                placeholder="Sélectionner une date">
+                [placeholder]="'dashboard.selectDate' | translate">
               </ion-input>
             </ion-item>
-            <p class="filter-hint">Revenus générés le {{ formatDate(selectedDate) }}</p>
+            <p class="filter-hint">{{ 'dashboard.incomeGenerated' | translate }} {{ formatDate(selectedDate) }}</p>
           </div>
 
           <!-- Filtre par période -->
           <div class="filter-content" *ngIf="filterType === 'periode'">
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Date de début</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.startDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="dateDebut"
                 (ionInput)="dateDebut = $event.detail.value ?? dateDebut; onPeriodeChange()"
-                placeholder="Date de début">
+                [placeholder]="'dashboard.startDate' | translate">
               </ion-input>
             </ion-item>
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Date de fin</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.endDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="dateFin"
                 (ionInput)="dateFin = $event.detail.value ?? dateFin; onPeriodeChange()"
-                placeholder="Date de fin">
+                [placeholder]="'dashboard.endDate' | translate">
               </ion-input>
             </ion-item>
             <p class="filter-hint">
-              Revenus générés du {{ formatDateShort(dateDebut) }} au {{ formatDateShort(dateFin) }}
+              {{ 'dashboard.incomeFromTo' | translate }} {{ formatDateShort(dateDebut) }} {{ 'dashboard.to' | translate }} {{ formatDateShort(dateFin) }}
             </p>
           </div>
         </ion-card-content>
@@ -110,8 +110,8 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="wallet" slot="start"></ion-icon>
-            <span *ngIf="filterType === 'jour'">Revenus du {{ formatDate(selectedDate) }}</span>
-            <span *ngIf="filterType === 'periode'">Revenus de la période</span>
+            <span *ngIf="filterType === 'jour'">{{ 'dashboard.incomeOn' | translate }} {{ formatDate(selectedDate) }}</span>
+            <span *ngIf="filterType === 'periode'">{{ 'dashboard.incomePeriod' | translate }}</span>
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -119,13 +119,13 @@
             <div class="stat-value">
               <h1>{{ formatMontant(revenus) }}</h1>
               <p class="stat-description" *ngIf="filterType === 'jour'">
-                {{ nombrePaiements }} paiement(s) enregistré(s) ce jour
+                {{ nombrePaiements }} {{ 'dashboard.paymentsRecorded' | translate }}
               </p>
               <p class="stat-description" *ngIf="filterType === 'periode'">
-                {{ nombrePaiements }} paiement(s) enregistré(s) sur cette période
+                {{ nombrePaiements }} {{ 'dashboard.paymentsPeriod' | translate }}
               </p>
               <p class="stat-date-range" *ngIf="filterType === 'periode'">
-                Du {{ formatDateShort(dateDebut) }} au {{ formatDateShort(dateFin) }}
+                {{ 'dashboard.from' | translate }} {{ formatDateShort(dateDebut) }} {{ 'dashboard.to' | translate }} {{ formatDateShort(dateFin) }}
               </p>
               <p class="stat-date-range" *ngIf="filterType === 'jour'">
                 {{ formatDate(selectedDate) }}
@@ -143,23 +143,23 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="trending-up" slot="start"></ion-icon>
-            Progression du chiffre d'affaires
+            {{ 'dashboard.revenueProgress' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
           <!-- Sélecteur de période pour le graphique -->
           <ion-segment [value]="chartType" (ionChange)="onChartTypeChange($event)" class="chart-segment">
             <ion-segment-button value="jour">
-              <ion-label>Jour</ion-label>
+              <ion-label>{{ 'dashboard.day' | translate }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="semaine">
-              <ion-label>Semaine</ion-label>
+              <ion-label>{{ 'dashboard.week' | translate }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="mois">
-              <ion-label>Mois</ion-label>
+              <ion-label>{{ 'dashboard.month' | translate }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="annee">
-              <ion-label>Année</ion-label>
+              <ion-label>{{ 'dashboard.year' | translate }}</ion-label>
             </ion-segment-button>
           </ion-segment>
           
@@ -169,26 +169,26 @@
               <ion-item lines="none" class="filter-item">
                 <ion-label position="stacked">
                   <ion-icon name="calendar" style="margin-right: 6px; vertical-align: middle; font-size: 16px;"></ion-icon>
-                  Sélectionner une date de référence
+                  {{ 'dashboard.selectReferenceDate' | translate }}
                 </ion-label>
                 <ion-input
                   type="date"
                   [value]="selectedDateChart"
                   (ionInput)="onChartDateChange($event)"
-                  placeholder="Sélectionner une date">
+                  [placeholder]="'dashboard.selectDate' | translate">
                 </ion-input>
               </ion-item>
               <p class="filter-hint" *ngIf="chartType === 'jour'">
-                Affiche les 30 derniers jours à partir de cette date
+                {{ 'dashboard.showLast30Days' | translate }}
               </p>
               <p class="filter-hint" *ngIf="chartType === 'semaine'">
-                Affiche les 12 dernières semaines à partir de la semaine de cette date
+                {{ 'dashboard.showLast12Weeks' | translate }}
               </p>
               <p class="filter-hint" *ngIf="chartType === 'mois'">
-                Affiche les 12 derniers mois à partir du mois de cette date
+                {{ 'dashboard.showLast12Months' | translate }}
               </p>
               <p class="filter-hint" *ngIf="chartType === 'annee'">
-                Affiche les 5 dernières années à partir de l'année de cette date
+                {{ 'dashboard.showLast5Years' | translate }}
               </p>
             </div>
           </div>
@@ -205,7 +205,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="star" slot="start"></ion-icon>
-            Meilleur jour de la semaine
+            {{ 'dashboard.bestDayWeek' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -214,7 +214,7 @@
               <h2 class="jour-nom">{{ meilleurJour.jour }}</h2>
               <h1>{{ formatMontant(meilleurJour.moyenne) }}</h1>
               <p class="stat-description">
-                Jour le plus rentable : {{ meilleurJour.jour }} — Moyenne : {{ formatMontant(meilleurJour.moyenne) }}
+                {{ 'dashboard.mostProfitableDay' | translate }} : {{ meilleurJour.jour }} — {{ 'dashboard.average' | translate }} : {{ formatMontant(meilleurJour.moyenne) }}
               </p>
             </div>
             <div class="stat-icon-large">
@@ -232,7 +232,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="cube" slot="start"></ion-icon>
-            Articles les plus loués
+            {{ 'dashboard.mostRented' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -265,24 +265,24 @@
                     {{ getCategorieName(item.article.idCategorie) }}
                   </ion-badge>
                   <ion-badge *ngIf="item.article.idTaille" color="secondary">
-                    Taille: {{ getTailleLabel(item.article.idTaille) }}
+                    {{ 'dashboard.size' | translate }}: {{ getTailleLabel(item.article.idTaille) }}
                   </ion-badge>
                   <ion-badge [color]="item.article.actif ? 'success' : 'danger'">
                     <ion-icon [name]="item.article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-                    {{ item.article.actif ? 'Actif' : 'Inactif' }}
+                    {{ item.article.actif ? ('dashboard.active' | translate) : ('dashboard.inactive' | translate) }}
                   </ion-badge>
                   <ion-badge color="success">
-                    {{ item.nombreLocations }} location(s)
+                    {{ item.nombreLocations }} {{ 'dashboard.rentals' | translate }}
                   </ion-badge>
                 </div>
                 <p style="margin-top: 0.5rem; color: var(--ion-color-medium);">
-                  Prix location: {{ item.article.prixLocationBase }} MAD/jour | Avance: {{ item.article.prixAvanceBase }} MAD
+                  {{ 'dashboard.rentalPrice' | translate }}: {{ item.article.prixLocationBase }} MAD{{ 'dashboard.perDay' | translate }} | {{ 'dashboard.advance' | translate }}: {{ item.article.prixAvanceBase }} MAD
                 </p>
               </ion-label>
             </ion-item>
           </ion-list>
           <div class="no-data" *ngIf="articlesPlusLoues.length === 0">
-            <p>Aucun article loué pour le moment</p>
+            <p>{{ 'dashboard.noRentedArticles' | translate }}</p>
           </div>
         </ion-card-content>
       </ion-card>
@@ -292,7 +292,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="trending-up" slot="start"></ion-icon>
-            Article le plus rentable
+            {{ 'dashboard.mostProfitable' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content *ngIf="articlePlusRentable.article.nomArticle !== 'N/A'">
@@ -324,28 +324,28 @@
                   {{ getCategorieName(articlePlusRentable.article.idCategorie) }}
                 </ion-badge>
                 <ion-badge *ngIf="articlePlusRentable.article.idTaille" color="secondary">
-                  Taille: {{ getTailleLabel(articlePlusRentable.article.idTaille) }}
+                  {{ 'dashboard.size' | translate }}: {{ getTailleLabel(articlePlusRentable.article.idTaille) }}
                 </ion-badge>
                 <ion-badge [color]="articlePlusRentable.article.actif ? 'success' : 'danger'">
                   <ion-icon [name]="articlePlusRentable.article.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-                  {{ articlePlusRentable.article.actif ? 'Actif' : 'Inactif' }}
+                  {{ articlePlusRentable.article.actif ? ('dashboard.active' | translate) : ('dashboard.inactive' | translate) }}
                 </ion-badge>
                 <ion-badge color="warning">
                   {{ formatMontant(articlePlusRentable.revenus) }}
                 </ion-badge>
               </div>
               <p style="margin-top: 0.5rem; color: var(--ion-color-medium);">
-                Prix location: {{ articlePlusRentable.article.prixLocationBase }} MAD/jour | Avance: {{ articlePlusRentable.article.prixAvanceBase }} MAD
+                {{ 'dashboard.rentalPrice' | translate }}: {{ articlePlusRentable.article.prixLocationBase }} MAD{{ 'dashboard.perDay' | translate }} | {{ 'dashboard.advance' | translate }}: {{ articlePlusRentable.article.prixAvanceBase }} MAD
               </p>
               <p style="margin-top: 0.25rem; color: var(--ion-color-success); font-weight: 600;">
-                Revenus ce mois: {{ formatMontant(articlePlusRentable.revenus) }}
+                {{ 'dashboard.revenueThisMonth' | translate }}: {{ formatMontant(articlePlusRentable.revenus) }}
               </p>
             </ion-label>
           </ion-item>
         </ion-card-content>
         <ion-card-content *ngIf="articlePlusRentable.article.nomArticle === 'N/A'">
           <div class="no-data">
-            <p>Aucun article rentable pour le moment</p>
+            <p>{{ 'dashboard.noProfitableArticle' | translate }}</p>
           </div>
         </ion-card-content>
       </ion-card>
@@ -355,7 +355,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="grid" slot="start"></ion-icon>
-            Catégorie la plus demandée
+            {{ 'dashboard.mostRequestedCategory' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -364,7 +364,7 @@
               <h2 class="categorie-nom">{{ categoriePlusDemandee.nomCategorie }}</h2>
               <h1>{{ categoriePlusDemandee.nombreReservations }}</h1>
               <p class="stat-description">
-                {{ categoriePlusDemandee.nombreReservations }} réservation(s) dans cette catégorie
+                {{ categoriePlusDemandee.nombreReservations }} {{ 'dashboard.reservationsInCategory' | translate }}
               </p>
             </div>
             <div class="stat-icon-large">
@@ -382,7 +382,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="calendar" slot="start"></ion-icon>
-            Filtrer les articles entrants
+            {{ 'dashboard.filterIncoming' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -390,50 +390,50 @@
           <ion-segment [value]="filterTypeEntrants" (ionChange)="onFilterTypeEntrantsChange($event)" class="filter-segment">
             <ion-segment-button value="jour">
               <ion-icon name="calendar"></ion-icon>
-              <ion-label>Jour unique</ion-label>
+              <ion-label>{{ 'dashboard.singleDay' | translate }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="periode">
               <ion-icon name="bar-chart"></ion-icon>
-              <ion-label>Période</ion-label>
+              <ion-label>{{ 'dashboard.period' | translate }}</ion-label>
             </ion-segment-button>
           </ion-segment>
 
           <!-- Filtre par jour unique -->
           <div class="filter-content" *ngIf="filterTypeEntrants === 'jour'">
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Sélectionner une date</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.selectDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="selectedDateEntrants"
                 (ionInput)="selectedDateEntrants = $event.detail.value ?? selectedDateEntrants; onEntrantsDateChange()"
-                placeholder="Sélectionner une date">
+                [placeholder]="'dashboard.selectDate' | translate">
               </ion-input>
             </ion-item>
-            <p class="filter-hint">Articles entrants le {{ formatDate(selectedDateEntrants) }}</p>
+            <p class="filter-hint">{{ 'dashboard.incomingOn' | translate }} {{ formatDate(selectedDateEntrants) }}</p>
           </div>
 
           <!-- Filtre par période -->
           <div class="filter-content" *ngIf="filterTypeEntrants === 'periode'">
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Date de début</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.startDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="dateDebutEntrants"
                 (ionInput)="dateDebutEntrants = $event.detail.value ?? dateDebutEntrants; onEntrantsPeriodeChange()"
-                placeholder="Date de début">
+                [placeholder]="'dashboard.startDate' | translate">
               </ion-input>
             </ion-item>
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Date de fin</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.endDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="dateFinEntrants"
                 (ionInput)="dateFinEntrants = $event.detail.value ?? dateFinEntrants; onEntrantsPeriodeChange()"
-                placeholder="Date de fin">
+                [placeholder]="'dashboard.endDate' | translate">
               </ion-input>
             </ion-item>
             <p class="filter-hint">
-              Articles entrants du {{ formatDateShort(dateDebutEntrants) }} au {{ formatDateShort(dateFinEntrants) }}
+              {{ 'dashboard.incomingFromTo' | translate }} {{ formatDateShort(dateDebutEntrants) }} {{ 'dashboard.to' | translate }} {{ formatDateShort(dateFinEntrants) }}
             </p>
           </div>
         </ion-card-content>
@@ -444,7 +444,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="arrow-up" slot="start"></ion-icon>
-            Articles entrants
+            {{ 'dashboard.incomingArticles' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -466,13 +466,13 @@
               </ion-icon>
               <ion-label>
                 <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
-                <p>Quantité: {{ item.quantite }} — Retour le {{ formatDateShort(item.dateRetour) }}</p>
+                <p>{{ 'dashboard.quantity' | translate }}: {{ item.quantite }} — {{ 'dashboard.returnOn' | translate }} {{ formatDateShort(item.dateRetour) }}</p>
               </ion-label>
               <ion-badge color="success" slot="end">{{ item.quantite }}</ion-badge>
             </ion-item>
           </ion-list>
           <div class="no-data" *ngIf="articlesEntrants.length === 0">
-            <p>Aucun article entrant pour cette période</p>
+            <p>{{ 'dashboard.noIncomingArticles' | translate }}</p>
           </div>
         </ion-card-content>
       </ion-card>
@@ -485,7 +485,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="calendar" slot="start"></ion-icon>
-            Filtrer les articles sortants
+            {{ 'dashboard.filterOutgoing' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -493,50 +493,50 @@
           <ion-segment [value]="filterTypeSortants" (ionChange)="onFilterTypeSortantsChange($event)" class="filter-segment">
             <ion-segment-button value="jour">
               <ion-icon name="calendar"></ion-icon>
-              <ion-label>Jour unique</ion-label>
+              <ion-label>{{ 'dashboard.singleDay' | translate }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="periode">
               <ion-icon name="bar-chart"></ion-icon>
-              <ion-label>Période</ion-label>
+              <ion-label>{{ 'dashboard.period' | translate }}</ion-label>
             </ion-segment-button>
           </ion-segment>
 
           <!-- Filtre par jour unique -->
           <div class="filter-content" *ngIf="filterTypeSortants === 'jour'">
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Sélectionner une date</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.selectDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="selectedDateSortants"
                 (ionInput)="selectedDateSortants = $event.detail.value ?? selectedDateSortants; onSortantsDateChange()"
-                placeholder="Sélectionner une date">
+                [placeholder]="'dashboard.selectDate' | translate">
               </ion-input>
             </ion-item>
-            <p class="filter-hint">Articles sortants le {{ formatDate(selectedDateSortants) }}</p>
+            <p class="filter-hint">{{ 'dashboard.outgoingOn' | translate }} {{ formatDate(selectedDateSortants) }}</p>
           </div>
 
           <!-- Filtre par période -->
           <div class="filter-content" *ngIf="filterTypeSortants === 'periode'">
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Date de début</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.startDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="dateDebutSortants"
                 (ionInput)="dateDebutSortants = $event.detail.value ?? dateDebutSortants; onSortantsPeriodeChange()"
-                placeholder="Date de début">
+                [placeholder]="'dashboard.startDate' | translate">
               </ion-input>
             </ion-item>
             <ion-item lines="full" class="filter-item">
-              <ion-label position="stacked">Date de fin</ion-label>
+              <ion-label position="stacked">{{ 'dashboard.endDate' | translate }}</ion-label>
               <ion-input
                 type="date"
                 [value]="dateFinSortants"
                 (ionInput)="dateFinSortants = $event.detail.value ?? dateFinSortants; onSortantsPeriodeChange()"
-                placeholder="Date de fin">
+                [placeholder]="'dashboard.endDate' | translate">
               </ion-input>
             </ion-item>
             <p class="filter-hint">
-              Articles sortants du {{ formatDateShort(dateDebutSortants) }} au {{ formatDateShort(dateFinSortants) }}
+              {{ 'dashboard.outgoingFromTo' | translate }} {{ formatDateShort(dateDebutSortants) }} {{ 'dashboard.to' | translate }} {{ formatDateShort(dateFinSortants) }}
             </p>
           </div>
         </ion-card-content>
@@ -547,7 +547,7 @@
         <ion-card-header>
           <ion-card-title>
             <ion-icon name="arrow-down" slot="start"></ion-icon>
-            Articles sortants
+            {{ 'dashboard.outgoingArticles' | translate }}
           </ion-card-title>
         </ion-card-header>
         <ion-card-content>
@@ -569,13 +569,13 @@
               </ion-icon>
               <ion-label>
                 <h3>{{ item.article.nomArticle }}{{ item.article.couleur ? ' ' + item.article.couleur : '' }}</h3>
-                <p>Quantité: {{ item.quantite }} — Sortie le {{ formatDateShort(item.dateSortie) }}</p>
+                <p>{{ 'dashboard.quantity' | translate }}: {{ item.quantite }} — {{ 'dashboard.exitOn' | translate }} {{ formatDateShort(item.dateSortie) }}</p>
               </ion-label>
               <ion-badge color="danger" slot="end">{{ item.quantite }}</ion-badge>
             </ion-item>
           </ion-list>
           <div class="no-data" *ngIf="articlesSortants.length === 0">
-            <p>Aucun article sortant pour cette période</p>
+            <p>{{ 'dashboard.noOutgoingArticles' | translate }}</p>
           </div>
         </ion-card-content>
       </ion-card>

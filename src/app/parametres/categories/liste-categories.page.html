@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Gestion des Catégories</ion-title>
+    <ion-title>{{ 'parameters.category.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addNewCategorie()">
         <ion-icon name="add"></ion-icon>
@@ -15,14 +15,14 @@
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher une catégorie..."
+    [placeholder]="'parameters.category.search' | translate"
     debounce="300">
   </ion-searchbar>
 
   <!-- Spinner de chargement -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'parameters.category.loading' | translate }}</p>
   </div>
 
   <!-- Liste des catégories -->
@@ -33,7 +33,7 @@
         <ion-label>
           <h2>{{ categorie.nomCategorie }}</h2>
           <p *ngIf="categorie.ordreAffichage" style="color: var(--ion-color-medium); font-size: 0.8rem;">
-            Ordre d'affichage: {{ categorie.ordreAffichage }}
+            {{ 'parameters.category.displayOrderLabel' | translate }}: {{ categorie.ordreAffichage }}
           </p>
         </ion-label>
       </ion-item>
@@ -42,15 +42,15 @@
       <ion-item-options side="end">
         <ion-item-option color="primary" (click)="viewCategorie(categorie); slidingItem.close()">
           <ion-icon slot="icon-only" name="information-circle"></ion-icon>
-          <span>Détails</span>
+          <span>{{ 'common.details' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="tertiary" (click)="editCategorie(categorie); slidingItem.close()">
           <ion-icon slot="icon-only" name="create"></ion-icon>
-          <span>Modifier</span>
+          <span>{{ 'common.edit' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="danger" (click)="deleteCategorie(categorie); slidingItem.close()">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
-          <span>Supprimer</span>
+          <span>{{ 'common.delete' | translate }}</span>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -59,7 +59,7 @@
   <!-- Message si aucun résultat -->
   <div *ngIf="!isLoading && categoriesFiltres.length === 0" class="empty-state">
     <ion-icon name="grid"></ion-icon>
-    <p>Aucune catégorie trouvée</p>
+    <p>{{ 'parameters.category.noResults' | translate }}</p>
   </div>
 </ion-content>
 

@@ -56,15 +56,15 @@
               {{ getCategorieName(article.idCategorie) }}
             </ion-badge>
             <ion-badge *ngIf="article.idTaille" color="secondary" class="full-badge">
-              Taille: {{ getTailleLabel(article.idTaille) }}
+              {{ 'articles.sizeLabel' | translate }}: {{ getTailleLabel(article.idTaille) }}
             </ion-badge>
             <ion-badge [color]="article.actif ? 'success' : 'danger'" class="full-badge">
               <ion-icon [name]="article.actif ? 'checkmark-circle' : 'close-circle'" class="badge-icon"></ion-icon>
-              {{ article.actif ? 'Actif' : 'Inactif' }}
+              {{ article.actif ? ('common.active' | translate) : ('common.inactive' | translate) }}
             </ion-badge>
           </div>
           <p class="price-info">
-            Prix location: {{ article.prixLocationBase }} MAD/jour | Avance: {{ article.prixAvanceBase }} MAD
+            {{ 'articles.rentalPriceLabel' | translate }}: {{ article.prixLocationBase }} MAD{{ 'articles.perDay' | translate }} | {{ 'articles.advanceLabel' | translate }}: {{ article.prixAvanceBase }} MAD
           </p>
         </ion-label>
       </ion-item>
@@ -73,19 +73,19 @@
       <ion-item-options side="end">
         <ion-item-option color="primary" (click)="viewArticle(article); slidingItem.close()">
           <ion-icon slot="icon-only" name="information-circle"></ion-icon>
-          <span>Détails</span>
+          <span>{{ 'common.details' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="tertiary" (click)="editArticle(article); slidingItem.close()">
           <ion-icon slot="icon-only" name="create"></ion-icon>
-          <span>Modifier</span>
+          <span>{{ 'common.edit' | translate }}</span>
         </ion-item-option>
         <ion-item-option [color]="article.actif ? 'warning' : 'success'" (click)="toggleActif(article); slidingItem.close()">
           <ion-icon slot="icon-only" [name]="article.actif ? 'eye-off' : 'eye'"></ion-icon>
-          <span>{{ article.actif ? 'Désactiver' : 'Activer' }}</span>
+          <span>{{ article.actif ? ('articles.disable' | translate) : ('articles.enable' | translate) }}</span>
         </ion-item-option>
         <ion-item-option color="danger" (click)="deleteArticle(article); slidingItem.close()">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
-          <span>Supprimer</span>
+          <span>{{ 'common.delete' | translate }}</span>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -94,7 +94,7 @@
   <!-- Message si aucun résultat -->
   <div *ngIf="!isLoading && articlesFiltres.length === 0" class="empty-state">
     <ion-icon name="cube"></ion-icon>
-    <p>Aucun article trouvé</p>
+    <p>{{ 'articles.noResults' | translate }}</p>
   </div>
 </ion-content>
 

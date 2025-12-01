@@ -20,6 +20,7 @@ import {
   LoadingController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, create, grid, informationCircle, list } from 'ionicons/icons';
 import { CategorieService } from '../../services/categorie.service';
@@ -47,7 +48,8 @@ import { environment } from '../../../environments/environment';
     IonCardTitle,
     IonCardContent,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailCategoriePage implements OnInit {

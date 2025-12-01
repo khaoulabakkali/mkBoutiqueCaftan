@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>{{ isEditMode ? 'Modifier' : 'Nouvelle' }} Société</ion-title>
+    <ion-title>{{ isEditMode ? ('parameters.company.edit' | translate) : ('parameters.company.add' | translate) }}</ion-title>
     <ion-buttons slot="end">
       <ion-button
         type="button"
@@ -24,89 +24,89 @@
 
     <!-- Nom de la société -->
     <ion-item [class.item-has-error]="nomSociete?.invalid && nomSociete?.touched">
-      <ion-label position="stacked">Nom de la société *</ion-label>
+      <ion-label position="stacked">{{ 'parameters.company.name' | translate }} *</ion-label>
       <ion-input
         type="text"
         formControlName="nomSociete"
-        placeholder="Nom de la société">
+        [placeholder]="'parameters.company.namePlaceholder' | translate">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="nomSociete?.invalid && nomSociete?.touched">
-      <span *ngIf="nomSociete?.errors?.['required']">Le nom est requis</span>
-      <span *ngIf="nomSociete?.errors?.['minlength']">Le nom doit contenir au moins 2 caractères</span>
-      <span *ngIf="nomSociete?.errors?.['maxlength']">Le nom ne doit pas dépasser 100 caractères</span>
+      <span *ngIf="nomSociete?.errors?.['required']">{{ 'parameters.company.errors.nameRequired' | translate }}</span>
+      <span *ngIf="nomSociete?.errors?.['minlength']">{{ 'parameters.company.errors.nameMinLength' | translate }}</span>
+      <span *ngIf="nomSociete?.errors?.['maxlength']">{{ 'parameters.company.errors.nameMaxLength' | translate }}</span>
     </div>
 
     <!-- Description -->
     <ion-item [class.item-has-error]="description?.invalid && description?.touched">
-      <ion-label position="stacked">Description</ion-label>
+      <ion-label position="stacked">{{ 'parameters.company.description' | translate }}</ion-label>
       <ion-textarea
         formControlName="description"
-        placeholder="Description de la société (optionnel)"
+        [placeholder]="'parameters.company.descriptionPlaceholder' | translate"
         rows="3">
       </ion-textarea>
     </ion-item>
     <div class="error-message" *ngIf="description?.invalid && description?.touched">
-      <span *ngIf="description?.errors?.['maxlength']">La description ne doit pas dépasser 500 caractères</span>
+      <span *ngIf="description?.errors?.['maxlength']">{{ 'parameters.company.errors.descriptionMaxLength' | translate }}</span>
     </div>
 
     <!-- Adresse -->
     <ion-item>
-      <ion-label position="stacked">Adresse</ion-label>
+      <ion-label position="stacked">{{ 'parameters.company.address' | translate }}</ion-label>
       <ion-textarea
         formControlName="adresse"
-        placeholder="Adresse de la société (optionnel)"
+        [placeholder]="'parameters.company.addressPlaceholder' | translate"
         rows="2">
       </ion-textarea>
     </ion-item>
 
     <!-- Téléphone -->
     <ion-item>
-      <ion-label position="stacked">Téléphone</ion-label>
+      <ion-label position="stacked">{{ 'parameters.company.phone' | translate }}</ion-label>
       <ion-input
         type="tel"
         formControlName="telephone"
-        placeholder="Téléphone (optionnel)">
+        [placeholder]="'parameters.company.phonePlaceholder' | translate">
       </ion-input>
     </ion-item>
 
     <!-- Email -->
     <ion-item [class.item-has-error]="email?.invalid && email?.touched">
-      <ion-label position="stacked">Email</ion-label>
+      <ion-label position="stacked">{{ 'parameters.company.email' | translate }}</ion-label>
       <ion-input
         type="email"
         formControlName="email"
-        placeholder="Email (optionnel)">
+        [placeholder]="'parameters.company.emailPlaceholder' | translate">
       </ion-input>
     </ion-item>
     <div class="error-message" *ngIf="email?.invalid && email?.touched">
-      <span *ngIf="email?.errors?.['email']">Format d'email invalide</span>
-      <span *ngIf="email?.errors?.['maxlength']">L'email ne doit pas dépasser 100 caractères</span>
+      <span *ngIf="email?.errors?.['email']">{{ 'parameters.company.errors.emailFormat' | translate }}</span>
+      <span *ngIf="email?.errors?.['maxlength']">{{ 'parameters.company.errors.emailMaxLength' | translate }}</span>
     </div>
 
     <!-- Site web -->
     <ion-item>
-      <ion-label position="stacked">Site web</ion-label>
+      <ion-label position="stacked">{{ 'parameters.company.website' | translate }}</ion-label>
       <ion-input
         type="url"
         formControlName="siteWeb"
-        placeholder="https://www.example.com (optionnel)">
+        [placeholder]="'parameters.company.websitePlaceholder' | translate">
       </ion-input>
     </ion-item>
 
     <!-- Logo -->
     <ion-item>
-      <ion-label position="stacked">Logo (URL ou base64)</ion-label>
+      <ion-label position="stacked">{{ 'parameters.company.logo' | translate }}</ion-label>
       <ion-input
         type="text"
         formControlName="logo"
-        placeholder="URL ou base64 (optionnel)">
+        [placeholder]="'parameters.company.logoPlaceholder' | translate">
       </ion-input>
     </ion-item>
 
     <!-- Actif -->
     <ion-item>
-      <ion-label>Société active</ion-label>
+      <ion-label>{{ 'parameters.company.active' | translate }}</ion-label>
       <ion-checkbox formControlName="actif" slot="end"></ion-checkbox>
     </ion-item>
 

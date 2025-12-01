@@ -22,6 +22,7 @@ import {
   LoadingController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, create, shieldCheckmark, checkmarkCircle, closeCircle, informationCircle, person, personOutline } from 'ionicons/icons';
 import { RoleService } from '../../services/role.service';
@@ -53,7 +54,8 @@ import { environment } from '../../../environments/environment';
     IonBadge,
     IonList,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailRolePage implements OnInit {

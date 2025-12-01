@@ -20,6 +20,7 @@ import {
   LoadingController
 } from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { addIcons } from 'ionicons';
 import { arrowBack, create, resize } from 'ionicons/icons';
 import { TailleService } from '../../services/taille.service';
@@ -47,7 +48,8 @@ import { environment } from '../../../environments/environment';
     IonCardTitle,
     IonCardContent,
     IonSpinner,
-    CommonModule
+    CommonModule,
+    TranslateModule
   ],
 })
 export class DetailTaillePage implements OnInit {

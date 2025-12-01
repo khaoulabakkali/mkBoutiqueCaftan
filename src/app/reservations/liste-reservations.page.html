@@ -31,11 +31,11 @@
       <ion-item [button]="true" (click)="viewReservation(reservation)">
         <ion-icon name="calendar-outline" slot="start" color="primary"></ion-icon>
         <ion-label>
-          <h2>Réservation #{{ reservation.idReservation }}</h2>
-          <p><strong>Client:</strong> {{ getClientName(reservation.idClient) }}</p>
+          <h2>{{ 'reservations.reservationNumber' | translate }}{{ reservation.idReservation }}</h2>
+          <p><strong>{{ 'reservations.clientLabel' | translate }}</strong> {{ getClientName(reservation.idClient) }}</p>
           <p>
             <ion-icon name="time-outline" style="margin-right: 4px;"></ion-icon>
-            Du {{ formatDate(reservation.dateDebut) }} au {{ formatDate(reservation.dateFin) }}
+            {{ 'reservations.from' | translate }} {{ formatDate(reservation.dateDebut) }} {{ 'reservations.to' | translate }} {{ formatDate(reservation.dateFin) }}
           </p>
           <div class="badges-container">
             <ion-badge [color]="getStatutColor(reservation.statutReservation)">
@@ -45,7 +45,7 @@
               {{ reservation.montantTotal }} MAD
             </ion-badge>
             <ion-badge *ngIf="reservation.remiseAppliquee > 0" color="success">
-              Remise: {{ reservation.remiseAppliquee }} MAD
+              {{ 'reservations.discount' | translate }} {{ reservation.remiseAppliquee }} MAD
             </ion-badge>
           </div>
         </ion-label>
@@ -55,21 +55,21 @@
       <ion-item-options side="end">
         <ion-item-option color="primary" (click)="viewReservation(reservation); slidingItem.close()">
           <ion-icon slot="icon-only" name="information-circle"></ion-icon>
-          <span>Détails</span>
+          <span>{{ 'common.details' | translate }}</span>
         </ion-item-option>
         <ion-item-option 
           [color]="canTerminateReservation(reservation) ? 'success' : 'medium'" 
           (click)="terminerReservation(reservation, slidingItem)">
           <ion-icon slot="icon-only" name="checkmark"></ion-icon>
-          <span>Terminer</span>
+          <span>{{ 'reservations.terminate' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="tertiary" (click)="editReservation(reservation); slidingItem.close()">
           <ion-icon slot="icon-only" name="create"></ion-icon>
-          <span>Modifier</span>
+          <span>{{ 'common.edit' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="danger" (click)="deleteReservation(reservation); slidingItem.close()">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
-          <span>Supprimer</span>
+          <span>{{ 'common.delete' | translate }}</span>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -78,7 +78,7 @@
   <!-- Message si aucun résultat -->
   <div *ngIf="!isLoading && reservationsFiltres.length === 0" class="empty-state">
     <ion-icon name="calendar-outline"></ion-icon>
-    <p>Aucune réservation trouvée</p>
+    <p>{{ 'reservations.noResults' | translate }}</p>
   </div>
 </ion-content>
 

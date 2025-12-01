@@ -13,7 +13,7 @@
 <ion-content [fullscreen]="true">
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'payments.loading' | translate }}</p>
   </div>
   <div *ngIf="!isLoading && paiement" class="detail-container">
     <!-- En-tête avec numéro et montant -->
@@ -28,7 +28,7 @@
             </ion-icon>
           </div>
           <div class="info-section">
-            <h1>Paiement #{{ paiement.idPaiement || 'N/A' }}</h1>
+            <h1>{{ 'payments.paymentNumber' | translate }}{{ paiement.idPaiement || 'N/A' }}</h1>
             <div class="badges-header">
               <p class="montant-total">{{ formatMontant(paiement.montant) }}</p>
             </div>
@@ -40,13 +40,13 @@
     <!-- Informations financières -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Informations financières</ion-card-title>
+        <ion-card-title>{{ 'payments.financialInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
           <ion-icon name="cash" slot="start" color="success"></ion-icon>
           <ion-label>
-            <h3>Montant</h3>
+            <h3>{{ 'payments.amountLabel' | translate }}</h3>
             <p class="montant-total">{{ formatMontant(paiement.montant) }}</p>
           </ion-label>
         </ion-item>
@@ -54,7 +54,7 @@
         <ion-item lines="none" *ngIf="paiement.methodePaiement">
           <ion-icon [name]="getMethodeIcon(paiement.methodePaiement)" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Méthode de paiement</h3>
+            <h3>{{ 'payments.paymentMethod' | translate }}</h3>
             <p>{{ paiement.methodePaiement }}</p>
           </ion-label>
         </ion-item>
@@ -62,7 +62,7 @@
         <ion-item lines="none">
           <ion-icon name="calendar" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Date de paiement</h3>
+            <h3>{{ 'payments.paymentDateLabel' | translate }}</h3>
             <p>{{ formatDateTime(paiement.datePaiement) }}</p>
           </ion-label>
         </ion-item>
@@ -70,7 +70,7 @@
         <ion-item lines="none" *ngIf="paiement.reference">
           <ion-icon name="document-text" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Référence</h3>
+            <h3>{{ 'payments.referenceLabel' | translate }}</h3>
             <p>{{ paiement.reference }}</p>
           </ion-label>
         </ion-item>
@@ -80,7 +80,7 @@
     <!-- Informations réservation -->
     <ion-card *ngIf="reservation">
       <ion-card-header>
-        <ion-card-title>Réservation associée</ion-card-title>
+        <ion-card-title>{{ 'payments.reservationInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none" [button]="true" (click)="viewReservation()">

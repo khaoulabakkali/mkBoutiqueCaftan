@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Détails Rôle</ion-title>
+    <ion-title>{{ 'parameters.role.detail' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="editRole()" *ngIf="role?.idRole">
         <ion-icon name="create"></ion-icon>
@@ -16,7 +16,7 @@
 <ion-content [fullscreen]="true">
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'parameters.role.loading' | translate }}</p>
   </div>
   <div *ngIf="!isLoading && role" class="detail-container">
     <!-- En-tête avec nom et statut -->
@@ -31,10 +31,10 @@
             </ion-icon>
           </div>
           <div class="info-section">
-            <h1>{{ role.nomRole || 'Nom non défini' }}</h1>
+            <h1>{{ role.nomRole || ('parameters.role.notDefined' | translate) }}</h1>
             <div class="badges-header">
               <ion-badge [color]="(role.actif !== undefined && role.actif) ? 'success' : 'danger'">
-                {{ (role.actif !== undefined && role.actif) ? 'Actif' : 'Inactif' }}
+                {{ (role.actif !== undefined && role.actif) ? ('common.active' | translate) : ('common.inactive' | translate) }}
               </ion-badge>
             </div>
           </div>
@@ -45,21 +45,21 @@
     <!-- Informations du rôle -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Informations du rôle</ion-card-title>
+        <ion-card-title>{{ 'parameters.role.roleInfo' | translate }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-item lines="none">
           <ion-icon name="shield-checkmark" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Nom du rôle</h3>
-            <p>{{ role.nomRole || 'Non défini' }}</p>
+            <h3>{{ 'parameters.role.roleName' | translate }}</h3>
+            <p>{{ role.nomRole || ('common.noSelection' | translate) }}</p>
           </ion-label>
         </ion-item>
 
         <ion-item lines="none" *ngIf="role.description">
           <ion-icon name="informationCircle" slot="start" color="primary"></ion-icon>
           <ion-label>
-            <h3>Description</h3>
+            <h3>{{ 'parameters.role.description' | translate }}</h3>
             <p>{{ role.description }}</p>
           </ion-label>
         </ion-item>
@@ -71,10 +71,10 @@
             slot="start">
           </ion-icon>
           <ion-label>
-            <h3>Statut</h3>
+            <h3>{{ 'common.status' | translate }}</h3>
             <p>
               <ion-badge [color]="(role.actif !== undefined && role.actif) ? 'success' : 'danger'">
-                {{ (role.actif !== undefined && role.actif) ? 'Actif' : 'Inactif' }}
+                {{ (role.actif !== undefined && role.actif) ? ('common.active' | translate) : ('common.inactive' | translate) }}
               </ion-badge>
             </p>
           </ion-label>
@@ -85,26 +85,26 @@
     <!-- Utilisateurs associés -->
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Utilisateurs associés ({{ utilisateurs.length }})</ion-card-title>
+        <ion-card-title>{{ 'parameters.role.associatedUsers' | translate }} ({{ utilisateurs.length }})</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-list *ngIf="utilisateurs.length > 0">
           <ion-item [button]="true" (click)="viewUtilisateur(utilisateur)" *ngFor="let utilisateur of utilisateurs">
             <ion-icon name="person" slot="start" color="primary"></ion-icon>
             <ion-label>
-              <h2>{{ utilisateur.nomComplet || 'Nom non défini' }}</h2>
-              <p>{{ utilisateur.login || 'Login non défini' }}</p>
+              <h2>{{ utilisateur.nomComplet || ('users.nameNotDefined' | translate) }}</h2>
+              <p>{{ utilisateur.login || ('parameters.role.loginNotDefined' | translate) }}</p>
             </ion-label>
             <ion-badge 
               slot="end" 
               [color]="(utilisateur.actif !== undefined && utilisateur.actif) ? 'success' : 'danger'">
-              {{ (utilisateur.actif !== undefined && utilisateur.actif) ? 'Actif' : 'Inactif' }}
+              {{ (utilisateur.actif !== undefined && utilisateur.actif) ? ('common.active' | translate) : ('common.inactive' | translate) }}
             </ion-badge>
           </ion-item>
         </ion-list>
         <div *ngIf="utilisateurs.length === 0" class="empty-state">
           <ion-icon name="person-outline"></ion-icon>
-          <p>Aucun utilisateur associé à ce rôle</p>
+          <p>{{ 'parameters.role.noAssociatedUsers' | translate }}</p>
         </div>
       </ion-card-content>
     </ion-card>

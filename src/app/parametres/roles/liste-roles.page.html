@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Gestion des Rôles</ion-title>
+    <ion-title>{{ 'parameters.role.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addNewRole()">
         <ion-icon name="add"></ion-icon>
@@ -15,14 +15,14 @@
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher un rôle..."
+    [placeholder]="'parameters.role.search' | translate"
     debounce="300">
   </ion-searchbar>
 
   <!-- Spinner de chargement -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'parameters.role.loading' | translate }}</p>
   </div>
 
   <!-- Liste des rôles -->
@@ -39,7 +39,7 @@
           <div class="badges-container">
             <ion-badge [color]="role.actif ? 'success' : 'danger'">
               <ion-icon [name]="role.actif ? 'checkmark-circle' : 'close-circle'" style="margin-right: 4px;"></ion-icon>
-              {{ role.actif ? 'Actif' : 'Inactif' }}
+              {{ role.actif ? ('common.active' | translate) : ('common.inactive' | translate) }}
             </ion-badge>
           </div>
         </ion-label>
@@ -49,19 +49,19 @@
       <ion-item-options side="end">
         <ion-item-option color="primary" (click)="viewRole(role); slidingItem.close()">
           <ion-icon slot="icon-only" name="information-circle"></ion-icon>
-          <span>Détails</span>
+          <span>{{ 'common.details' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="tertiary" (click)="editRole(role); slidingItem.close()">
           <ion-icon slot="icon-only" name="create"></ion-icon>
-          <span>Modifier</span>
+          <span>{{ 'common.edit' | translate }}</span>
         </ion-item-option>
         <ion-item-option [color]="role.actif ? 'warning' : 'success'" (click)="toggleActif(role); slidingItem.close()">
           <ion-icon slot="icon-only" [name]="role.actif ? 'eye-off' : 'eye'"></ion-icon>
-          <span>{{ role.actif ? 'Désactiver' : 'Activer' }}</span>
+          <span>{{ role.actif ? ('parameters.role.disable' | translate) : ('parameters.role.enable' | translate) }}</span>
         </ion-item-option>
         <ion-item-option color="danger" (click)="deleteRole(role); slidingItem.close()">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
-          <span>Supprimer</span>
+          <span>{{ 'common.delete' | translate }}</span>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -70,7 +70,7 @@
   <!-- Message si aucun résultat -->
   <div *ngIf="!isLoading && rolesFiltres.length === 0" class="empty-state">
     <ion-icon name="shield-outline"></ion-icon>
-    <p>Aucun rôle trouvé</p>
+    <p>{{ 'parameters.role.noResults' | translate }}</p>
   </div>
 </ion-content>
 

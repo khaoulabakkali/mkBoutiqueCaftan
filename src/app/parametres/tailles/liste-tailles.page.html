@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-menu-button slot="start"></ion-menu-button>
-    <ion-title>Gestion des Tailles</ion-title>
+    <ion-title>{{ 'parameters.size.title' | translate }}</ion-title>
     <ion-buttons slot="end">
       <ion-button (click)="addNewTaille()">
         <ion-icon name="add"></ion-icon>
@@ -15,14 +15,14 @@
   <ion-searchbar
     [(ngModel)]="searchTerm"
     (ionInput)="onSearchChange($event)"
-    placeholder="Rechercher une taille..."
+    [placeholder]="'parameters.size.search' | translate"
     debounce="300">
   </ion-searchbar>
 
   <!-- Spinner de chargement -->
   <div *ngIf="isLoading" class="loading-container">
     <ion-spinner></ion-spinner>
-    <p>Chargement...</p>
+    <p>{{ 'parameters.size.loading' | translate }}</p>
   </div>
 
   <!-- Liste des tailles -->
@@ -39,15 +39,15 @@
       <ion-item-options side="end">
         <ion-item-option color="primary" (click)="viewTaille(taille); slidingItem.close()">
           <ion-icon slot="icon-only" name="information-circle"></ion-icon>
-          <span>Détails</span>
+          <span>{{ 'common.details' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="tertiary" (click)="editTaille(taille); slidingItem.close()">
           <ion-icon slot="icon-only" name="create"></ion-icon>
-          <span>Modifier</span>
+          <span>{{ 'common.edit' | translate }}</span>
         </ion-item-option>
         <ion-item-option color="danger" (click)="deleteTaille(taille); slidingItem.close()">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
-          <span>Supprimer</span>
+          <span>{{ 'common.delete' | translate }}</span>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -56,7 +56,7 @@
   <!-- Message si aucun résultat -->
   <div *ngIf="!isLoading && taillesFiltres.length === 0" class="empty-state">
     <ion-icon name="resize"></ion-icon>
-    <p>Aucune taille trouvée</p>
+    <p>{{ 'parameters.size.noResults' | translate }}</p>
   </div>
 </ion-content>
 
